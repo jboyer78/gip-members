@@ -43,7 +43,7 @@ export function AppSidebar() {
               <SidebarMenuButton asChild>
                 <Link to="/dashboard" className="flex items-center space-x-4 p-4 hover:bg-gray-700/90 rounded-lg transition-all duration-300">
                   <LayoutDashboard className="h-6 w-6 text-gray-300 hover:text-white" />
-                  <span className="text-lg font-medium text-gray-300 hover:text-white">Tableau de bord</span>
+                  <span className="text-lg font-medium text-gray-300 hover:text-white">Actualités</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
