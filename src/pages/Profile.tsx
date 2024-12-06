@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { AppSidebar } from "@/components/shared/AppSidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -89,11 +90,10 @@ const Profile = () => {
               <button className="p-2 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-full transition-all duration-300">
                 <Bell className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               </button>
-              <Link 
-                to="/profile" 
-                className="w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-lg shadow-primary/20 hover:shadow-xl hover:scale-105 transition-all duration-300"
-              >
-                <span className="text-white text-sm font-medium">JD</span>
+              <Link to="/profile">
+                <Avatar className="h-8 w-8 bg-muted">
+                  <AvatarFallback>U</AvatarFallback>
+                </Avatar>
               </Link>
             </div>
           </div>
