@@ -11,25 +11,94 @@ interface AvatarUploadProps {
   form: UseFormReturn<ProfileFormValues>;
 }
 
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
 export const AvatarUpload = ({ form }: AvatarUploadProps) => {
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
+
+  const validateFile = (file: File) => {
+    if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+      throw new Error('Le type de fichier doit être JPEG, PNG ou WEBP.');
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      throw new Error('La taille du fichier ne doit pas dépasser 5MB.');
+    }
+  };
+
+  const resizeImage = async (file: File): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_SIZE = 128; // Taille maximale pour l'avatar
+          let width = img.width;
+          let height = img.height;
+
+          // Calcul des dimensions pour conserver le ratio
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height = Math.round((height * MAX_SIZE) / width);
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width = Math.round((width * MAX_SIZE) / height);
+              height = MAX_SIZE;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                resolve(blob);
+              } else {
+                reject(new Error('Échec du redimensionnement de l\'image'));
+              }
+            },
+            'image/jpeg',
+            0.9
+          );
+        };
+      };
+      reader.onerror = (error) => reject(error);
+    });
+  };
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
       setUploading(true);
       
       if (!event.target.files || event.target.files.length === 0) {
-        throw new Error('You must select an image to upload.');
+        throw new Error('Vous devez sélectionner une image.');
       }
 
       const file = event.target.files[0];
+      validateFile(file);
+
+      // Redimensionner l'image
+      const resizedImage = await resizeImage(file);
       const fileExt = file.name.split('.').pop();
       const filePath = `${crypto.randomUUID()}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(filePath, file);
+        .upload(filePath, resizedImage, {
+          contentType: 'image/jpeg',
+          upsert: true
+        });
 
       if (uploadError) {
         throw uploadError;
@@ -49,7 +118,7 @@ export const AvatarUpload = ({ form }: AvatarUploadProps) => {
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue lors de l'upload de la photo",
+        description: error instanceof Error ? error.message : "Une erreur est survenue lors de l'upload de la photo",
       });
       console.error('Error uploading avatar:', error);
     } finally {
@@ -72,7 +141,7 @@ export const AvatarUpload = ({ form }: AvatarUploadProps) => {
       <div className="flex flex-col gap-4">
         <Input
           type="file"
-          accept="image/*"
+          accept={ACCEPTED_IMAGE_TYPES.join(',')}
           onChange={handleAvatarUpload}
           disabled={uploading}
           className="hidden"
@@ -86,6 +155,9 @@ export const AvatarUpload = ({ form }: AvatarUploadProps) => {
         >
           {uploading ? 'Upload en cours...' : 'Changer la photo'}
         </Button>
+        <p className="text-sm text-gray-500">
+          Formats acceptés : JPEG, PNG, WEBP. Taille max : 5MB
+        </p>
       </div>
     </div>
   );
