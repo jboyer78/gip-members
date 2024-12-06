@@ -1,36 +1,23 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Bell } from "lucide-react";
-import { Link } from "react-router-dom";
 import { AppSidebar } from "@/components/shared/AppSidebar";
+import { TopNavigation } from "@/components/shared/TopNavigation";
+import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
-  const blogPosts = [
-    {
-      id: 1,
-      title: "Comment créer un site web moderne",
-      excerpt: "Guide complet pour développer un site web responsive et performant",
-      date: "Il y a 2 jours",
-      image: "photo-1488590528505-98d2b5aba04b",
-      author: "Julie Martin"
-    },
-    {
-      id: 2,
-      title: "Les meilleures pratiques React en 2024",
-      excerpt: "Découvrez les dernières tendances et techniques en React",
-      date: "Il y a 4 jours",
-      image: "photo-1461749280684-dccba630e2f6",
-      author: "Thomas Dubois"
-    },
-    {
-      id: 3,
-      title: "L'importance du design responsive",
-      excerpt: "Pourquoi et comment adapter votre site à tous les écrans",
-      date: "Il y a 1 semaine",
-      image: "photo-1581091226825-a6a2a5aee158",
-      author: "Sophie Bernard"
-    }
-  ];
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate("/login");
+      }
+    };
+
+    checkAuth();
+  }, [navigate]);
 
   return (
     <SidebarProvider defaultOpen={true}>
@@ -43,45 +30,33 @@ const Dashboard = () => {
               <SidebarTrigger className="p-2 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300" />
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400">Tableau de bord</h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Bienvenue sur votre espace personnel</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Bienvenue sur votre tableau de bord</p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <button className="p-2 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-full transition-all duration-300">
-                <Bell className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-              </button>
-              <Link 
-                to="/profile" 
-                className="w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-lg shadow-primary/20 hover:shadow-xl hover:scale-105 transition-all duration-300"
-              >
-                <span className="text-white text-sm font-medium">JD</span>
-              </Link>
-            </div>
+            <TopNavigation />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {blogPosts.map((post) => (
-              <Card key={post.id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-gray-200/50 dark:border-gray-700/50">
-                <div className="relative h-48 overflow-hidden">
-                  <img 
-                    src={`https://images.unsplash.com/${post.image}?auto=format&fit=crop&w=800&q=80`}
-                    alt={post.title}
-                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </div>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg font-semibold line-clamp-2 group-hover:text-primary transition-colors duration-200">{post.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">{post.excerpt}</p>
-                  <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
-                    <span className="font-medium">{post.author}</span>
-                    <span>{post.date}</span>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg p-6 rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
+              <h2 className="text-xl font-semibold mb-4">Statistiques</h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Vos statistiques apparaîtront ici
+              </p>
+            </div>
+            
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg p-6 rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
+              <h2 className="text-xl font-semibold mb-4">Activité récente</h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Votre activité récente apparaîtra ici
+              </p>
+            </div>
+            
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg p-6 rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
+              <h2 className="text-xl font-semibold mb-4">Notifications</h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Vos notifications apparaîtront ici
+              </p>
+            </div>
           </div>
         </main>
       </div>

@@ -6,12 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ProfileFormFields } from "@/components/profile/ProfileFormFields";
 import { useProfileForm } from "@/components/profile/useProfileForm";
-import { Bell } from "lucide-react";
-import { Link } from "react-router-dom";
 import { AppSidebar } from "@/components/shared/AppSidebar";
+import { TopNavigation } from "@/components/shared/TopNavigation";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -86,16 +84,7 @@ const Profile = () => {
                 <p className="text-sm text-gray-600 dark:text-gray-400">Gérez vos informations personnelles</p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <button className="p-2 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-full transition-all duration-300">
-                <Bell className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-              </button>
-              <Link to="/profile">
-                <Avatar className="h-8 w-8 bg-muted">
-                  <AvatarFallback>U</AvatarFallback>
-                </Avatar>
-              </Link>
-            </div>
+            <TopNavigation />
           </div>
 
           <div className="space-y-6">
