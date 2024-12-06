@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Newspaper, User, ListPlus, LogOut } from "lucide-react";
+import { Newspaper, User, ListPlus, LogOut, Users } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -52,6 +52,14 @@ export function AppSidebar() {
                 <Link to="/profile" className="flex items-center space-x-4 p-4 hover:bg-gray-700/90 rounded-lg transition-all duration-300">
                   <User className="h-6 w-6 text-gray-300 hover:text-white" />
                   <span className="text-lg font-medium text-gray-300 hover:text-white">Profil</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem className="list-none mb-4">
+              <SidebarMenuButton asChild>
+                <Link to="/members" className="flex items-center space-x-4 p-4 hover:bg-gray-700/90 rounded-lg transition-all duration-300">
+                  <Users className="h-6 w-6 text-gray-300 hover:text-white" />
+                  <span className="text-lg font-medium text-gray-300 hover:text-white">Membres</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

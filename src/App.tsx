@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
+import Members from "./pages/Members";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/members" element={<Members />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
