@@ -15,7 +15,7 @@ export const AddressFields = ({ form }: AddressFieldsProps) => {
         name="street"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Rue</FormLabel>
+            <FormLabel>Numéro et Rue</FormLabel>
             <FormControl>
               <Input {...field} />
             </FormControl>
