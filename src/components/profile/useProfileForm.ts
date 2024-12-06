@@ -12,21 +12,30 @@ export const useProfileForm = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        navigate("/login");
-        return;
-      }
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+          navigate("/login");
+          return;
+        }
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .single();
+        const { data: profiles, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id);
 
-      if (profile) {
-        form.reset(profile);
+        if (error) {
+          console.error("Error fetching profile:", error);
+          return;
+        }
+
+        // If we have a profile, use it to reset the form
+        if (profiles && profiles.length > 0) {
+          form.reset(profiles[0]);
+        }
+      } catch (error) {
+        console.error("Error in fetchProfile:", error);
       }
     };
 
