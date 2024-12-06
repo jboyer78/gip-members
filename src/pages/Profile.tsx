@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -7,9 +9,22 @@ import { useProfileForm } from "@/components/profile/useProfileForm";
 import { Bell } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AppSidebar } from "@/components/shared/AppSidebar";
+import { supabase } from "@/integrations/supabase/client";
 
 const Profile = () => {
+  const navigate = useNavigate();
   const { form, onSubmit } = useProfileForm();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate("/login");
+      }
+    };
+
+    checkAuth();
+  }, [navigate]);
 
   return (
     <SidebarProvider defaultOpen={true}>
