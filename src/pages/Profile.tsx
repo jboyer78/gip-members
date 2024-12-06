@@ -10,10 +10,12 @@ import { Bell } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AppSidebar } from "@/components/shared/AppSidebar";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const Profile = () => {
   const navigate = useNavigate();
   const { form, onSubmit } = useProfileForm();
+  const { toast } = useToast();
 
   const handleUpdateEmail = async () => {
     const { error } = await supabase.auth.updateUser({
@@ -22,14 +24,39 @@ const Profile = () => {
 
     if (error) {
       console.error('Error updating email:', error.message);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de mettre à jour l'adresse email",
+      });
+    } else {
+      toast({
+        title: "Succès",
+        description: "Un email de confirmation vous a été envoyé",
+      });
     }
   };
 
   const handleUpdatePassword = async () => {
-    const { error } = await supabase.auth.resetPassword();
+    const { error } = await supabase.auth.resetPasswordForEmail(
+      form.getValues("email"),
+      {
+        redirectTo: `${window.location.origin}/reset-password`,
+      }
+    );
     
     if (error) {
       console.error('Error resetting password:', error.message);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible d'initier la réinitialisation du mot de passe",
+      });
+    } else {
+      toast({
+        title: "Succès",
+        description: "Un email de réinitialisation vous a été envoyé",
+      });
     }
   };
 
