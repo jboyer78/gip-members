@@ -117,7 +117,7 @@ const Profile = () => {
                           onClick={handleUpdateEmail}
                           className="flex-1 bg-primary hover:bg-primary/90 text-white"
                         >
-                          Modifier l'adresse email
+                          Modifier l'email
                         </Button>
                         <Button 
                           type="button"
