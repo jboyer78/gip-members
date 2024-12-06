@@ -79,7 +79,7 @@ const Dashboard = () => {
           </div>
 
           {/* Blog Post Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {blogPosts.map((post) => (
               <Card key={post.id} className="hover:shadow-lg transition-shadow overflow-hidden">
                 <div className="relative h-48 overflow-hidden">
@@ -102,28 +102,6 @@ const Dashboard = () => {
               </Card>
             ))}
           </div>
-
-          {/* Recent Activity */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Activités récentes</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="flex items-center gap-4 p-2 hover:bg-gray-50 rounded-lg transition-colors">
-                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                      <User className="h-4 w-4 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">Nouvel utilisateur inscrit</p>
-                      <p className="text-xs text-gray-600">Il y a {i * 2} heures</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
         </main>
       </div>
     </SidebarProvider>
