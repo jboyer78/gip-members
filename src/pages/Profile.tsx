@@ -114,17 +114,15 @@ const Profile = () => {
                       <div className="flex gap-4 mt-4">
                         <Button 
                           type="button"
-                          variant="outline"
                           onClick={handleUpdateEmail}
-                          className="flex-1"
+                          className="flex-1 bg-primary hover:bg-primary/90 text-white"
                         >
                           Modifier l'adresse email
                         </Button>
                         <Button 
                           type="button"
-                          variant="outline"
                           onClick={handleUpdatePassword}
-                          className="flex-1"
+                          className="flex-1 bg-primary hover:bg-primary/90 text-white"
                         >
                           Modifier le mot de passe
                         </Button>
