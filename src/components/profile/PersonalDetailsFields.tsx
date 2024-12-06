@@ -5,7 +5,7 @@ import { UseFormReturn } from "react-hook-form";
 import { ProfileFormValues } from "./types";
 import { format } from "date-fns";
 
-const bloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+const bloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "Inconnu"];
 const maritalStatuses = ["Marié(e)", "Divorcé(e)", "Veuf(ve)", "Célibataire"];
 const childrenCounts = Array.from({ length: 11 }, (_, i) => i.toString());
 
