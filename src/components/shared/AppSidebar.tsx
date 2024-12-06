@@ -27,7 +27,7 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar variant="floating" className="w-full md:w-64 shrink-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-r border-gray-200/50 dark:border-gray-700/50 shadow-lg">
+    <Sidebar variant="floating" className="w-full md:w-64 shrink-0 bg-gray-900/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg">
       <SidebarContent>
         <div className="flex justify-center p-4 mb-12">
           <img 
@@ -41,25 +41,25 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenuItem className="list-none mb-4">
               <SidebarMenuButton asChild>
-                <Link to="/dashboard" className="flex items-center space-x-4 p-4 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300 group">
-                  <LayoutDashboard className="h-6 w-6 text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors duration-300" />
-                  <span className="text-lg font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors duration-300">Tableau de bord</span>
+                <Link to="/dashboard" className="flex items-center space-x-4 p-4 hover:bg-gray-800/80 dark:hover:bg-gray-800/50 rounded-lg transition-all duration-300 group">
+                  <LayoutDashboard className="h-6 w-6 text-gray-300 dark:text-gray-300 group-hover:text-primary transition-colors duration-300" />
+                  <span className="text-lg font-medium text-gray-300 dark:text-gray-300 group-hover:text-primary transition-colors duration-300">Tableau de bord</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem className="list-none mb-4">
               <SidebarMenuButton asChild>
-                <Link to="/profile" className="flex items-center space-x-4 p-4 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300 group">
-                  <User className="h-6 w-6 text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors duration-300" />
-                  <span className="text-lg font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors duration-300">Profil</span>
+                <Link to="/profile" className="flex items-center space-x-4 p-4 hover:bg-gray-800/80 dark:hover:bg-gray-800/50 rounded-lg transition-all duration-300 group">
+                  <User className="h-6 w-6 text-gray-300 dark:text-gray-300 group-hover:text-primary transition-colors duration-300" />
+                  <span className="text-lg font-medium text-gray-300 dark:text-gray-300 group-hover:text-primary transition-colors duration-300">Profil</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem className="list-none">
               <SidebarMenuButton asChild>
-                <a href="/annonces" className="flex items-center space-x-4 p-4 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300 group">
-                  <ListPlus className="h-6 w-6 text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors duration-300" />
-                  <span className="text-lg font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors duration-300">Annonces</span>
+                <a href="/annonces" className="flex items-center space-x-4 p-4 hover:bg-gray-800/80 dark:hover:bg-gray-800/50 rounded-lg transition-all duration-300 group">
+                  <ListPlus className="h-6 w-6 text-gray-300 dark:text-gray-300 group-hover:text-primary transition-colors duration-300" />
+                  <span className="text-lg font-medium text-gray-300 dark:text-gray-300 group-hover:text-primary transition-colors duration-300">Annonces</span>
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -67,7 +67,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-4 mt-auto border-t border-gray-200/50 dark:border-gray-700/50">
+      <SidebarFooter className="p-4 mt-auto">
         <SidebarMenuItem className="list-none">
           <SidebarMenuButton asChild>
             <button 
