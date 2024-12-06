@@ -4,19 +4,60 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const ResetPassword = () => {
   const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Email envoyé",
-      description: "Vérifiez votre boîte de réception pour réinitialiser votre mot de passe",
-    });
-    navigate("/login");
+    setIsLoading(true);
+
+    try {
+      // Demander à Supabase de générer un lien de réinitialisation
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/update-password`,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      // Envoyer l'email via notre Edge Function
+      const resetLink = `${window.location.origin}/update-password`;
+      const response = await supabase.functions.invoke('send-reset-password', {
+        body: {
+          to: [email],
+          resetLink: resetLink,
+        },
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+
+      toast({
+        title: "Email envoyé",
+        description: "Vérifiez votre boîte de réception pour réinitialiser votre mot de passe",
+      });
+      
+      // Rediriger vers la page de connexion après 3 secondes
+      setTimeout(() => {
+        navigate("/login");
+      }, 3000);
+    } catch (error: any) {
+      console.error("Erreur lors de la réinitialisation:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'envoi de l'email de réinitialisation",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -42,18 +83,20 @@ const ResetPassword = () => {
               placeholder="exemple@email.com"
               required
               className="mt-1"
+              disabled={isLoading}
             />
           </div>
 
           <div className="space-y-4">
-            <Button type="submit" className="w-full">
-              Envoyer le lien
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Envoi en cours..." : "Envoyer le lien"}
             </Button>
             <Button
               type="button"
               variant="outline"
               className="w-full"
               onClick={() => navigate("/login")}
+              disabled={isLoading}
             >
               Retour à la connexion
             </Button>
