@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { validatePassword } from "@/utils/validation";
+import EmailField from "./EmailField";
+import PasswordField from "./PasswordField";
 
 const SignUpForm = () => {
   const [signUpEmail, setSignUpEmail] = useState("");
@@ -58,7 +58,6 @@ const SignUpForm = () => {
           title: "Inscription réussie",
           description: "Un email de confirmation vous a été envoyé",
         });
-        // Reset form
         setSignUpEmail("");
         setSignUpPassword("");
         setConfirmPassword("");
@@ -78,45 +77,25 @@ const SignUpForm = () => {
   return (
     <form onSubmit={handleSignUp} className="mt-8 space-y-6">
       <div className="space-y-4">
-        <div>
-          <Label htmlFor="signUpEmail">Adresse email</Label>
-          <Input
-            id="signUpEmail"
-            type="email"
-            value={signUpEmail}
-            onChange={(e) => setSignUpEmail(e.target.value)}
-            placeholder="exemple@email.com"
-            required
-            className="mt-1"
-          />
-        </div>
+        <EmailField 
+          value={signUpEmail}
+          onChange={setSignUpEmail}
+        />
 
-        <div>
-          <Label htmlFor="signUpPassword">Mot de passe</Label>
-          <Input
-            id="signUpPassword"
-            type="password"
-            value={signUpPassword}
-            onChange={(e) => setSignUpPassword(e.target.value)}
-            required
-            className="mt-1"
-          />
-          <p className="text-sm text-gray-500 mt-1">
-            Le mot de passe doit contenir au moins 12 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial (!@#$%^&*(),.?":{}|&lt;&gt;)
-          </p>
-        </div>
+        <PasswordField
+          id="signUpPassword"
+          label="Mot de passe"
+          value={signUpPassword}
+          onChange={setSignUpPassword}
+          showHelperText={true}
+        />
 
-        <div>
-          <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
-          <Input
-            id="confirmPassword"
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-            className="mt-1"
-          />
-        </div>
+        <PasswordField
+          id="confirmPassword"
+          label="Confirmer le mot de passe"
+          value={confirmPassword}
+          onChange={setConfirmPassword}
+        />
       </div>
 
       <Button type="submit" className="w-full" disabled={isSignUpLoading}>
