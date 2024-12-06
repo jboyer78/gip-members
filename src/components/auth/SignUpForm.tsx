@@ -102,7 +102,7 @@ const SignUpForm = () => {
             className="mt-1"
           />
           <p className="text-sm text-gray-500 mt-1">
-            Le mot de passe doit contenir au moins 6 caractères
+            Le mot de passe doit contenir au moins 12 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial (!@#$%^&*(),.?":{}|<>)
           </p>
         </div>
 
