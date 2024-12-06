@@ -46,19 +46,19 @@ const Dashboard = () => {
             
             <SidebarGroup>
               <SidebarGroupContent>
-                <SidebarMenuItem className="list-none">
+                <SidebarMenuItem className="list-none mb-4">
                   <SidebarMenuButton asChild>
-                    <a href="/profile" className="flex items-center space-x-3 p-3 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300 group">
-                      <User className="h-5 w-5 text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors duration-300" />
-                      <span className="text-base font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors duration-300">Profil</span>
+                    <a href="/profile" className="flex items-center space-x-4 p-4 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300 group">
+                      <User className="h-6 w-6 text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors duration-300" />
+                      <span className="text-lg font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors duration-300">Profil</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem className="list-none">
                   <SidebarMenuButton asChild>
-                    <a href="/annonces" className="flex items-center space-x-3 p-3 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300 group">
-                      <ListPlus className="h-5 w-5 text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors duration-300" />
-                      <span className="text-base font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors duration-300">Annonces</span>
+                    <a href="/annonces" className="flex items-center space-x-4 p-4 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300 group">
+                      <ListPlus className="h-6 w-6 text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors duration-300" />
+                      <span className="text-lg font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors duration-300">Annonces</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
