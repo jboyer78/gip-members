@@ -30,8 +30,8 @@ const Dashboard = () => {
             <div className="flex items-center gap-2">
               <SidebarTrigger className="p-2 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300" />
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400">Tableau de bord</h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Bienvenue sur votre tableau de bord</p>
+                <h1 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400">Actualités</h1>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Bienvenue sur votre fil d'actualités</p>
               </div>
             </div>
             <TopNavigation />
