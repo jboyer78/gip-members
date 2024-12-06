@@ -37,26 +37,38 @@ const Dashboard = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg p-6 rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
-              <h2 className="text-xl font-semibold mb-4">Statistiques</h2>
-              <p className="text-gray-600 dark:text-gray-400">
-                Vos statistiques apparaîtront ici
+            <article className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg p-6 rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
+              <h2 className="text-xl font-semibold mb-4">Comment bien démarrer avec React</h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                Un guide complet pour comprendre les bases de React et commencer à développer des applications web modernes.
               </p>
-            </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-500">5 min de lecture</span>
+                <button className="text-primary hover:underline">Lire plus</button>
+              </div>
+            </article>
             
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg p-6 rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
-              <h2 className="text-xl font-semibold mb-4">Activité récente</h2>
-              <p className="text-gray-600 dark:text-gray-400">
-                Votre activité récente apparaîtra ici
+            <article className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg p-6 rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
+              <h2 className="text-xl font-semibold mb-4">Les meilleures pratiques Tailwind CSS</h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                Découvrez comment optimiser votre workflow avec Tailwind CSS et créer des interfaces utilisateur élégantes.
               </p>
-            </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-500">7 min de lecture</span>
+                <button className="text-primary hover:underline">Lire plus</button>
+              </div>
+            </article>
             
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg p-6 rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
-              <h2 className="text-xl font-semibold mb-4">Notifications</h2>
-              <p className="text-gray-600 dark:text-gray-400">
-                Vos notifications apparaîtront ici
+            <article className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg p-6 rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
+              <h2 className="text-xl font-semibold mb-4">TypeScript pour les débutants</h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                Un aperçu des fonctionnalités essentielles de TypeScript et comment les utiliser dans vos projets.
               </p>
-            </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-500">6 min de lecture</span>
+                <button className="text-primary hover:underline">Lire plus</button>
+              </div>
+            </article>
           </div>
         </main>
       </div>
