@@ -9,89 +9,13 @@ import { useProfileForm } from "@/components/profile/useProfileForm";
 import { ProfessionalForm } from "@/components/profile/ProfessionalForm";
 import { AppSidebar } from "@/components/shared/AppSidebar";
 import { TopNavigation } from "@/components/shared/TopNavigation";
+import { StatusCard } from "@/components/profile/StatusCard";
+import { EmailCard } from "@/components/profile/EmailCard";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { useQuery } from "@tanstack/react-query";
-import { Check, AlertCircle, Loader } from "lucide-react";
 
 const Profile = () => {
   const navigate = useNavigate();
   const { form, onSubmit } = useProfileForm();
-  const { toast } = useToast();
-
-  const { data: userStatus } = useQuery({
-    queryKey: ['userStatus'],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('status')
-        .eq('id', user.id)
-        .single();
-
-      return {
-        email: user.email,
-        status: profile?.status?.[0] || 'En attente'
-      };
-    },
-  });
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'Validée':
-        return <Check className="w-8 h-8 text-green-500" />;
-      case 'Refusée':
-        return <AlertCircle className="w-8 h-8 text-red-500" />;
-      case 'En attente':
-      default:
-        return <Loader className="w-8 h-8 text-yellow-500 animate-spin" />;
-    }
-  };
-
-  const handleUpdateEmail = async () => {
-    const { error } = await supabase.auth.updateUser({
-      email: form.getValues("email")
-    });
-
-    if (error) {
-      console.error('Error updating email:', error.message);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Impossible de mettre à jour l'adresse email",
-      });
-    } else {
-      toast({
-        title: "Succès",
-        description: "Un email de confirmation vous a été envoyé",
-      });
-    }
-  };
-
-  const handleUpdatePassword = async () => {
-    const { error } = await supabase.auth.resetPasswordForEmail(
-      form.getValues("email"),
-      {
-        redirectTo: `${window.location.origin}/reset-password`,
-      }
-    );
-    
-    if (error) {
-      console.error('Error resetting password:', error.message);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Impossible d'initier la réinitialisation du mot de passe",
-      });
-    } else {
-      toast({
-        title: "Succès",
-        description: "Un email de réinitialisation vous a été envoyé",
-      });
-    }
-  };
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -123,48 +47,8 @@ const Profile = () => {
 
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-gray-200/50 dark:border-gray-700/50 shadow-lg">
-                <CardContent className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">Adresse email</h2>
-                  <Form {...form}>
-                    <form className="space-y-4">
-                      <div className="w-full">
-                        <input
-                          type="email"
-                          value={form.getValues("email")}
-                          readOnly
-                          className="w-full bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-700 dark:text-gray-300"
-                        />
-                        <div className="flex flex-col md:flex-row gap-4 mt-4">
-                          <Button 
-                            type="button"
-                            onClick={handleUpdateEmail}
-                            className="flex-1 bg-primary hover:bg-primary/90 text-white"
-                          >
-                            Modifier l'email
-                          </Button>
-                          <Button 
-                            type="button"
-                            onClick={handleUpdatePassword}
-                            className="flex-1 bg-primary hover:bg-primary/90 text-white"
-                          >
-                            Modifier le mot de passe
-                          </Button>
-                        </div>
-                      </div>
-                    </form>
-                  </Form>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-gray-200/50 dark:border-gray-700/50 shadow-lg">
-                <CardContent className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">Statut de votre inscription</h2>
-                  <div className="flex justify-center items-center h-[120px]">
-                    {userStatus && getStatusIcon(userStatus.status)}
-                  </div>
-                </CardContent>
-              </Card>
+              <EmailCard form={form} />
+              <StatusCard />
             </div>
 
             <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-gray-200/50 dark:border-gray-700/50 shadow-lg">
