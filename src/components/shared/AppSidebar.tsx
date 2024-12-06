@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { LayoutDashboard, User, ListPlus } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { LayoutDashboard, User, ListPlus, LogOut } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -7,9 +7,25 @@ import {
   SidebarGroupContent,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export function AppSidebar() {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast.success("Déconnexion réussie");
+      navigate("/login");
+    } catch (error) {
+      toast.error("Erreur lors de la déconnexion");
+      console.error("Logout error:", error);
+    }
+  };
+
   return (
     <Sidebar variant="floating" className="w-full md:w-64 shrink-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-r border-gray-200/50 dark:border-gray-700/50 shadow-lg">
       <SidebarContent>
@@ -50,6 +66,22 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter className="p-4 mt-auto border-t border-gray-200/50 dark:border-gray-700/50">
+        <SidebarMenuItem className="list-none">
+          <SidebarMenuButton asChild>
+            <button 
+              onClick={handleLogout}
+              className="w-full flex items-center space-x-4 p-4 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300 group text-left"
+            >
+              <LogOut className="h-6 w-6 text-gray-600 dark:text-gray-400 group-hover:text-destructive transition-colors duration-300" />
+              <span className="text-lg font-medium text-gray-700 dark:text-gray-300 group-hover:text-destructive transition-colors duration-300">
+                Déconnexion
+              </span>
+            </button>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarFooter>
     </Sidebar>
   );
 }
