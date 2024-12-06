@@ -72,10 +72,10 @@ export function AppSidebar() {
           <SidebarMenuButton asChild>
             <button 
               onClick={handleLogout}
-              className="w-full flex items-center space-x-4 p-4 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300 group text-left"
+              className="w-full flex items-center space-x-4 p-4 bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-lg transition-all duration-300 group text-left"
             >
-              <LogOut className="h-6 w-6 text-gray-600 dark:text-gray-400 group-hover:text-destructive transition-colors duration-300" />
-              <span className="text-lg font-medium text-gray-700 dark:text-gray-300 group-hover:text-destructive transition-colors duration-300">
+              <LogOut className="h-6 w-6 text-red-600 dark:text-red-400 group-hover:text-red-700 dark:group-hover:text-red-300 transition-colors duration-300" />
+              <span className="text-lg font-medium text-red-600 dark:text-red-400 group-hover:text-red-700 dark:group-hover:text-red-300 transition-colors duration-300">
                 Déconnexion
               </span>
             </button>
