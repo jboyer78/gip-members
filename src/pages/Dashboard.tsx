@@ -33,23 +33,23 @@ const Dashboard = () => {
   return (
     <SidebarProvider defaultOpen={false}>
       <div className="min-h-screen flex w-full flex-col md:flex-row bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-        <Sidebar variant="floating" className="w-full md:w-64 shrink-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-r border-gray-200 dark:border-gray-700">
+        <Sidebar variant="floating" className="w-full md:w-64 shrink-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-r border-gray-200/50 dark:border-gray-700/50 shadow-lg">
           <SidebarContent>
             <SidebarGroup>
               <SidebarGroupContent>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <a href="/profile" className="flex items-center space-x-2 p-2 md:p-3 hover:bg-gray-100 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-200">
-                      <User className="h-4 w-4 md:h-5 md:w-5" />
-                      <span className="text-sm md:text-base font-medium">Profil</span>
+                    <a href="/profile" className="flex items-center space-x-3 p-3 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300 group">
+                      <User className="h-5 w-5 text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors duration-300" />
+                      <span className="text-base font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors duration-300">Profil</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <a href="/annonces" className="flex items-center space-x-2 p-2 md:p-3 hover:bg-gray-100 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-200">
-                      <ListPlus className="h-4 w-4 md:h-5 md:w-5" />
-                      <span className="text-sm md:text-base font-medium">Annonces</span>
+                    <a href="/annonces" className="flex items-center space-x-3 p-3 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300 group">
+                      <ListPlus className="h-5 w-5 text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors duration-300" />
+                      <span className="text-base font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors duration-300">Annonces</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -60,16 +60,16 @@ const Dashboard = () => {
         
         <main className="flex-1 p-4 md:p-8">
           {/* Header */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg p-4 rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
             <div className="flex items-center gap-2">
-              <SidebarTrigger className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-200" />
+              <SidebarTrigger className="p-2 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300" />
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400">Tableau de bord</h1>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Bienvenue sur votre espace personnel</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700/50 rounded-full transition-all duration-200">
+              <button className="p-2 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-full transition-all duration-300">
                 <Bell className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               </button>
               <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-lg shadow-primary/20">
@@ -81,7 +81,7 @@ const Dashboard = () => {
           {/* Blog Post Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {blogPosts.map((post) => (
-              <Card key={post.id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-gray-200 dark:border-gray-700">
+              <Card key={post.id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-gray-200/50 dark:border-gray-700/50">
                 <div className="relative h-48 overflow-hidden">
                   <img 
                     src={`https://images.unsplash.com/${post.image}?auto=format&fit=crop&w=800&q=80`}
