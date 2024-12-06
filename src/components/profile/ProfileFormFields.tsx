@@ -4,6 +4,8 @@ import { AvatarUpload } from "./AvatarUpload";
 import { PersonalInfoFields } from "./PersonalInfoFields";
 import { AddressFields } from "./AddressFields";
 import { ContactFields } from "./ContactFields";
+import { PersonalDetailsFields } from "./PersonalDetailsFields";
+import { ProfessionalFields } from "./ProfessionalFields";
 
 interface ProfileFormFieldsProps {
   form: UseFormReturn<ProfileFormValues>;
@@ -15,9 +17,24 @@ export const ProfileFormFields = ({ form }: ProfileFormFieldsProps) => {
       <AvatarUpload form={form} />
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <PersonalInfoFields form={form} />
-        <AddressFields form={form} />
-        <ContactFields form={form} />
+        <div className="space-y-6">
+          <h2 className="text-lg font-semibold">Informations personnelles</h2>
+          <PersonalInfoFields form={form} />
+          <PersonalDetailsFields form={form} />
+        </div>
+        
+        <div className="space-y-6">
+          <h2 className="text-lg font-semibold">Coordonnées</h2>
+          <AddressFields form={form} />
+          <ContactFields form={form} />
+        </div>
+
+        <div className="space-y-6 md:col-span-2">
+          <h2 className="text-lg font-semibold">Informations professionnelles</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <ProfessionalFields form={form} />
+          </div>
+        </div>
       </div>
     </div>
   );
