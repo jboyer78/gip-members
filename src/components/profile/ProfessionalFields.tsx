@@ -2,7 +2,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
-import { ProfileFormValues } from "./types";
+import { ProfessionalFormValues } from "./types";
 import { Checkbox } from "@/components/ui/checkbox";
 import { format } from "date-fns";
 
@@ -24,7 +24,7 @@ const statusOptions = [
 ];
 
 interface ProfessionalFieldsProps {
-  form: UseFormReturn<ProfileFormValues>;
+  form: UseFormReturn<ProfessionalFormValues>;
 }
 
 export const ProfessionalFields = ({ form }: ProfessionalFieldsProps) => {
