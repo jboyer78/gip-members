@@ -62,7 +62,7 @@ export const AvatarUpload = ({ form }: AvatarUploadProps) => {
   const lastName = form.watch('last_name');
 
   return (
-    <div className="flex items-start gap-4">
+    <div className="flex flex-col items-center gap-4">
       <Avatar className="h-24 w-24">
         <AvatarImage src={avatarUrl || ''} />
         <AvatarFallback>
