@@ -12,6 +12,7 @@ import { TopNavigation } from "@/components/shared/TopNavigation";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
+import { Check, AlertCircle, Loader } from "lucide-react";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -23,13 +24,31 @@ const Profile = () => {
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('status')
+        .eq('id', user.id)
+        .single();
+
       return {
         email: user.email,
-        emailConfirmed: user.email_confirmed_at !== null,
-        lastSignIn: user.last_sign_in_at,
+        status: profile?.status?.[0] || 'En attente'
       };
     },
   });
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'Validée':
+        return <Check className="w-8 h-8 text-green-500" />;
+      case 'Refusée':
+        return <AlertCircle className="w-8 h-8 text-red-500" />;
+      case 'En attente':
+      default:
+        return <Loader className="w-8 h-8 text-yellow-500 animate-spin" />;
+    }
+  };
 
   const handleUpdateEmail = async () => {
     const { error } = await supabase.auth.updateUser({
@@ -141,32 +160,8 @@ const Profile = () => {
               <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-gray-200/50 dark:border-gray-700/50 shadow-lg">
                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-4">Statut de votre inscription</h2>
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Email</p>
-                      <p className="font-medium">{userStatus?.email}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Statut de l'email</p>
-                      <div className="flex items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${userStatus?.emailConfirmed ? 'bg-green-500' : 'bg-yellow-500'}`} />
-                        <p className="font-medium">
-                          {userStatus?.emailConfirmed ? 'Vérifié' : 'En attente de vérification'}
-                        </p>
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Dernière connexion</p>
-                      <p className="font-medium">
-                        {userStatus?.lastSignIn ? new Date(userStatus.lastSignIn).toLocaleDateString('fr-FR', {
-                          day: 'numeric',
-                          month: 'long',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        }) : 'N/A'}
-                      </p>
-                    </div>
+                  <div className="flex justify-center items-center h-[120px]">
+                    {userStatus && getStatusIcon(userStatus.status)}
                   </div>
                 </CardContent>
               </Card>
