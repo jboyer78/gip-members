@@ -15,6 +15,24 @@ const Profile = () => {
   const navigate = useNavigate();
   const { form, onSubmit } = useProfileForm();
 
+  const handleUpdateEmail = async () => {
+    const { error } = await supabase.auth.updateUser({
+      email: form.getValues("email")
+    });
+
+    if (error) {
+      console.error('Error updating email:', error.message);
+    }
+  };
+
+  const handleUpdatePassword = async () => {
+    const { error } = await supabase.auth.resetPassword();
+    
+    if (error) {
+      console.error('Error resetting password:', error.message);
+    }
+  };
+
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -66,9 +84,24 @@ const Profile = () => {
                         readOnly
                         className="w-full bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-700 dark:text-gray-300"
                       />
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                        Pour modifier votre adresse email, veuillez contacter le support.
-                      </p>
+                      <div className="flex gap-4 mt-4">
+                        <Button 
+                          type="button"
+                          variant="outline"
+                          onClick={handleUpdateEmail}
+                          className="flex-1"
+                        >
+                          Modifier l'adresse email
+                        </Button>
+                        <Button 
+                          type="button"
+                          variant="outline"
+                          onClick={handleUpdatePassword}
+                          className="flex-1"
+                        >
+                          Modifier le mot de passe
+                        </Button>
+                      </div>
                     </div>
                   </form>
                 </Form>
