@@ -41,25 +41,25 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenuItem className="list-none mb-4">
               <SidebarMenuButton asChild>
-                <Link to="/dashboard" className="flex items-center space-x-4 p-4 hover:bg-gray-800/80 dark:hover:bg-gray-800/50 rounded-lg transition-all duration-300 group">
-                  <LayoutDashboard className="h-6 w-6 text-gray-300 dark:text-gray-300 group-hover:text-primary transition-colors duration-300" />
-                  <span className="text-lg font-medium text-gray-300 dark:text-gray-300 group-hover:text-primary transition-colors duration-300">Tableau de bord</span>
+                <Link to="/dashboard" className="flex items-center space-x-4 p-4 hover:bg-gray-800/80 dark:hover:bg-gray-800/50 rounded-lg transition-all duration-300">
+                  <LayoutDashboard className="h-6 w-6 text-gray-300 dark:text-gray-300" />
+                  <span className="text-lg font-medium text-gray-300 dark:text-gray-300">Tableau de bord</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem className="list-none mb-4">
               <SidebarMenuButton asChild>
-                <Link to="/profile" className="flex items-center space-x-4 p-4 hover:bg-gray-800/80 dark:hover:bg-gray-800/50 rounded-lg transition-all duration-300 group">
-                  <User className="h-6 w-6 text-gray-300 dark:text-gray-300 group-hover:text-primary transition-colors duration-300" />
-                  <span className="text-lg font-medium text-gray-300 dark:text-gray-300 group-hover:text-primary transition-colors duration-300">Profil</span>
+                <Link to="/profile" className="flex items-center space-x-4 p-4 hover:bg-gray-800/80 dark:hover:bg-gray-800/50 rounded-lg transition-all duration-300">
+                  <User className="h-6 w-6 text-gray-300 dark:text-gray-300" />
+                  <span className="text-lg font-medium text-gray-300 dark:text-gray-300">Profil</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem className="list-none">
               <SidebarMenuButton asChild>
-                <a href="/annonces" className="flex items-center space-x-4 p-4 hover:bg-gray-800/80 dark:hover:bg-gray-800/50 rounded-lg transition-all duration-300 group">
-                  <ListPlus className="h-6 w-6 text-gray-300 dark:text-gray-300 group-hover:text-primary transition-colors duration-300" />
-                  <span className="text-lg font-medium text-gray-300 dark:text-gray-300 group-hover:text-primary transition-colors duration-300">Annonces</span>
+                <a href="/annonces" className="flex items-center space-x-4 p-4 hover:bg-gray-800/80 dark:hover:bg-gray-800/50 rounded-lg transition-all duration-300">
+                  <ListPlus className="h-6 w-6 text-gray-300 dark:text-gray-300" />
+                  <span className="text-lg font-medium text-gray-300 dark:text-gray-300">Annonces</span>
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -72,10 +72,10 @@ export function AppSidebar() {
           <SidebarMenuButton asChild>
             <button 
               onClick={handleLogout}
-              className="w-full flex items-center space-x-4 p-4 bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-lg transition-all duration-300 group text-left"
+              className="w-full flex items-center space-x-4 p-4 bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-lg transition-all duration-300 text-left"
             >
-              <LogOut className="h-6 w-6 text-red-600 dark:text-red-400 group-hover:text-red-700 dark:group-hover:text-red-300 transition-colors duration-300" />
-              <span className="text-lg font-medium text-gray-900 group-hover:text-gray-900 transition-colors duration-300">
+              <LogOut className="h-6 w-6 text-red-600 dark:text-red-400 transition-colors duration-300" />
+              <span className="text-lg font-medium text-gray-900 transition-colors duration-300">
                 Déconnexion
               </span>
             </button>
