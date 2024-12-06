@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { LayoutDashboard, User, ListPlus, LogOut } from "lucide-react";
+import { Newspaper, User, ListPlus, LogOut } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -42,7 +42,7 @@ export function AppSidebar() {
             <SidebarMenuItem className="list-none mb-4">
               <SidebarMenuButton asChild>
                 <Link to="/dashboard" className="flex items-center space-x-4 p-4 hover:bg-gray-700/90 rounded-lg transition-all duration-300">
-                  <LayoutDashboard className="h-6 w-6 text-gray-300 hover:text-white" />
+                  <Newspaper className="h-6 w-6 text-gray-300 hover:text-white" />
                   <span className="text-lg font-medium text-gray-300 hover:text-white">Actualités</span>
                 </Link>
               </SidebarMenuButton>
