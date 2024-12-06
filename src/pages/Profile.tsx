@@ -122,61 +122,21 @@ const Profile = () => {
               </CardContent>
             </Card>
 
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-gray-200/50 dark:border-gray-700/50 shadow-lg">
-                  <CardContent className="p-6">
-                    <h2 className="text-xl font-semibold mb-6">Informations personnelles</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <ProfileFormFields form={form} />
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-gray-200/50 dark:border-gray-700/50 shadow-lg">
-                  <CardContent className="p-6">
-                    <h2 className="text-xl font-semibold mb-6">Informations professionnelles</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">Administration :</span>
-                          <span>{form.getValues("administration") || "-"}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">Date d'entrée :</span>
-                          <span>{form.getValues("administration_entry_date")?.toLocaleDateString() || "-"}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">Site de formation :</span>
-                          <span>{form.getValues("training_site") || "-"}</span>
-                        </div>
-                      </div>
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">Grade :</span>
-                          <span>{form.getValues("grade") || "-"}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">Direction d'affectation :</span>
-                          <span>{form.getValues("assignment_direction") || "-"}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">Service d'affectation :</span>
-                          <span>{form.getValues("assignment_service") || "-"}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Button 
-                  type="submit" 
-                  className="w-full bg-primary hover:bg-primary/90 text-white"
-                >
-                  Enregistrer les modifications
-                </Button>
-              </form>
-            </Form>
+            <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-gray-200/50 dark:border-gray-700/50 shadow-lg">
+              <CardContent className="p-6">
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <ProfileFormFields form={form} />
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-primary hover:bg-primary/90 text-white"
+                    >
+                      Enregistrer les modifications
+                    </Button>
+                  </form>
+                </Form>
+              </CardContent>
+            </Card>
           </div>
         </main>
       </div>
