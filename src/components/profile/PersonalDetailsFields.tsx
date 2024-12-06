@@ -6,7 +6,7 @@ import { ProfileFormValues } from "./types";
 import { format } from "date-fns";
 
 const bloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "Inconnu"];
-const maritalStatuses = ["Marié(e)", "Divorcé(e)", "Veuf(ve)", "Célibataire"];
+const maritalStatuses = ["Marié(e)", "Divorcé(e)", "Veuf(ve)", "Célibataire", "Autres"];
 const childrenCounts = Array.from({ length: 11 }, (_, i) => i.toString());
 
 interface PersonalDetailsFieldsProps {

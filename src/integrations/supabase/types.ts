@@ -32,6 +32,7 @@ export type Database = {
           phone_home: string | null
           phone_mobile: string | null
           postal_code: string | null
+          professional_document_url: string | null
           status: string[] | null
           street: string | null
           training_site: string | null
@@ -59,6 +60,7 @@ export type Database = {
           phone_home?: string | null
           phone_mobile?: string | null
           postal_code?: string | null
+          professional_document_url?: string | null
           status?: string[] | null
           street?: string | null
           training_site?: string | null
@@ -86,6 +88,7 @@ export type Database = {
           phone_home?: string | null
           phone_mobile?: string | null
           postal_code?: string | null
+          professional_document_url?: string | null
           status?: string[] | null
           street?: string | null
           training_site?: string | null
