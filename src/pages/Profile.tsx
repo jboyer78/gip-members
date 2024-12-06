@@ -53,21 +53,44 @@ const Profile = () => {
             </div>
           </div>
 
-          <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-gray-200/50 dark:border-gray-700/50 shadow-lg">
-            <CardContent className="p-6">
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <ProfileFormFields form={form} />
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-primary hover:bg-primary/90 text-white"
-                  >
-                    Enregistrer les modifications
-                  </Button>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
+          <div className="space-y-6">
+            <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-gray-200/50 dark:border-gray-700/50 shadow-lg">
+              <CardContent className="p-6">
+                <h2 className="text-xl font-semibold mb-4">Adresse email</h2>
+                <Form {...form}>
+                  <form className="space-y-4">
+                    <div className="w-full">
+                      <input
+                        type="email"
+                        value={form.getValues("email")}
+                        readOnly
+                        className="w-full bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-700 dark:text-gray-300"
+                      />
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                        Pour modifier votre adresse email, veuillez contacter le support.
+                      </p>
+                    </div>
+                  </form>
+                </Form>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-gray-200/50 dark:border-gray-700/50 shadow-lg">
+              <CardContent className="p-6">
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <ProfileFormFields form={form} />
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-primary hover:bg-primary/90 text-white"
+                    >
+                      Enregistrer les modifications
+                    </Button>
+                  </form>
+                </Form>
+              </CardContent>
+            </Card>
+          </div>
         </main>
       </div>
     </SidebarProvider>
