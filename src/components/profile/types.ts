@@ -8,4 +8,5 @@ export interface ProfileFormValues {
   phone_home: string;
   phone_mobile: string;
   email: string;
+  avatar_url?: string;
 }

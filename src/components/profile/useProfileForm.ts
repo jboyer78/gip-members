@@ -30,16 +30,13 @@ export const useProfileForm = () => {
           return;
         }
 
-        // If we have a profile, use it to reset the form
         if (profiles && profiles.length > 0) {
-          // Merge the profile data with the user's email
           const profileData = {
             ...profiles[0],
-            email: user.email // Add the email from the authenticated user
+            email: user.email
           };
           form.reset(profileData);
         } else {
-          // If no profile exists yet, at least set the email
           form.reset({ email: user.email });
         }
       } catch (error) {

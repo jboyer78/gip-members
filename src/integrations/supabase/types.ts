@@ -11,6 +11,7 @@ export type Database = {
     Tables: {
       profiles: {
         Row: {
+          avatar_url: string | null
           city: string | null
           country: string | null
           email: string | null
@@ -24,6 +25,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          avatar_url?: string | null
           city?: string | null
           country?: string | null
           email?: string | null
@@ -37,6 +39,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          avatar_url?: string | null
           city?: string | null
           country?: string | null
           email?: string | null
