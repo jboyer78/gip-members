@@ -28,8 +28,8 @@ const Login = () => {
       if (error) {
         toast({
           variant: "destructive",
-          title: "Erreur de connexion",
-          description: error.message,
+          title: "Erreur d'authentification",
+          description: "L'email ou le mot de passe est incorrect",
         });
         return;
       }
