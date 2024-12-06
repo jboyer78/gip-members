@@ -25,4 +25,5 @@ export interface ProfessionalFormValues {
   grade?: string;
   assignment_direction?: string;
   assignment_service?: string;
+  professional_document_url?: string;
 }
