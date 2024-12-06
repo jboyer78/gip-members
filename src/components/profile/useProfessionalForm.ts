@@ -3,12 +3,12 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { ProfileFormValues } from "./types";
+import { ProfessionalFormValues } from "./types";
 
-export const useProfileForm = () => {
+export const useProfessionalForm = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const form = useForm<ProfileFormValues>();
+  const form = useForm<ProfessionalFormValues>();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -33,12 +33,9 @@ export const useProfileForm = () => {
         if (profiles && profiles.length > 0) {
           const profileData = {
             ...profiles[0],
-            email: user.email,
-            birth_date: profiles[0].birth_date ? new Date(profiles[0].birth_date) : undefined,
+            administration_entry_date: profiles[0].administration_entry_date ? new Date(profiles[0].administration_entry_date) : undefined,
           };
           form.reset(profileData);
-        } else {
-          form.reset({ email: user.email });
         }
       } catch (error) {
         console.error("Error in fetchProfile:", error);
@@ -48,7 +45,7 @@ export const useProfileForm = () => {
     fetchProfile();
   }, [form, navigate]);
 
-  const onSubmit = async (values: ProfileFormValues) => {
+  const onSubmit = async (values: ProfessionalFormValues) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
@@ -59,7 +56,7 @@ export const useProfileForm = () => {
 
       const formattedValues = {
         ...values,
-        birth_date: values.birth_date?.toISOString().split('T')[0],
+        administration_entry_date: values.administration_entry_date?.toISOString().split('T')[0],
         updated_at: new Date().toISOString(),
       };
 
@@ -72,7 +69,7 @@ export const useProfileForm = () => {
 
       toast({
         title: "Profil mis à jour",
-        description: "Vos informations ont été enregistrées avec succès",
+        description: "Vos informations professionnelles ont été enregistrées avec succès",
         duration: 3000,
       });
     } catch (error) {

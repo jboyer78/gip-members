@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ProfileFormFields } from "@/components/profile/ProfileFormFields";
 import { useProfileForm } from "@/components/profile/useProfileForm";
+import { ProfessionalForm } from "@/components/profile/ProfessionalForm";
 import { AppSidebar } from "@/components/shared/AppSidebar";
 import { TopNavigation } from "@/components/shared/TopNavigation";
 import { supabase } from "@/integrations/supabase/client";
@@ -124,6 +125,7 @@ const Profile = () => {
 
             <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-gray-200/50 dark:border-gray-700/50 shadow-lg">
               <CardContent className="p-6">
+                <h2 className="text-xl font-semibold mb-4">Informations personnelles</h2>
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     <ProfileFormFields form={form} />
@@ -137,6 +139,8 @@ const Profile = () => {
                 </Form>
               </CardContent>
             </Card>
+
+            <ProfessionalForm />
           </div>
         </main>
       </div>

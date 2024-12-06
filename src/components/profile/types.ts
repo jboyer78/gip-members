@@ -15,6 +15,9 @@ export interface ProfileFormValues {
   blood_type?: string;
   marital_status?: string;
   children_count?: number;
+}
+
+export interface ProfessionalFormValues {
   status?: string[];
   administration?: string;
   administration_entry_date?: Date;
