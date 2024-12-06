@@ -69,6 +69,7 @@ export const useProfileForm = () => {
       toast({
         title: "Profil mis à jour",
         description: "Vos informations ont été enregistrées avec succès",
+        duration: 3000, // Le toast disparaîtra après 3 secondes
       });
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -76,6 +77,7 @@ export const useProfileForm = () => {
         variant: "destructive",
         title: "Erreur",
         description: "Une erreur est survenue lors de la mise à jour du profil",
+        duration: 3000,
       });
     }
   };

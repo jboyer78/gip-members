@@ -1,60 +1,29 @@
 import { Link } from "react-router-dom";
 import { Bell } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
+
+const fetchUserProfile = async () => {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('avatar_url, first_name, last_name')
+    .eq('id', user.id)
+    .maybeSingle();
+  
+  if (error) throw error;
+  return data;
+};
 
 export function TopNavigation() {
-  const [profile, setProfile] = useState<{
-    avatar_url?: string;
-    first_name?: string;
-    last_name?: string;
-  } | null>(null);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          const { data, error } = await supabase
-            .from('profiles')
-            .select('avatar_url, first_name, last_name')
-            .eq('id', user.id)
-            .maybeSingle();
-          
-          if (!error && data) {
-            setProfile(data);
-          } else {
-            console.log('No profile found or error:', error);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching profile:', error);
-      }
-    };
-
-    fetchProfile();
-
-    // Écouter les changements de profil
-    const channel = supabase
-      .channel('profile_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'profiles'
-        },
-        (payload) => {
-          setProfile(payload.new as typeof profile);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
+  const { data: profile } = useQuery({
+    queryKey: ['profile'],
+    queryFn: fetchUserProfile,
+    refetchOnWindowFocus: false,
+  });
 
   return (
     <div className="flex items-center gap-3">
