@@ -1,8 +1,35 @@
 import { SidebarProvider, Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenuItem, SidebarMenuButton, SidebarTrigger } from "@/components/ui/sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { User, ListPlus, Users, FileText, TrendingUp, Bell } from "lucide-react";
+import { User, ListPlus, Bell } from "lucide-react";
 
 const Dashboard = () => {
+  const blogPosts = [
+    {
+      id: 1,
+      title: "Comment créer un site web moderne",
+      excerpt: "Guide complet pour développer un site web responsive et performant",
+      date: "Il y a 2 jours",
+      image: "photo-1488590528505-98d2b5aba04b",
+      author: "Julie Martin"
+    },
+    {
+      id: 2,
+      title: "Les meilleures pratiques React en 2024",
+      excerpt: "Découvrez les dernières tendances et techniques en React",
+      date: "Il y a 4 jours",
+      image: "photo-1461749280684-dccba630e2f6",
+      author: "Thomas Dubois"
+    },
+    {
+      id: 3,
+      title: "L'importance du design responsive",
+      excerpt: "Pourquoi et comment adapter votre site à tous les écrans",
+      date: "Il y a 1 semaine",
+      image: "photo-1581091226825-a6a2a5aee158",
+      author: "Sophie Bernard"
+    }
+  ];
+
   return (
     <SidebarProvider defaultOpen={false}>
       <div className="min-h-screen flex w-full flex-col md:flex-row bg-gray-50">
@@ -51,49 +78,29 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Stats Cards */}
+          {/* Blog Post Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">Utilisateurs actifs</CardTitle>
-                <Users className="h-4 w-4 text-gray-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">1,234</div>
-                <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
-                  <TrendingUp className="h-3 w-3" />
-                  +12.5% depuis le mois dernier
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">Documents</CardTitle>
-                <FileText className="h-4 w-4 text-gray-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">842</div>
-                <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
-                  <TrendingUp className="h-3 w-3" />
-                  +5.2% depuis le mois dernier
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-lg transition-shadow md:col-span-2 lg:col-span-1">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">Activité récente</CardTitle>
-                <TrendingUp className="h-4 w-4 text-gray-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">89%</div>
-                <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
-                  <TrendingUp className="h-3 w-3" />
-                  +2.4% depuis le mois dernier
-                </p>
-              </CardContent>
-            </Card>
+            {blogPosts.map((post) => (
+              <Card key={post.id} className="hover:shadow-lg transition-shadow overflow-hidden">
+                <div className="relative h-48 overflow-hidden">
+                  <img 
+                    src={`https://images.unsplash.com/${post.image}?auto=format&fit=crop&w=800&q=80`}
+                    alt={post.title}
+                    className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg font-semibold line-clamp-2">{post.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">{post.excerpt}</p>
+                  <div className="flex justify-between items-center text-xs text-gray-500">
+                    <span>{post.author}</span>
+                    <span>{post.date}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
 
           {/* Recent Activity */}
