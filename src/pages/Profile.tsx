@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ProfileFormFields } from "@/components/profile/ProfileFormFields";
 import { useProfileForm } from "@/components/profile/useProfileForm";
-import { User, ListPlus, Bell } from "lucide-react";
+import { User, ListPlus, Bell, LayoutDashboard } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Profile = () => {
@@ -27,6 +27,14 @@ const Profile = () => {
               <SidebarGroupContent>
                 <SidebarMenuItem className="list-none mb-4">
                   <SidebarMenuButton asChild>
+                    <Link to="/dashboard" className="flex items-center space-x-4 p-4 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300 group">
+                      <LayoutDashboard className="h-6 w-6 text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors duration-300" />
+                      <span className="text-lg font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors duration-300">Tableau de bord</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem className="list-none mb-4">
+                  <SidebarMenuButton asChild>
                     <Link to="/profile" className="flex items-center space-x-4 p-4 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300 group">
                       <User className="h-6 w-6 text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors duration-300" />
                       <span className="text-lg font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors duration-300">Profil</span>
@@ -35,10 +43,10 @@ const Profile = () => {
                 </SidebarMenuItem>
                 <SidebarMenuItem className="list-none">
                   <SidebarMenuButton asChild>
-                    <Link to="/dashboard" className="flex items-center space-x-4 p-4 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300 group">
+                    <a href="/annonces" className="flex items-center space-x-4 p-4 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300 group">
                       <ListPlus className="h-6 w-6 text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors duration-300" />
                       <span className="text-lg font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors duration-300">Annonces</span>
-                    </Link>
+                    </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarGroupContent>
@@ -46,8 +54,8 @@ const Profile = () => {
           </SidebarContent>
         </Sidebar>
         
+        {/* Header */}
         <main className="flex-1 p-4 md:p-8">
-          {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg p-4 rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
             <div className="flex items-center gap-2">
               <SidebarTrigger className="p-2 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300" />
