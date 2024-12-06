@@ -62,14 +62,14 @@ export const AvatarUpload = ({ form }: AvatarUploadProps) => {
   const lastName = form.watch('last_name');
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex items-start gap-4">
       <Avatar className="h-24 w-24">
         <AvatarImage src={avatarUrl || ''} />
         <AvatarFallback>
           {firstName && lastName ? `${firstName[0]}${lastName[0]}` : 'U'}
         </AvatarFallback>
       </Avatar>
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col gap-4">
         <Input
           type="file"
           accept="image/*"
