@@ -32,7 +32,15 @@ export const useProfileForm = () => {
 
         // If we have a profile, use it to reset the form
         if (profiles && profiles.length > 0) {
-          form.reset(profiles[0]);
+          // Merge the profile data with the user's email
+          const profileData = {
+            ...profiles[0],
+            email: user.email // Add the email from the authenticated user
+          };
+          form.reset(profileData);
+        } else {
+          // If no profile exists yet, at least set the email
+          form.reset({ email: user.email });
         }
       } catch (error) {
         console.error("Error in fetchProfile:", error);
