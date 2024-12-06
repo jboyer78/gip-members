@@ -35,12 +35,35 @@ export const StatusCard = () => {
     }
   };
 
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'Validée':
+        return 'Validée';
+      case 'Refusée':
+        return 'Refusée';
+      case 'En attente':
+      default:
+        return 'En cours de traitement';
+    }
+  };
+
   return (
     <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-gray-200/50 dark:border-gray-700/50 shadow-lg">
       <CardContent className="p-6">
         <h2 className="text-xl font-semibold mb-4">Statut de votre inscription</h2>
-        <div className="flex justify-center items-center h-[120px]">
-          {userStatus && getStatusIcon(userStatus.status)}
+        <div className="flex flex-col items-center justify-center h-[120px] space-y-4">
+          {userStatus && (
+            <>
+              {getStatusIcon(userStatus.status)}
+              <span className={`font-medium ${
+                userStatus.status === 'Validée' ? 'text-green-600' :
+                userStatus.status === 'Refusée' ? 'text-red-600' :
+                'text-yellow-600'
+              }`}>
+                {getStatusText(userStatus.status)}
+              </span>
+            </>
+          )}
         </div>
       </CardContent>
     </Card>
