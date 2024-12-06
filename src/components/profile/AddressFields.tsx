@@ -2,7 +2,6 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
 import { ProfileFormValues } from "./types";
-import { CountrySelect } from "./CountrySelect";
 
 interface AddressFieldsProps {
   form: UseFormReturn<ProfileFormValues>;
@@ -59,7 +58,9 @@ export const AddressFields = ({ form }: AddressFieldsProps) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Pays</FormLabel>
-            <CountrySelect value={field.value} onChange={field.onChange} />
+            <FormControl>
+              <Input {...field} />
+            </FormControl>
             <FormMessage />
           </FormItem>
         )}
