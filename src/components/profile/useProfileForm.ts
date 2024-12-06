@@ -67,9 +67,10 @@ export const useProfileForm = () => {
       if (error) throw error;
 
       toast({
+        variant: "success",
         title: "Profil mis à jour",
         description: "Vos informations ont été enregistrées avec succès",
-        duration: 3000, // Le toast disparaîtra après 3 secondes
+        duration: 3000,
       });
     } catch (error) {
       console.error("Error updating profile:", error);
