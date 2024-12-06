@@ -35,6 +35,15 @@ const Dashboard = () => {
       <div className="min-h-screen flex w-full flex-col md:flex-row bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <Sidebar variant="floating" className="w-full md:w-64 shrink-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-r border-gray-200/50 dark:border-gray-700/50 shadow-lg">
           <SidebarContent>
+            {/* Logo GIP */}
+            <div className="flex justify-center p-4">
+              <img 
+                src="/lovable-uploads/e17e4ca6-2674-4aa6-999e-4b76b7ae8f32.png" 
+                alt="Logo GIP" 
+                className="w-32 h-32"
+              />
+            </div>
+            
             <SidebarGroup>
               <SidebarGroupContent>
                 <SidebarMenuItem className="list-none">
