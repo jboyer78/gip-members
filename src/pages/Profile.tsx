@@ -111,7 +111,7 @@ const Profile = () => {
                         readOnly
                         className="w-full bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-700 dark:text-gray-300"
                       />
-                      <div className="flex gap-4 mt-4">
+                      <div className="flex flex-col md:flex-row gap-4 mt-4">
                         <Button 
                           type="button"
                           onClick={handleUpdateEmail}
