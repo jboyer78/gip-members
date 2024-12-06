@@ -15,7 +15,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { countries } from "@/data/countries";
-import { FormControl } from "@/components/ui/form";
 
 interface CountrySelectProps {
   value?: string;
@@ -28,31 +27,29 @@ export function CountrySelect({ value, onChange }: CountrySelectProps) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <FormControl>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="w-full justify-between"
-          >
-            {value
-              ? countries.find((country) => country.value === value)?.label
-              : "Sélectionner un pays..."}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </FormControl>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="w-full justify-between"
+        >
+          {value
+            ? countries.find((country) => country.value === value)?.label
+            : "Sélectionner un pays..."}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0">
         <Command>
           <CommandInput placeholder="Rechercher un pays..." />
           <CommandEmpty>Aucun pays trouvé.</CommandEmpty>
-          <CommandGroup className="max-h-[300px] overflow-y-auto">
+          <CommandGroup>
             {countries.map((country) => (
               <CommandItem
                 key={country.value}
                 value={country.value}
                 onSelect={(currentValue) => {
-                  onChange(currentValue);
+                  onChange(currentValue === value ? "" : currentValue);
                   setOpen(false);
                 }}
               >
