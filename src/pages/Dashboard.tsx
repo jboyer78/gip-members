@@ -1,11 +1,11 @@
-import { SidebarProvider, Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
+import { SidebarProvider, Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenuItem, SidebarMenuButton, SidebarTrigger } from "@/components/ui/sidebar";
 import { User, ListPlus } from "lucide-react";
 
 const Dashboard = () => {
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={false}>
       <div className="min-h-screen flex w-full flex-col md:flex-row">
-        <Sidebar className="w-full md:w-64 shrink-0">
+        <Sidebar variant="floating" className="w-full md:w-64 shrink-0">
           <SidebarContent>
             <SidebarGroup>
               <SidebarGroupContent>
@@ -30,7 +30,10 @@ const Dashboard = () => {
           </SidebarContent>
         </Sidebar>
         <main className="flex-1 p-4 md:p-8">
-          <h1 className="text-xl md:text-2xl font-bold">Tableau de bord</h1>
+          <div className="flex items-center gap-2 mb-4">
+            <SidebarTrigger />
+            <h1 className="text-xl md:text-2xl font-bold">Tableau de bord</h1>
+          </div>
           <p className="mt-2 md:mt-4 text-sm md:text-base text-gray-600">
             Bienvenue sur votre espace personnel
           </p>
