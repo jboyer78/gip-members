@@ -37,7 +37,7 @@ const Dashboard = () => {
           <SidebarContent>
             <SidebarGroup>
               <SidebarGroupContent>
-                <SidebarMenuItem>
+                <SidebarMenuItem className="list-none">
                   <SidebarMenuButton asChild>
                     <a href="/profile" className="flex items-center space-x-3 p-3 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300 group">
                       <User className="h-5 w-5 text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors duration-300" />
@@ -45,7 +45,7 @@ const Dashboard = () => {
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-                <SidebarMenuItem>
+                <SidebarMenuItem className="list-none">
                   <SidebarMenuButton asChild>
                     <a href="/annonces" className="flex items-center space-x-3 p-3 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300 group">
                       <ListPlus className="h-5 w-5 text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors duration-300" />
