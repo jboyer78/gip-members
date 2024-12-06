@@ -13,17 +13,23 @@ export function TopNavigation() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data } = await supabase
-          .from('profiles')
-          .select('avatar_url, first_name, last_name')
-          .eq('id', user.id)
-          .single();
-        
-        if (data) {
-          setProfile(data);
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('avatar_url, first_name, last_name')
+            .eq('id', user.id)
+            .maybeSingle();
+          
+          if (!error && data) {
+            setProfile(data);
+          } else {
+            console.log('No profile found or error:', error);
+          }
         }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
       }
     };
 
