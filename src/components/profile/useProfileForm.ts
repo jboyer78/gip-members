@@ -33,7 +33,9 @@ export const useProfileForm = () => {
         if (profiles && profiles.length > 0) {
           const profileData = {
             ...profiles[0],
-            email: user.email
+            email: user.email,
+            birth_date: profiles[0].birth_date ? new Date(profiles[0].birth_date) : undefined,
+            administration_entry_date: profiles[0].administration_entry_date ? new Date(profiles[0].administration_entry_date) : undefined
           };
           form.reset(profileData);
         } else {
@@ -56,18 +58,23 @@ export const useProfileForm = () => {
         return;
       }
 
+      const formattedValues = {
+        ...values,
+        birth_date: values.birth_date?.toISOString().split('T')[0],
+        administration_entry_date: values.administration_entry_date?.toISOString().split('T')[0],
+        updated_at: new Date().toISOString(),
+      };
+
       const { error } = await supabase
         .from("profiles")
         .upsert({
           id: user.id,
-          ...values,
-          updated_at: new Date().toISOString(),
+          ...formattedValues,
         });
 
       if (error) throw error;
 
       toast({
-        variant: "success",
         title: "Profil mis à jour",
         description: "Vos informations ont été enregistrées avec succès",
         duration: 3000,
