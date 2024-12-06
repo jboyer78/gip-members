@@ -5,22 +5,52 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulation de connexion réussie
-    toast({
-      title: "Connexion réussie",
-      description: "Bienvenue sur votre espace personnel",
-    });
-    navigate("/dashboard");
+    setIsLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Erreur de connexion",
+          description: error.message,
+        });
+        return;
+      }
+
+      if (data.user) {
+        toast({
+          title: "Connexion réussie",
+          description: "Bienvenue sur votre espace personnel",
+        });
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la connexion:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la connexion",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -82,9 +112,19 @@ const Login = () => {
             </div>
           </div>
 
-          <Button type="submit" className="w-full">
-            Se connecter
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "Connexion en cours..." : "Se connecter"}
           </Button>
+
+          <div className="text-center mt-4">
+            <button
+              type="button"
+              onClick={() => navigate("/signup")}
+              className="text-sm text-primary hover:underline"
+            >
+              Pas encore de compte ? S'inscrire
+            </button>
+          </div>
         </form>
       </div>
     </div>
