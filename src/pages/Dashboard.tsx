@@ -4,6 +4,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/shared/AppSidebar";
 import { TopNavigation } from "@/components/shared/TopNavigation";
 import { supabase } from "@/integrations/supabase/client";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -37,36 +38,63 @@ const Dashboard = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <article className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg p-6 rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
-              <h2 className="text-xl font-semibold mb-4">Comment bien démarrer avec React</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                Un guide complet pour comprendre les bases de React et commencer à développer des applications web modernes.
-              </p>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">5 min de lecture</span>
-                <button className="text-primary hover:underline">Lire plus</button>
+            <article className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg overflow-hidden">
+              <AspectRatio ratio={16/9}>
+                <img 
+                  src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b" 
+                  alt="React Development"
+                  className="object-cover w-full h-full"
+                />
+              </AspectRatio>
+              <div className="p-6">
+                <h2 className="text-xl font-semibold mb-4">Comment bien démarrer avec React</h2>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  Un guide complet pour comprendre les bases de React et commencer à développer des applications web modernes.
+                </p>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-500">5 min de lecture</span>
+                  <button className="text-primary hover:underline">Lire plus</button>
+                </div>
               </div>
             </article>
             
-            <article className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg p-6 rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
-              <h2 className="text-xl font-semibold mb-4">Les meilleures pratiques Tailwind CSS</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                Découvrez comment optimiser votre workflow avec Tailwind CSS et créer des interfaces utilisateur élégantes.
-              </p>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">7 min de lecture</span>
-                <button className="text-primary hover:underline">Lire plus</button>
+            <article className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg overflow-hidden">
+              <AspectRatio ratio={16/9}>
+                <img 
+                  src="https://images.unsplash.com/photo-1498050108023-c5249f4df085" 
+                  alt="Tailwind CSS Development"
+                  className="object-cover w-full h-full"
+                />
+              </AspectRatio>
+              <div className="p-6">
+                <h2 className="text-xl font-semibold mb-4">Les meilleures pratiques Tailwind CSS</h2>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  Découvrez comment optimiser votre workflow avec Tailwind CSS et créer des interfaces utilisateur élégantes.
+                </p>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-500">7 min de lecture</span>
+                  <button className="text-primary hover:underline">Lire plus</button>
+                </div>
               </div>
             </article>
             
-            <article className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg p-6 rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
-              <h2 className="text-xl font-semibold mb-4">TypeScript pour les débutants</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                Un aperçu des fonctionnalités essentielles de TypeScript et comment les utiliser dans vos projets.
-              </p>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">6 min de lecture</span>
-                <button className="text-primary hover:underline">Lire plus</button>
+            <article className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg overflow-hidden">
+              <AspectRatio ratio={16/9}>
+                <img 
+                  src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6" 
+                  alt="TypeScript Development"
+                  className="object-cover w-full h-full"
+                />
+              </AspectRatio>
+              <div className="p-6">
+                <h2 className="text-xl font-semibold mb-4">TypeScript pour les débutants</h2>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  Un aperçu des fonctionnalités essentielles de TypeScript et comment les utiliser dans vos projets.
+                </p>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-500">6 min de lecture</span>
+                  <button className="text-primary hover:underline">Lire plus</button>
+                </div>
               </div>
             </article>
           </div>
