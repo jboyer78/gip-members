@@ -1,6 +1,7 @@
 import { SidebarProvider, Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenuItem, SidebarMenuButton, SidebarTrigger } from "@/components/ui/sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User, ListPlus, Bell } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const blogPosts = [
@@ -81,9 +82,12 @@ const Dashboard = () => {
               <button className="p-2 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-full transition-all duration-300">
                 <Bell className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               </button>
-              <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-lg shadow-primary/20">
+              <Link 
+                to="/profile" 
+                className="w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-lg shadow-primary/20 hover:shadow-xl hover:scale-105 transition-all duration-300"
+              >
                 <span className="text-white text-sm font-medium">JD</span>
-              </div>
+              </Link>
             </div>
           </div>
 
