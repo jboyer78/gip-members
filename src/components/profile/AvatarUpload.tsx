@@ -12,7 +12,7 @@ interface AvatarUploadProps {
 }
 
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
 
 export const AvatarUpload = ({ form }: AvatarUploadProps) => {
   const [uploading, setUploading] = useState(false);
@@ -24,7 +24,7 @@ export const AvatarUpload = ({ form }: AvatarUploadProps) => {
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      throw new Error('La taille du fichier ne doit pas dépasser 5MB.');
+      throw new Error('La taille du fichier ne doit pas dépasser 1MB.');
     }
   };
 
@@ -156,7 +156,7 @@ export const AvatarUpload = ({ form }: AvatarUploadProps) => {
           {uploading ? 'Upload en cours...' : 'Changer la photo'}
         </Button>
         <p className="text-sm text-gray-500">
-          Formats acceptés : JPEG, PNG, WEBP. Taille max : 5MB
+          Formats acceptés : JPEG, PNG, WEBP. Taille max : 1MB
         </p>
       </div>
     </div>
