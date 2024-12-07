@@ -54,8 +54,16 @@ export const useProfessionalForm = () => {
         return;
       }
 
+      // Ensure status is an array and contains valid values
+      const validStatus = values.status?.filter(status => 
+        ["Actif", "Retraité(e)", "Sympathisant", "Élève"].includes(status)
+      ) || [];
+
+      console.log("Submitting with status:", validStatus);
+
       const formattedValues = {
         ...values,
+        status: validStatus,
         administration_entry_date: values.administration_entry_date?.toISOString().split('T')[0],
         updated_at: new Date().toISOString(),
       };
@@ -65,7 +73,10 @@ export const useProfessionalForm = () => {
         .update(formattedValues)
         .eq("id", user.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
 
       toast({
         title: "Profil mis à jour",
