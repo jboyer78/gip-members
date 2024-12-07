@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
 import { ProfileFormValues } from "./types";
+import { format } from "date-fns";
 
 const maritalStatusOptions = [
   "Marié(e)",
@@ -31,6 +32,25 @@ interface PersonalDetailsFieldsProps {
 export const PersonalDetailsFields = ({ form }: PersonalDetailsFieldsProps) => {
   return (
     <>
+      <FormField
+        control={form.control}
+        name="birth_date"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Date de naissance</FormLabel>
+            <FormControl>
+              <Input 
+                type="date" 
+                {...field} 
+                value={field.value ? format(new Date(field.value), 'yyyy-MM-dd') : ''} 
+                onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
       <FormField
         control={form.control}
         name="birth_city"
