@@ -79,7 +79,7 @@ const Members = () => {
                     {profiles?.map((profile) => (
                       <TableRow key={profile.id}>
                         <TableCell>{profile.first_name || '-'}</TableCell>
-                        <TableCell className="font-medium">{profile.last_name || '-'}</TableCell>
+                        <TableCell>{profile.last_name || '-'}</TableCell>
                         <TableCell>{profile.email || '-'}</TableCell>
                         <TableCell>{profile.grade || '-'}</TableCell>
                         <TableCell>{profile.assignment_service || '-'}</TableCell>
