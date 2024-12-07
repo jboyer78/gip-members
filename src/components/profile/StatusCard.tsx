@@ -10,15 +10,25 @@ export const StatusCard = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
 
+      // Fetch profile status
       const { data: profile } = await supabase
         .from('profiles')
         .select('status')
         .eq('id', user.id)
         .single();
 
+      // Fetch latest comment
+      const { data: comments } = await supabase
+        .from('status_comments')
+        .select('*')
+        .eq('profile_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
       return {
         email: user.email,
-        status: profile?.status?.[0] || 'En attente'
+        status: profile?.status?.[0] || 'En attente',
+        lastComment: comments?.[0]?.comment || null
       };
     },
   });
@@ -51,7 +61,7 @@ export const StatusCard = () => {
     <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-gray-200/50 dark:border-gray-700/50 shadow-lg">
       <CardContent className="p-6">
         <h2 className="text-xl font-semibold mb-4">Statut de votre inscription</h2>
-        <div className="flex flex-col items-center justify-center h-[120px] space-y-4">
+        <div className="flex flex-col items-center justify-center space-y-4">
           {userStatus && (
             <>
               {getStatusIcon(userStatus.status)}
@@ -62,6 +72,11 @@ export const StatusCard = () => {
               }`}>
                 {getStatusText(userStatus.status)}
               </span>
+              {userStatus.lastComment && (
+                <p className="text-sm text-gray-600 dark:text-gray-400 text-center mt-2 max-w-md">
+                  {userStatus.lastComment}
+                </p>
+              )}
             </>
           )}
         </div>
