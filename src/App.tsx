@@ -8,6 +8,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Members from "./pages/Members";
+import Publications from "./pages/Publications";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/members" element={<Members />} />
+          <Route path="/publications" element={<Publications />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

@@ -1,4 +1,4 @@
-import { Newspaper, User, ListPlus, Users } from "lucide-react";
+import { Newspaper, User, ListPlus, Users, BookOpen } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -42,12 +42,20 @@ export function AppSidebar() {
               className="mb-4"
             />
             {!isLoading && isAdmin && (
-              <SidebarMenuItem
-                to="/members"
-                icon={Users}
-                label="Membres"
-                className="mb-4"
-              />
+              <>
+                <SidebarMenuItem
+                  to="/members"
+                  icon={Users}
+                  label="Membres"
+                  className="mb-4"
+                />
+                <SidebarMenuItem
+                  to="/publications"
+                  icon={BookOpen}
+                  label="Publications"
+                  className="mb-4"
+                />
+              </>
             )}
             <SidebarMenuItem
               to="/annonces"

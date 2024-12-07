@@ -129,6 +129,39 @@ export type Database = {
         }
         Relationships: []
       }
+      publications: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string | null
+          id: string
+          image_url: string | null
+          reading_time: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_url?: string | null
+          reading_time?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_url?: string | null
+          reading_time?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       status_comments: {
         Row: {
           comment: string | null
