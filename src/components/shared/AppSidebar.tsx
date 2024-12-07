@@ -58,10 +58,9 @@ export function AppSidebar() {
               </>
             )}
             <SidebarMenuItem
-              to="/annonces"
+              to="/accommodations"
               icon={ListPlus}
-              label="Annonces"
-              isExternal
+              label="Hébergements"
             />
           </SidebarGroupContent>
         </SidebarGroup>
