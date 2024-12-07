@@ -5,6 +5,7 @@ import { useSignUp } from "@/hooks/useSignUp";
 import EmailField from "./EmailField";
 import PasswordField from "./PasswordField";
 import { LoginCaptcha } from "./login/LoginCaptcha";
+import { toast } from "@/hooks/use-toast";
 
 interface SignUpFormProps {
   onSwitchToLogin?: () => void;
@@ -21,20 +22,33 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const ipCheck = await checkIpAddress();
-    if (!ipCheck) return;
+    try {
+      const ipCheck = await checkIpAddress();
+      if (!ipCheck) return;
 
-    const success = await handleSignUp(
-      signUpEmail,
-      signUpPassword,
-      confirmPassword,
-      captchaToken
-    );
+      const success = await handleSignUp(
+        signUpEmail,
+        signUpPassword,
+        confirmPassword,
+        captchaToken
+      );
 
-    if (success) {
-      setSignUpEmail("");
-      setSignUpPassword("");
-      setConfirmPassword("");
+      if (success) {
+        setSignUpEmail("");
+        setSignUpPassword("");
+        setConfirmPassword("");
+        toast({
+          title: "Inscription réussie",
+          description: "Veuillez vérifier votre email pour confirmer votre compte",
+        });
+      }
+    } catch (error) {
+      console.error("Error during signup:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur d'inscription",
+        description: "Une erreur est survenue lors de l'inscription. Veuillez réessayer.",
+      });
     }
   };
 
