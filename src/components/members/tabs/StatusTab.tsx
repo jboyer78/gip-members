@@ -28,7 +28,10 @@ export const StatusTab = ({ user }: StatusTabProps) => {
 
     setIsSubmitting(true);
     try {
-      // Update profile status - now properly wrapped in an array
+      // Get current user for the created_by field
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      
+      // Update profile status - properly wrapped in an array
       const { error: profileError } = await supabase
         .from("profiles")
         .update({ status: [newStatus] })
@@ -44,6 +47,7 @@ export const StatusTab = ({ user }: StatusTabProps) => {
             profile_id: user.id,
             status: newStatus,
             comment: comment.trim(),
+            created_by: currentUser?.id
           });
 
         if (commentError) throw commentError;
