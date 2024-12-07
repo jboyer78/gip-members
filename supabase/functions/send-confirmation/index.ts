@@ -21,7 +21,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Redirect URL:", redirectUrl);
 
     // Vérifier si l'utilisateur existe déjà
-    const checkUserResponse = await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {
+    const checkUserResponse = await fetch(`${SUPABASE_URL}/auth/v1/admin/users?email=${encodeURIComponent(email)}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -30,7 +30,9 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     const users = await checkUserResponse.json();
-    const existingUser = users.find((user: any) => user.email === email);
+    console.log("Users response:", users);
+    
+    const existingUser = users && users.length > 0;
 
     if (existingUser) {
       console.log("User already exists, sending password reset email instead");
