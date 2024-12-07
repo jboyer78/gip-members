@@ -39,7 +39,7 @@ const Dashboard = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <article className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg overflow-hidden">
-              <AspectRatio ratio={16/9}>
+              <AspectRatio ratio={16/6}>
                 <img 
                   src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b" 
                   alt="React Development"
@@ -59,7 +59,7 @@ const Dashboard = () => {
             </article>
             
             <article className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg overflow-hidden">
-              <AspectRatio ratio={16/9}>
+              <AspectRatio ratio={16/6}>
                 <img 
                   src="https://images.unsplash.com/photo-1498050108023-c5249f4df085" 
                   alt="Tailwind CSS Development"
@@ -79,7 +79,7 @@ const Dashboard = () => {
             </article>
             
             <article className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg overflow-hidden">
-              <AspectRatio ratio={16/9}>
+              <AspectRatio ratio={16/6}>
                 <img 
                   src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6" 
                   alt="TypeScript Development"
