@@ -49,8 +49,8 @@ export const DeleteButton = ({ profileId }: DeleteButtonProps) => {
       description: "Le profil a été supprimé avec succès.",
     });
     
-    // Refresh the members list
-    queryClient.invalidateQueries({ queryKey: ['members'] });
+    // Refresh the members list with the correct query key
+    await queryClient.invalidateQueries({ queryKey: ['profiles'] });
   };
 
   return (
