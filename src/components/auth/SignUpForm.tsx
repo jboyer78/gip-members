@@ -60,10 +60,13 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
     }
 
     try {
+      console.log("Attempting signup with email:", signUpEmail);
       const { data, error } = await supabase.auth.signUp({
         email: signUpEmail,
         password: signUpPassword,
       });
+
+      console.log("Signup response:", { data, error });
 
       if (error) {
         console.log("Signup error:", error);
@@ -89,6 +92,7 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
       }
 
       if (data.user) {
+        console.log("User created successfully:", data.user);
         toast({
           title: "Inscription réussie",
           description: "Un email de confirmation vous a été envoyé",
@@ -96,6 +100,13 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
         setSignUpEmail("");
         setSignUpPassword("");
         setConfirmPassword("");
+      } else {
+        console.log("No user data returned");
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Une erreur est survenue lors de l'inscription",
+        });
       }
     } catch (error) {
       console.error("Erreur lors de l'inscription:", error);
