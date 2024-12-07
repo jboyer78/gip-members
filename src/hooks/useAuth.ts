@@ -17,15 +17,48 @@ export const useAuth = () => {
       });
 
       if (error) {
+        let errorMessage = "L'email ou le mot de passe est incorrect";
+        
+        // Handle specific error cases
+        if (error.message.includes("Email not confirmed")) {
+          errorMessage = "Veuillez confirmer votre email avant de vous connecter";
+        } else if (error.message.includes("Invalid login credentials")) {
+          errorMessage = "Email ou mot de passe invalide";
+        }
+
+        console.log("Login error details:", error); // For debugging
+
         toast({
           variant: "destructive",
           title: "Erreur d'authentification",
-          description: "L'email ou le mot de passe est incorrect",
+          description: errorMessage,
         });
         return false;
       }
 
       if (data.user) {
+        // Check if user is banned
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('banned_at')
+          .eq('id', data.user.id)
+          .single();
+
+        if (profileError) {
+          console.error("Error checking ban status:", profileError);
+        }
+
+        if (profileData?.banned_at) {
+          toast({
+            variant: "destructive",
+            title: "Accès refusé",
+            description: "Votre compte a été suspendu. Veuillez contacter l'administrateur.",
+          });
+          // Sign out the banned user
+          await supabase.auth.signOut();
+          return false;
+        }
+
         toast({
           title: "Connexion réussie",
           description: "Bienvenue sur votre espace personnel",
