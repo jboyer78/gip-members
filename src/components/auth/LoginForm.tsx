@@ -1,57 +1,23 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { EmailInput } from "./login/EmailInput";
 import { PasswordInput } from "./login/PasswordInput";
 import { RememberMeCheckbox } from "./login/RememberMeCheckbox";
 import { ForgotPasswordLink } from "./login/ForgotPasswordLink";
 import { LoginCaptcha } from "./login/LoginCaptcha";
 import { SubmitButton } from "./login/SubmitButton";
+import { useIpCheck } from "@/hooks/useIpCheck";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const navigate = useNavigate();
+  
+  const { checkIpAddress, isCheckingIp } = useIpCheck();
+  const { signIn, isLoading } = useAuth();
   const { toast } = useToast();
-
-  const checkIpAddress = async () => {
-    try {
-      const response = await fetch("https://api.ipify.org?format=json");
-      const { ip } = await response.json();
-      
-      const checkResponse = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/check-ip`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({ ip_address: ip }),
-        }
-      );
-
-      const result: { suspicious: boolean; message?: string } = await checkResponse.json();
-      
-      if (result.suspicious) {
-        toast({
-          variant: "destructive",
-          title: "Accès refusé",
-          description: result.message || "Activité suspecte détectée",
-        });
-        return false;
-      }
-      
-      return true;
-    } catch (error) {
-      console.error("Erreur lors de la vérification de l'IP:", error);
-      return true; // En cas d'erreur, on permet la connexion pour ne pas bloquer les utilisateurs
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,47 +31,10 @@ const LoginForm = () => {
       return;
     }
 
-    setIsLoading(true);
+    const ipCheck = await checkIpAddress();
+    if (!ipCheck) return;
 
-    try {
-      // Vérifier l'IP avant de tenter la connexion
-      const ipCheck = await checkIpAddress();
-      if (!ipCheck) {
-        setIsLoading(false);
-        return;
-      }
-
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        toast({
-          variant: "destructive",
-          title: "Erreur d'authentification",
-          description: "L'email ou le mot de passe est incorrect",
-        });
-        return;
-      }
-
-      if (data.user) {
-        toast({
-          title: "Connexion réussie",
-          description: "Bienvenue sur votre espace personnel",
-        });
-        navigate("/dashboard");
-      }
-    } catch (error) {
-      console.error("Erreur lors de la connexion:", error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Une erreur est survenue lors de la connexion",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    await signIn(email, password);
   };
 
   return (
@@ -125,7 +54,7 @@ const LoginForm = () => {
         <LoginCaptcha onCaptchaChange={setCaptchaToken} />
       </div>
 
-      <SubmitButton isLoading={isLoading} />
+      <SubmitButton isLoading={isLoading || isCheckingIp} />
     </form>
   );
 };
