@@ -17,6 +17,31 @@ export const useAuth = () => {
       });
 
       if (error) {
+        // En cas d'erreur, on vérifie et incrémente le compteur IP
+        const { data: clientData } = await supabase.auth.getSession();
+        const clientIp = clientData?.session?.user?.user_metadata?.client_ip;
+
+        if (clientIp) {
+          const response = await fetch('https://fzxkiwrungrwptlueoqt.supabase.co/functions/v1/check-ip', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+            },
+            body: JSON.stringify({ ip_address: clientIp }),
+          });
+
+          const ipCheck = await response.json();
+          if (ipCheck.suspicious) {
+            toast({
+              variant: "destructive",
+              title: "Accès bloqué",
+              description: ipCheck.message || "Trop de tentatives. Veuillez réessayer plus tard.",
+            });
+            return false;
+          }
+        }
+
         let errorMessage = "L'email ou le mot de passe est incorrect";
         
         // Handle specific error cases
@@ -26,7 +51,7 @@ export const useAuth = () => {
           errorMessage = "Email ou mot de passe invalide";
         }
 
-        console.log("Login error details:", error); // For debugging
+        console.log("Login error details:", error);
 
         toast({
           variant: "destructive",

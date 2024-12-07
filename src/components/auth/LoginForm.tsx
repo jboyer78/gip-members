@@ -5,7 +5,6 @@ import { RememberMeCheckbox } from "./login/RememberMeCheckbox";
 import { ForgotPasswordLink } from "./login/ForgotPasswordLink";
 import { LoginCaptcha } from "./login/LoginCaptcha";
 import { SubmitButton } from "./login/SubmitButton";
-import { useIpCheck } from "@/hooks/useIpCheck";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 
@@ -15,7 +14,6 @@ const LoginForm = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   
-  const { checkIpAddress, isCheckingIp } = useIpCheck();
   const { signIn, isLoading } = useAuth();
   const { toast } = useToast();
 
@@ -30,9 +28,6 @@ const LoginForm = () => {
       });
       return;
     }
-
-    const ipCheck = await checkIpAddress();
-    if (!ipCheck) return;
 
     await signIn(email, password);
   };
@@ -54,7 +49,7 @@ const LoginForm = () => {
         <LoginCaptcha onCaptchaChange={setCaptchaToken} />
       </div>
 
-      <SubmitButton isLoading={isLoading || isCheckingIp} />
+      <SubmitButton isLoading={isLoading} />
     </form>
   );
 };
