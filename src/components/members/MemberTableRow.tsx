@@ -19,6 +19,9 @@ export const MemberTableRow = ({ profile, onRowClick }: MemberTableRowProps) => 
     return format(new Date(date), "dd/MM/yyyy HH:mm:ss", { locale: fr });
   };
 
+  const currentStatus = profile.status?.[0] || "En attente";
+  const professionalStatus = profile.professional_status?.[0] || "-";
+
   return (
     <TableRow 
       className="cursor-pointer hover:bg-muted/50 transition-colors"
@@ -47,7 +50,7 @@ export const MemberTableRow = ({ profile, onRowClick }: MemberTableRowProps) => 
         )}
       </TableCell>
       <TableCell>{calculateAge(profile.birth_date)}</TableCell>
-      <TableCell>{profile.grade || '-'}</TableCell>
+      <TableCell>{professionalStatus}</TableCell>
       <TableCell>{profile.assignment_service || '-'}</TableCell>
       <TableCell>{profile.assignment_direction || '-'}</TableCell>
       <TableCell className="w-32">

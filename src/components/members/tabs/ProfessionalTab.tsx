@@ -2,8 +2,6 @@ import { Profile } from "@/integrations/supabase/types/profile";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
-const validProfessionalStatuses = ["Actif", "Retraité(e)", "Sympathisant", "Élève"];
-
 interface ProfessionalTabProps {
   user: Profile;
 }
@@ -14,14 +12,12 @@ export const ProfessionalTab = ({ user }: ProfessionalTabProps) => {
     return format(new Date(date), "dd MMMM yyyy", { locale: fr });
   };
 
-  const professionalStatuses = user.status?.filter(status => 
-    validProfessionalStatuses.includes(status)
-  ) || [];
+  const professionalStatus = user.professional_status?.[0] || "-";
 
   return (
     <div className="grid grid-cols-2 gap-2">
       <p className="text-muted-foreground">Situation professionnelle</p>
-      <p>{professionalStatuses.join(", ") || "-"}</p>
+      <p>{professionalStatus}</p>
       <p className="text-muted-foreground">Administration</p>
       <p>{user.administration || "-"}</p>
       <p className="text-muted-foreground">Date d'entrée</p>

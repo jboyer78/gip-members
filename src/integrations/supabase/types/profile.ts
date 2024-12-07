@@ -19,6 +19,7 @@ export type Profile = {
   marital_status: string | null;
   children_count: number | null;
   status: string[] | null;
+  professional_status: string[] | null;
   administration: string | null;
   administration_entry_date: string | null;
   training_site: string | null;
