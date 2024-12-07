@@ -10,6 +10,7 @@ import { PersonalTab } from "./tabs/PersonalTab";
 import { ContactTab } from "./tabs/ContactTab";
 import { ProfessionalTab } from "./tabs/ProfessionalTab";
 import { StatusTab } from "./tabs/StatusTab";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface UserDetailsModalProps {
   user: Profile | null;
@@ -23,7 +24,15 @@ export const UserDetailsModal = ({ user, open, onOpenChange }: UserDetailsModalP
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
+        <DialogHeader className="flex flex-row items-center gap-4">
+          <Avatar className="h-12 w-12">
+            <AvatarImage src={user.avatar_url || ''} />
+            <AvatarFallback>
+              {user.first_name && user.last_name 
+                ? `${user.first_name[0]}${user.last_name[0]}`
+                : 'U'}
+            </AvatarFallback>
+          </Avatar>
           <DialogTitle className="text-2xl">
             {user.first_name} {user.last_name}
           </DialogTitle>
