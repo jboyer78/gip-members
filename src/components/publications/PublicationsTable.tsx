@@ -91,7 +91,7 @@ export const PublicationsTable = () => {
                   <p className="truncate">{publication.content}</p>
                 </TableCell>
                 <TableCell>
-                  {format(new Date(publication.created_at), "dd MMMM yyyy", {
+                  {format(new Date(publication.created_at), "dd MMMM yyyy HH:mm:ss", {
                     locale: fr,
                   })}
                 </TableCell>
