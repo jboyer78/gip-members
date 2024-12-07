@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -52,7 +52,7 @@ export const BankingInfoCard = () => {
   };
 
   // Fetch existing banking info
-  useState(() => {
+  useEffect(() => {
     const fetchBankingInfo = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
@@ -62,9 +62,13 @@ export const BankingInfoCard = () => {
           .from("banking_info")
           .select("iban")
           .eq("profile_id", user.id)
-          .single();
+          .maybeSingle();
 
-        if (error) throw error;
+        if (error) {
+          console.error("Error fetching banking info:", error);
+          return;
+        }
+        
         if (data) {
           form.reset({ iban: data.iban });
         }
@@ -74,7 +78,7 @@ export const BankingInfoCard = () => {
     };
 
     fetchBankingInfo();
-  }, []);
+  }, [form]);
 
   return (
     <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-gray-200/50 dark:border-gray-700/50 shadow-lg">
