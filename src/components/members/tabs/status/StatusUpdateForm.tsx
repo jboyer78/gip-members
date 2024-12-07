@@ -27,6 +27,7 @@ export const StatusUpdateForm = ({ user }: StatusUpdateFormProps) => {
       return;
     }
 
+    console.log("Updating status with:", { newStatus, comment });
     setIsSubmitting(true);
     try {
       await updateStatus({ newStatus, comment });

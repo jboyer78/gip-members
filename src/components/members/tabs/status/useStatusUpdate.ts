@@ -29,17 +29,21 @@ export const useStatusUpdate = (user: Profile) => {
 
       // Ensure status is a single-element array to comply with the check constraint
       const statusArray = [newStatus];
-      console.log("Updating profile with status:", statusArray);
+      console.log("Updating profile with status array:", statusArray);
 
       const { data: updateData, error: profileError } = await supabase
         .from("profiles")
-        .update({ status: statusArray })
+        .update({ 
+          status: statusArray,
+          updated_at: new Date().toISOString()
+        })
         .eq("id", user.id)
         .select();
 
       console.log("Profile update response:", { data: updateData, error: profileError });
 
       if (profileError) {
+        console.error("Profile update error:", profileError);
         throw profileError;
       }
 
@@ -68,6 +72,7 @@ export const useStatusUpdate = (user: Profile) => {
         description: "Le statut a été mis à jour avec succès",
       });
       queryClient.invalidateQueries({ queryKey: ['statusComments', user.id] });
+      queryClient.invalidateQueries({ queryKey: ['profiles'] });
     },
     onError: (error) => {
       console.error("Error updating status:", error);
