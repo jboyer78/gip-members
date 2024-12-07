@@ -10,6 +10,9 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useImageResize } from "@/hooks/use-image-resize";
 
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+
 interface PublicationFormValues {
   title: string;
   content: string;
@@ -34,6 +37,16 @@ export const PublicationFormDialog = ({ open, onOpenChange }: PublicationFormDia
     },
   });
 
+  const validateFile = (file: File) => {
+    if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+      throw new Error('Le type de fichier doit être JPEG, PNG ou WEBP.');
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      throw new Error('La taille du fichier ne doit pas dépasser 1MB.');
+    }
+  };
+
   const handleSubmit = async (values: PublicationFormValues) => {
     try {
       setIsSubmitting(true);
@@ -41,6 +54,10 @@ export const PublicationFormDialog = ({ open, onOpenChange }: PublicationFormDia
       let imageUrl = null;
       if (values.image?.[0]) {
         const file = values.image[0];
+        
+        // Validate the file before processing
+        validateFile(file);
+        
         const resizedImage = await resizeImage(file, {
           maxSize: 800,
           quality: 0.9
@@ -88,7 +105,7 @@ export const PublicationFormDialog = ({ open, onOpenChange }: PublicationFormDia
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue lors de la création de la publication",
+        description: error instanceof Error ? error.message : "Une erreur est survenue lors de la création de la publication",
       });
     } finally {
       setIsSubmitting(false);
@@ -113,11 +130,14 @@ export const PublicationFormDialog = ({ open, onOpenChange }: PublicationFormDia
                   <FormControl>
                     <Input
                       type="file"
-                      accept="image/*"
+                      accept={ACCEPTED_IMAGE_TYPES.join(',')}
                       onChange={(e) => onChange(e.target.files)}
                       {...field}
                     />
                   </FormControl>
+                  <p className="text-sm text-gray-500">
+                    Formats acceptés : JPEG, PNG, WEBP. Taille max : 1MB
+                  </p>
                   <FormMessage />
                 </FormItem>
               )}
