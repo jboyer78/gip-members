@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/tooltip";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface AdminToggleProps {
   profileId: string;
@@ -18,18 +19,29 @@ export const AdminToggle = ({ profileId, initialStatus }: AdminToggleProps) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [adminStatus, setAdminStatus] = useState(initialStatus);
+  const queryClient = useQueryClient();
 
   const toggleAdminStatus = async () => {
+    console.log("Toggling admin status for profile:", profileId);
+    console.log("Current status:", adminStatus);
+    console.log("New status will be:", !adminStatus);
+    
     setIsLoading(true);
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .update({ is_admin: !adminStatus })
-        .eq('id', profileId);
+        .eq('id', profileId)
+        .select();
+
+      console.log("Update response:", { data, error });
 
       if (error) throw error;
 
       setAdminStatus(!adminStatus);
+      // Invalider le cache pour forcer un rechargement des données
+      queryClient.invalidateQueries({ queryKey: ['profiles'] });
+      
       toast({
         title: "Statut administrateur mis à jour",
         description: `L'utilisateur est maintenant ${!adminStatus ? 'administrateur' : 'utilisateur standard'}`,
