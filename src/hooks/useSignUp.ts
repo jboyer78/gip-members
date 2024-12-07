@@ -33,7 +33,7 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       });
 
       if (error) {
-        handleSignUpError(error);
+        await handleSignUpError(error);
         return false;
       }
 
@@ -48,7 +48,7 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
 
       return true;
     } catch (error) {
-      handleSignUpError(error as SignUpError);
+      await handleSignUpError(error as SignUpError);
       return false;
     } finally {
       setIsSignUpLoading(false);
