@@ -12,6 +12,18 @@ const maritalStatusOptions = [
   "Autres"
 ];
 
+const bloodTypeOptions = [
+  "A+",
+  "A-",
+  "B+",
+  "B-",
+  "AB+",
+  "AB-",
+  "O+",
+  "O-",
+  "Inconnu"
+];
+
 interface PersonalDetailsFieldsProps {
   form: UseFormReturn<ProfileFormValues>;
 }
@@ -53,9 +65,20 @@ export const PersonalDetailsFields = ({ form }: PersonalDetailsFieldsProps) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Groupe sanguin</FormLabel>
-            <FormControl>
-              <Input {...field} />
-            </FormControl>
+            <Select onValueChange={field.onChange} value={field.value || ""}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Sélectionnez votre groupe sanguin" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {bloodTypeOptions.map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}
