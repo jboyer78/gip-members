@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Edit, Trash2, CheckSquare, XSquare } from "lucide-react";
@@ -20,6 +20,15 @@ import {
 } from "@/components/ui/tooltip";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { EditPublicationDialog } from "./EditPublicationDialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 
 interface Publication {
   id: string;
@@ -34,6 +43,10 @@ interface Publication {
 export const PublicationsTable = () => {
   const [selectedPublication, setSelectedPublication] = useState<Publication | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [publicationToDelete, setPublicationToDelete] = useState<Publication | null>(null);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const { data: publications, isLoading } = useQuery({
     queryKey: ["publications"],
@@ -51,6 +64,40 @@ export const PublicationsTable = () => {
   const handleEdit = (publication: Publication) => {
     setSelectedPublication(publication);
     setIsEditDialogOpen(true);
+  };
+
+  const handleDeleteClick = (publication: Publication) => {
+    setPublicationToDelete(publication);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!publicationToDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from("publications")
+        .delete()
+        .eq("id", publicationToDelete.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Publication supprimée",
+        description: "La publication a été supprimée avec succès",
+      });
+
+      await queryClient.invalidateQueries({ queryKey: ["publications"] });
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la suppression",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleteDialogOpen(false);
+      setPublicationToDelete(null);
+    }
   };
 
   if (isLoading) {
@@ -132,6 +179,7 @@ export const PublicationsTable = () => {
                         variant="ghost"
                         size="icon"
                         className="hover:text-destructive"
+                        onClick={() => handleDeleteClick(publication)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -152,6 +200,31 @@ export const PublicationsTable = () => {
         open={isEditDialogOpen}
         onOpenChange={setIsEditDialogOpen}
       />
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirmer la suppression</DialogTitle>
+            <DialogDescription>
+              Êtes-vous sûr de vouloir supprimer cette publication ? Cette action est irréversible.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+            >
+              Annuler
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleConfirmDelete}
+            >
+              Supprimer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
