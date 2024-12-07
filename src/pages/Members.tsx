@@ -76,6 +76,29 @@ const Members = () => {
     return `${percentage}%`;
   };
 
+  const calculateProfessionalCompletionPercentage = (profile: any) => {
+    const professionalFields = [
+      'status',
+      'administration',
+      'administration_entry_date',
+      'training_site',
+      'grade',
+      'assignment_direction',
+      'assignment_service',
+      'professional_document_url'
+    ];
+
+    const filledFields = professionalFields.filter(field => {
+      if (field === 'status') {
+        return profile[field] && profile[field].length > 0;
+      }
+      return profile[field] !== null && profile[field] !== '';
+    });
+
+    const percentage = Math.round((filledFields.length / professionalFields.length) * 100);
+    return `${percentage}%`;
+  };
+
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full flex-col md:flex-row bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -110,6 +133,7 @@ const Members = () => {
                       <TableHead>Service</TableHead>
                       <TableHead>Direction</TableHead>
                       <TableHead>Informations personnelles</TableHead>
+                      <TableHead>Informations professionnelles</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -133,6 +157,7 @@ const Members = () => {
                         <TableCell>{profile.assignment_service || '-'}</TableCell>
                         <TableCell>{profile.assignment_direction || '-'}</TableCell>
                         <TableCell>{calculateCompletionPercentage(profile)}</TableCell>
+                        <TableCell>{calculateProfessionalCompletionPercentage(profile)}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
