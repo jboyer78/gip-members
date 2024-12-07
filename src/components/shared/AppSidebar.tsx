@@ -11,9 +11,10 @@ import { LogoutButton } from "./sidebar/LogoutButton";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 export function AppSidebar() {
-  const { isAdmin, isLoading } = useIsAdmin();
+  const { isAdmin, isVerified, isLoading } = useIsAdmin();
   
   console.log("AppSidebar - isAdmin:", isAdmin);
+  console.log("AppSidebar - isVerified:", isVerified);
   console.log("AppSidebar - isLoading:", isLoading);
 
   return (
@@ -51,17 +52,21 @@ export function AppSidebar() {
                 />
               </>
             )}
-            <SidebarMenuItem
-              to="/dashboard"
-              icon={Newspaper}
-              label="Actualités"
-              className="mb-4"
-            />
-            <SidebarMenuItem
-              to="/accommodations"
-              icon={ListPlus}
-              label="Hébergements"
-            />
+            {!isLoading && (isVerified || isAdmin) && (
+              <>
+                <SidebarMenuItem
+                  to="/dashboard"
+                  icon={Newspaper}
+                  label="Actualités"
+                  className="mb-4"
+                />
+                <SidebarMenuItem
+                  to="/accommodations"
+                  icon={ListPlus}
+                  label="Hébergements"
+                />
+              </>
+            )}
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
