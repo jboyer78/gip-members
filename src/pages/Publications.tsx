@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/shared/AppSidebar";
@@ -7,6 +7,7 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { PublicationsTable } from "@/components/publications/PublicationsTable";
+import { PublicationFormDialog } from "@/components/publications/PublicationFormDialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
@@ -14,6 +15,7 @@ const Publications = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { isAdmin, isLoading: isLoadingAdmin } = useIsAdmin();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -52,7 +54,10 @@ const Publications = () => {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <Button className="flex items-center gap-2">
+              <Button 
+                className="flex items-center gap-2"
+                onClick={() => setIsDialogOpen(true)}
+              >
                 <Plus className="h-4 w-4" />
                 Ajouter
               </Button>
@@ -65,6 +70,11 @@ const Publications = () => {
           </div>
         </main>
       </div>
+
+      <PublicationFormDialog 
+        open={isDialogOpen} 
+        onOpenChange={setIsDialogOpen} 
+      />
     </SidebarProvider>
   );
 };
