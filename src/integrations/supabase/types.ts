@@ -10,91 +10,9 @@ export type Database = {
   public: {
     Tables: {
       profiles: {
-        Row: {
-          administration: string | null
-          administration_entry_date: string | null
-          assignment_direction: string | null
-          assignment_service: string | null
-          avatar_url: string | null
-          birth_city: string | null
-          birth_date: string | null
-          birth_department: string | null
-          blood_type: string | null
-          children_count: number | null
-          city: string | null
-          country: string | null
-          email: string | null
-          first_name: string | null
-          grade: string | null
-          id: string
-          last_name: string | null
-          marital_status: string | null
-          phone_home: string | null
-          phone_mobile: string | null
-          postal_code: string | null
-          professional_document_url: string | null
-          status: string[] | null
-          street: string | null
-          training_site: string | null
-          updated_at: string
-        }
-        Insert: {
-          administration?: string | null
-          administration_entry_date?: string | null
-          assignment_direction?: string | null
-          assignment_service?: string | null
-          avatar_url?: string | null
-          birth_city?: string | null
-          birth_date?: string | null
-          birth_department?: string | null
-          blood_type?: string | null
-          children_count?: number | null
-          city?: string | null
-          country?: string | null
-          email?: string | null
-          first_name?: string | null
-          grade?: string | null
-          id: string
-          last_name?: string | null
-          marital_status?: string | null
-          phone_home?: string | null
-          phone_mobile?: string | null
-          postal_code?: string | null
-          professional_document_url?: string | null
-          status?: string[] | null
-          street?: string | null
-          training_site?: string | null
-          updated_at?: string
-        }
-        Update: {
-          administration?: string | null
-          administration_entry_date?: string | null
-          assignment_direction?: string | null
-          assignment_service?: string | null
-          avatar_url?: string | null
-          birth_city?: string | null
-          birth_date?: string | null
-          birth_department?: string | null
-          blood_type?: string | null
-          children_count?: number | null
-          city?: string | null
-          country?: string | null
-          email?: string | null
-          first_name?: string | null
-          grade?: string | null
-          id?: string
-          last_name?: string | null
-          marital_status?: string | null
-          phone_home?: string | null
-          phone_mobile?: string | null
-          postal_code?: string | null
-          professional_document_url?: string | null
-          status?: string[] | null
-          street?: string | null
-          training_site?: string | null
-          updated_at?: string
-        }
-        Relationships: []
+        Row: Profile
+        Insert: ProfileInsert
+        Update: ProfileUpdate
       }
     }
     Views: {
@@ -110,6 +28,93 @@ export type Database = {
       [_ in never]: never
     }
   }
+}
+
+export type Profile = {
+  id: string
+  first_name: string | null
+  last_name: string | null
+  street: string | null
+  postal_code: string | null
+  city: string | null
+  country: string | null
+  phone_home: string | null
+  phone_mobile: string | null
+  email: string | null
+  updated_at: string
+  avatar_url: string | null
+  birth_date: string | null
+  birth_city: string | null
+  birth_department: string | null
+  blood_type: string | null
+  marital_status: string | null
+  children_count: number | null
+  status: string[] | null
+  administration: string | null
+  administration_entry_date: string | null
+  training_site: string | null
+  grade: string | null
+  assignment_direction: string | null
+  assignment_service: string | null
+  professional_document_url: string | null
+}
+
+export type ProfileInsert = {
+  id: string
+  first_name?: string | null
+  last_name?: string | null
+  street?: string | null
+  postal_code?: string | null
+  city?: string | null
+  country?: string | null
+  phone_home?: string | null
+  phone_mobile?: string | null
+  email?: string | null
+  updated_at?: string
+  avatar_url?: string | null
+  birth_date?: string | null
+  birth_city?: string | null
+  birth_department?: string | null
+  blood_type?: string | null
+  marital_status?: string | null
+  children_count?: number | null
+  status?: string[] | null
+  administration?: string | null
+  administration_entry_date?: string | null
+  training_site?: string | null
+  grade?: string | null
+  assignment_direction?: string | null
+  assignment_service?: string | null
+  professional_document_url?: string | null
+}
+
+export type ProfileUpdate = {
+  id?: string
+  first_name?: string | null
+  last_name?: string | null
+  street?: string | null
+  postal_code?: string | null
+  city?: string | null
+  country?: string | null
+  phone_home?: string | null
+  phone_mobile?: string | null
+  email?: string | null
+  updated_at?: string
+  avatar_url?: string | null
+  birth_date?: string | null
+  birth_city?: string | null
+  birth_department?: string | null
+  blood_type?: string | null
+  marital_status?: string | null
+  children_count?: number | null
+  status?: string[] | null
+  administration?: string | null
+  administration_entry_date?: string | null
+  training_site?: string | null
+  grade?: string | null
+  assignment_direction?: string | null
+  assignment_service?: string | null
+  professional_document_url?: string | null
 }
 
 type PublicSchema = Database[Extract<keyof Database, "public">]
