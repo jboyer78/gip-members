@@ -1,11 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-
-const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -23,6 +20,29 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending confirmation email to:", email);
     console.log("Redirect URL:", redirectUrl);
 
+    // Create a signup token using Supabase's auth API
+    const tokenResponse = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+      },
+      body: JSON.stringify({
+        email,
+        password: crypto.randomUUID(), // temporary password
+        data: { email_confirmed: false },
+      }),
+    });
+
+    if (!tokenResponse.ok) {
+      const error = await tokenResponse.text();
+      console.error("Error generating signup token:", error);
+      throw new Error("Failed to generate signup token");
+    }
+
+    const tokenData = await tokenResponse.json();
+    const confirmationToken = tokenData.confirmation_token;
+
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -36,7 +56,7 @@ const handler = async (req: Request): Promise<Response> => {
         html: `
           <h1>Bienvenue sur GIP France</h1>
           <p>Merci de confirmer votre inscription en cliquant sur le lien ci-dessous :</p>
-          <a href="${SUPABASE_URL}/auth/v1/verify?token={TOKEN}&type=signup&redirect_to=${redirectUrl}/login">
+          <a href="${SUPABASE_URL}/auth/v1/verify?token=${confirmationToken}&type=signup&redirect_to=${redirectUrl}/login">
             Confirmer mon email
           </a>
         `,
@@ -53,18 +73,15 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Email sent successfully:", data);
 
     return new Response(JSON.stringify(data), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error in send-confirmation function:", error);
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      }
-    );
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 };
 
