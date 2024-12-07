@@ -1,4 +1,4 @@
 project_id = "fzxkiwrungrwptlueoqt"
 
-[functions.send-reset-password]
+[functions.check-ip]
 verify_jwt = false

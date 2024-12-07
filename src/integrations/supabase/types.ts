@@ -9,6 +9,33 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      login_attempts: {
+        Row: {
+          attempt_count: number | null
+          created_at: string | null
+          id: string
+          ip_address: string
+          is_blocked: boolean | null
+          last_attempt: string | null
+        }
+        Insert: {
+          attempt_count?: number | null
+          created_at?: string | null
+          id?: string
+          ip_address: string
+          is_blocked?: boolean | null
+          last_attempt?: string | null
+        }
+        Update: {
+          attempt_count?: number | null
+          created_at?: string | null
+          id?: string
+          ip_address?: string
+          is_blocked?: boolean | null
+          last_attempt?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           administration: string | null
