@@ -4,6 +4,7 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { MemberProgressBar } from "./MemberProgressBar";
 import { MemberActions } from "./MemberActions";
 import { calculateAge, calculateCompletionPercentage, calculateProfessionalCompletionPercentage } from "./utils/profileCalculations";
+import { CheckCircle, XCircle } from "lucide-react";
 
 interface MemberTableRowProps {
   profile: Profile;
@@ -28,7 +29,16 @@ export const MemberTableRow = ({ profile, onRowClick }: MemberTableRowProps) => 
       </TableCell>
       <TableCell>{profile.first_name || '-'}</TableCell>
       <TableCell>{profile.last_name || '-'}</TableCell>
-      <TableCell>{profile.email || '-'}</TableCell>
+      <TableCell className="flex items-center gap-2">
+        {profile.email || '-'}
+        {profile.email && (
+          profile.email_verified ? (
+            <CheckCircle className="h-4 w-4 text-green-500" />
+          ) : (
+            <XCircle className="h-4 w-4 text-red-500" />
+          )
+        )}
+      </TableCell>
       <TableCell>{calculateAge(profile.birth_date)}</TableCell>
       <TableCell>{profile.grade || '-'}</TableCell>
       <TableCell>{profile.assignment_service || '-'}</TableCell>
