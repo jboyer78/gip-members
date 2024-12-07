@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/shared/AppSidebar";
 import { TopNavigation } from "@/components/shared/TopNavigation";
@@ -68,7 +70,7 @@ const Dashboard = () => {
               {publications?.map((publication) => (
                 <article 
                   key={publication.id}
-                  className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg overflow-hidden"
+                  className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg overflow-hidden relative"
                 >
                   <AspectRatio ratio={16/6}>
                     {publication.image_url ? (
@@ -85,8 +87,11 @@ const Dashboard = () => {
                   </AspectRatio>
                   <div className="p-6">
                     <h2 className="text-xl font-semibold mb-4">{publication.title}</h2>
-                    <p className="text-gray-600 dark:text-gray-400">
+                    <p className="text-gray-600 dark:text-gray-400 mb-8">
                       {publication.content}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 absolute bottom-4 right-4">
+                      {format(new Date(publication.updated_at), "dd/MM/yyyy", { locale: fr })}
                     </p>
                   </div>
                 </article>
