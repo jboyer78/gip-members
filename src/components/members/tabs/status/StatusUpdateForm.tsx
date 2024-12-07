@@ -28,18 +28,17 @@ export const StatusUpdateForm = ({ user }: StatusUpdateFormProps) => {
     }
 
     setIsSubmitting(true);
-    const success = await updateStatus(newStatus, comment);
-    
-    if (success) {
+    try {
+      await updateStatus({ newStatus, comment });
       setNewStatus("");
       setComment("");
+    } finally {
+      setIsSubmitting(false);
     }
-    
-    setIsSubmitting(false);
   };
 
   return (
-    <>
+    <div className="space-y-4">
       <StatusSelector value={newStatus} onChange={setNewStatus} />
       <CommentInput value={comment} onChange={setComment} />
       <Button
@@ -49,6 +48,6 @@ export const StatusUpdateForm = ({ user }: StatusUpdateFormProps) => {
       >
         {isSubmitting ? "Mise à jour..." : "Mettre à jour le statut"}
       </Button>
-    </>
+    </div>
   );
 };

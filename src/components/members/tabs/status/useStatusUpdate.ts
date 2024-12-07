@@ -1,14 +1,21 @@
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Profile } from "@/integrations/supabase/types/profile";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+interface StatusUpdateParams {
+  newStatus: string;
+  comment: string;
+}
 
 export const useStatusUpdate = (user: Profile) => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const updateStatus = async (newStatus: string, comment: string) => {
-    console.log("Starting status update with:", { newStatus, userId: user.id });
-    
-    try {
+  const { mutateAsync: updateStatus } = useMutation({
+    mutationFn: async ({ newStatus, comment }: StatusUpdateParams) => {
+      console.log("Starting status update with:", { newStatus, userId: user.id });
+      
       const { data: { user: currentUser }, error: userError } = await supabase.auth.getUser();
       
       if (userError) {
@@ -52,22 +59,24 @@ export const useStatusUpdate = (user: Profile) => {
         }
       }
 
+      return true;
+    },
+    onSuccess: () => {
       toast({
         title: "Succès",
         description: "Le statut a été mis à jour avec succès",
       });
-
-      return true;
-    } catch (error) {
+      queryClient.invalidateQueries({ queryKey: ['statusComments', user.id] });
+    },
+    onError: (error) => {
       console.error("Error updating status:", error);
       toast({
         title: "Erreur",
         description: "Une erreur est survenue lors de la mise à jour du statut",
         variant: "destructive",
       });
-      return false;
     }
-  };
+  });
 
   return { updateStatus };
 };
