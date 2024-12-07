@@ -21,30 +21,6 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
   const { toast } = useToast();
   const { checkIpAddress, isCheckingIp } = useIpCheck();
 
-  const sendConfirmationEmail = async (email: string, confirmationUrl: string) => {
-    try {
-      const response = await fetch("/functions/v1/send-confirmation-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          to: [email],
-          confirmationUrl,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to send confirmation email");
-      }
-
-      console.log("Confirmation email sent successfully");
-    } catch (error) {
-      console.error("Error sending confirmation email:", error);
-      throw error;
-    }
-  };
-
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -118,27 +94,14 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
       if (data.user) {
         console.log("User created successfully:", data.user);
         
-        // Send confirmation email
-        try {
-          const confirmationUrl = `${window.location.origin}/confirm?token=${data.user.confirmation_token}`;
-          await sendConfirmationEmail(signUpEmail, confirmationUrl);
-          
-          toast({
-            title: "Inscription réussie",
-            description: "Un email de confirmation vous a été envoyé",
-          });
-          
-          setSignUpEmail("");
-          setSignUpPassword("");
-          setConfirmPassword("");
-        } catch (emailError) {
-          console.error("Error sending confirmation email:", emailError);
-          toast({
-            variant: "destructive",
-            title: "Erreur",
-            description: "L'inscription a réussi mais l'envoi de l'email de confirmation a échoué. Veuillez contacter le support.",
-          });
-        }
+        toast({
+          title: "Inscription réussie",
+          description: "Un email de confirmation vous a été envoyé",
+        });
+        
+        setSignUpEmail("");
+        setSignUpPassword("");
+        setConfirmPassword("");
       } else {
         console.log("No user data returned");
         toast({
