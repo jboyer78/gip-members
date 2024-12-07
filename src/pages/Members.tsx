@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { differenceInYears } from "date-fns";
 
 const Members = () => {
   const navigate = useNavigate();
@@ -42,6 +43,11 @@ const Members = () => {
       return data;
     }
   });
+
+  const calculateAge = (birthDate: string | null) => {
+    if (!birthDate) return '-';
+    return differenceInYears(new Date(), new Date(birthDate));
+  };
 
   return (
     <SidebarProvider defaultOpen={true}>
@@ -72,6 +78,7 @@ const Members = () => {
                       <TableHead>Prénom</TableHead>
                       <TableHead>Nom</TableHead>
                       <TableHead>Email</TableHead>
+                      <TableHead>Âge</TableHead>
                       <TableHead>Grade</TableHead>
                       <TableHead>Service</TableHead>
                       <TableHead>Direction</TableHead>
@@ -93,6 +100,7 @@ const Members = () => {
                         <TableCell>{profile.first_name || '-'}</TableCell>
                         <TableCell>{profile.last_name || '-'}</TableCell>
                         <TableCell>{profile.email || '-'}</TableCell>
+                        <TableCell>{calculateAge(profile.birth_date)}</TableCell>
                         <TableCell>{profile.grade || '-'}</TableCell>
                         <TableCell>{profile.assignment_service || '-'}</TableCell>
                         <TableCell>{profile.assignment_direction || '-'}</TableCell>
