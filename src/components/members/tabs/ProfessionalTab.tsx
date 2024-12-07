@@ -15,8 +15,8 @@ export const ProfessionalTab = ({ user }: ProfessionalTabProps) => {
   // Filter out registration status if present
   const professionalStatus = user.status?.filter(status => 
     status !== "En attente de validation" && 
-    status !== "Validé" && 
-    status !== "Refusé"
+    status !== "Validée" && 
+    status !== "Refusée"
   );
 
   return (

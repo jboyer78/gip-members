@@ -5,7 +5,7 @@ interface StatusDisplayProps {
 }
 
 export const StatusDisplay = ({ currentStatus }: StatusDisplayProps) => {
-  const displayStatus = !currentStatus || currentStatus === "Sympathisant" ? "En attente" : currentStatus;
+  const displayStatus = !currentStatus || currentStatus === "Sympathisant" ? "En attente de validation" : currentStatus;
 
   return (
     <div className="space-y-2">
