@@ -28,6 +28,7 @@ export type Database = {
           first_name: string | null
           grade: string | null
           id: string
+          is_admin: boolean | null
           last_name: string | null
           marital_status: string | null
           phone_home: string | null
@@ -57,6 +58,7 @@ export type Database = {
           first_name?: string | null
           grade?: string | null
           id: string
+          is_admin?: boolean | null
           last_name?: string | null
           marital_status?: string | null
           phone_home?: string | null
@@ -86,6 +88,7 @@ export type Database = {
           first_name?: string | null
           grade?: string | null
           id?: string
+          is_admin?: boolean | null
           last_name?: string | null
           marital_status?: string | null
           phone_home?: string | null

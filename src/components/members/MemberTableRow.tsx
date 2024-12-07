@@ -50,7 +50,7 @@ export const MemberTableRow = ({ profile, onRowClick }: MemberTableRowProps) => 
         <MemberProgressBar value={calculateProfessionalCompletionPercentage(profile)} />
       </TableCell>
       <TableCell onClick={(e) => e.stopPropagation()}>
-        <MemberActions profileId={profile.id} />
+        <MemberActions profileId={profile.id} isAdmin={profile.is_admin || false} />
       </TableCell>
     </TableRow>
   );
