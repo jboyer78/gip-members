@@ -108,7 +108,10 @@ export const useSignUp = (onSwitchToLogin?: () => void) => {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`,
               },
-              body: JSON.stringify({ email }),
+              body: JSON.stringify({ 
+                email,
+                redirectUrl: window.location.origin 
+              }),
             }
           );
 

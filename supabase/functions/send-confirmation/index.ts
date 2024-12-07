@@ -19,8 +19,9 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { email } = await req.json();
+    const { email, redirectUrl } = await req.json();
     console.log("Sending confirmation email to:", email);
+    console.log("Redirect URL:", redirectUrl);
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -35,7 +36,7 @@ const handler = async (req: Request): Promise<Response> => {
         html: `
           <h1>Bienvenue sur GIP France</h1>
           <p>Merci de confirmer votre inscription en cliquant sur le lien ci-dessous :</p>
-          <a href="${SUPABASE_URL}/auth/v1/verify?token={TOKEN}&type=signup&redirect_to=${window.location.origin}/login">
+          <a href="${SUPABASE_URL}/auth/v1/verify?token={TOKEN}&type=signup&redirect_to=${redirectUrl}/login">
             Confirmer mon email
           </a>
         `,
