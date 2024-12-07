@@ -100,24 +100,20 @@ export const useSignUp = (onSwitchToLogin?: () => void) => {
 
         // Envoi de l'email de confirmation via notre fonction Edge
         try {
-          const response = await fetch(
-            `${window.location.origin}/functions/v1/send-confirmation`,
+          const { data: emailData, error: emailError } = await supabase.functions.invoke(
+            'send-confirmation',
             {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
               body: JSON.stringify({ 
                 email,
                 redirectUrl: window.location.origin 
-              }),
+              })
             }
           );
 
-          if (!response.ok) {
-            console.error("[Signup] Error sending confirmation email:", await response.text());
+          if (emailError) {
+            console.error("[Signup] Error sending confirmation email:", emailError);
           } else {
-            console.log("[Signup] Confirmation email sent successfully");
+            console.log("[Signup] Confirmation email sent successfully:", emailData);
           }
         } catch (emailError) {
           console.error("[Signup] Error calling send-confirmation function:", emailError);
