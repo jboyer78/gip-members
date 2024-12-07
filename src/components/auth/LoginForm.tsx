@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import ReCAPTCHA from "react-google-recaptcha";
+import { EmailInput } from "./login/EmailInput";
+import { PasswordInput } from "./login/PasswordInput";
+import { RememberMeCheckbox } from "./login/RememberMeCheckbox";
+import { ForgotPasswordLink } from "./login/ForgotPasswordLink";
+import { LoginCaptcha } from "./login/LoginCaptcha";
+import { SubmitButton } from "./login/SubmitButton";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -65,70 +66,24 @@ const LoginForm = () => {
     }
   };
 
-  const handleCaptchaChange = (token: string | null) => {
-    setCaptchaToken(token);
-  };
-
   return (
     <form onSubmit={handleSubmit} className="mt-8 space-y-6">
       <div className="space-y-4">
-        <div>
-          <Label htmlFor="email">Adresse email</Label>
-          <Input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="exemple@email.com"
-            required
-            className="mt-1"
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="password">Mot de passe</Label>
-          <Input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="mt-1"
-          />
-        </div>
+        <EmailInput email={email} setEmail={setEmail} />
+        <PasswordInput password={password} setPassword={setPassword} />
 
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="remember"
-              checked={rememberMe}
-              onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-            />
-            <Label htmlFor="remember" className="text-sm">
-              Se souvenir de moi
-            </Label>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => navigate("/reset-password")}
-            className="text-sm text-primary hover:underline"
-          >
-            Mot de passe oublié ?
-          </button>
-        </div>
-
-        <div className="flex justify-center">
-          <ReCAPTCHA
-            sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-            onChange={handleCaptchaChange}
+          <RememberMeCheckbox 
+            rememberMe={rememberMe} 
+            setRememberMe={setRememberMe} 
           />
+          <ForgotPasswordLink />
         </div>
+
+        <LoginCaptcha onCaptchaChange={setCaptchaToken} />
       </div>
 
-      <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? "Connexion en cours..." : "Se connecter"}
-      </Button>
+      <SubmitButton isLoading={isLoading} />
     </form>
   );
 };
