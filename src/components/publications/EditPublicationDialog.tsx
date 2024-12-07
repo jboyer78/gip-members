@@ -43,7 +43,6 @@ export const EditPublicationDialog = ({
 
   const form = useForm<EditPublicationFormValues>();
 
-  // Initialize form with publication data when it changes
   useEffect(() => {
     if (publication) {
       form.reset({
@@ -99,12 +98,15 @@ export const EditPublicationDialog = ({
         imageUrl = publicUrl;
       }
 
+      const now = new Date().toISOString();
+      
       const { error } = await supabase
         .from('publications')
         .update({
           title: values.title,
           content: values.content,
           image_url: imageUrl,
+          updated_at: now
         })
         .eq('id', publication.id);
 
@@ -115,7 +117,9 @@ export const EditPublicationDialog = ({
         description: "La publication a été modifiée avec succès",
       });
 
-      queryClient.invalidateQueries({ queryKey: ['publications'] });
+      // Immédiatement invalider le cache pour forcer un rafraîchissement
+      await queryClient.invalidateQueries({ queryKey: ['publications'] });
+      
       form.reset();
       onOpenChange(false);
     } catch (error) {
