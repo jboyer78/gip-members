@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export const useIpCheck = () => {
   const [isCheckingIp, setIsCheckingIp] = useState(false);
@@ -11,25 +12,25 @@ export const useIpCheck = () => {
       const response = await fetch("https://api.ipify.org?format=json");
       const { ip } = await response.json();
       
-      const checkResponse = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/check-ip`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({ ip_address: ip }),
-        }
-      );
+      const { data, error } = await supabase.functions.invoke('check-ip', {
+        body: { ip_address: ip }
+      });
 
-      const result: { suspicious: boolean; message?: string } = await checkResponse.json();
-      
-      if (result.suspicious) {
+      if (error) {
+        console.error("Erreur lors de la vérification de l'IP:", error);
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Une erreur est survenue lors de la vérification de l'IP",
+        });
+        return false;
+      }
+
+      if (data?.suspicious) {
         toast({
           variant: "destructive",
           title: "Accès refusé",
-          description: result.message || "Activité suspecte détectée",
+          description: data.message || "Activité suspecte détectée",
         });
         return false;
       }
