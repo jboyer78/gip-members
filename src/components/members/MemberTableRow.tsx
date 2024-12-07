@@ -50,7 +50,7 @@ export const MemberTableRow = ({ profile, onRowClick }: MemberTableRowProps) => 
         )}
       </TableCell>
       <TableCell>{calculateAge(profile.birth_date)}</TableCell>
-      <TableCell>{professionalStatus}</TableCell>
+      <TableCell>{profile.grade || '-'}</TableCell>
       <TableCell>{profile.assignment_service || '-'}</TableCell>
       <TableCell>{profile.assignment_direction || '-'}</TableCell>
       <TableCell className="w-32">
