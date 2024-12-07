@@ -17,6 +17,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { differenceInYears } from "date-fns";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Pencil, Trash2 } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const Members = () => {
   const navigate = useNavigate();
@@ -133,6 +140,7 @@ const Members = () => {
                       <TableHead>Direction</TableHead>
                       <TableHead>Informations personnelles</TableHead>
                       <TableHead>Informations professionnelles</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -165,6 +173,39 @@ const Members = () => {
                           <div className="space-y-1">
                             <Progress value={calculateProfessionalCompletionPercentage(profile)} className="h-2" />
                             <p className="text-xs text-gray-500 dark:text-gray-400 text-right">{calculateProfessionalCompletionPercentage(profile)}%</p>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => navigate(`/profile/${profile.id}`)}
+                                >
+                                  <Pencil className="h-4 w-4" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Modifier le profil</p>
+                              </TooltipContent>
+                            </Tooltip>
+
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="text-destructive hover:text-destructive/90"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Supprimer le profil</p>
+                              </TooltipContent>
+                            </Tooltip>
                           </div>
                         </TableCell>
                       </TableRow>
