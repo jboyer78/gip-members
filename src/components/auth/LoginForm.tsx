@@ -6,17 +6,29 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!captchaToken) {
+      toast({
+        variant: "destructive",
+        title: "Erreur de validation",
+        description: "Veuillez compléter le CAPTCHA",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -51,6 +63,10 @@ const LoginForm = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleCaptchaChange = (token: string | null) => {
+    setCaptchaToken(token);
   };
 
   return (
@@ -100,6 +116,13 @@ const LoginForm = () => {
           >
             Mot de passe oublié ?
           </button>
+        </div>
+
+        <div className="flex justify-center">
+          <ReCAPTCHA
+            sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+            onChange={handleCaptchaChange}
+          />
         </div>
       </div>
 
