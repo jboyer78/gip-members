@@ -4,7 +4,7 @@ import { useIpCheck } from "./useIpCheck";
 import { toast } from "./use-toast";
 import { validatePasswords, validateCaptcha } from "./auth/validation";
 import { handleSignUpError } from "./auth/errorHandling";
-import { UseSignUpProps, SignUpResult } from "./auth/types";
+import { UseSignUpProps, SignUpResult, SignUpError } from "./auth/types";
 
 export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
   const [isSignUpLoading, setIsSignUpLoading] = useState(false);

@@ -16,7 +16,7 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const { checkIpAddress, isCheckingIp } = useIpCheck();
-  const { handleSignUp, isSignUpLoading } = useSignUp(onSwitchToLogin);
+  const { handleSignUp, isSignUpLoading } = useSignUp({ onSwitchToLogin });
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
