@@ -3,10 +3,9 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
 import { ProfessionalFormValues } from "./types";
-import { Checkbox } from "@/components/ui/checkbox";
-import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { useProfessionalDocUpload, ACCEPTED_DOC_TYPES } from "@/hooks/use-professional-doc-upload";
+import { format } from "date-fns";
 
 const administrations = [
   "Police Nationale",
@@ -19,10 +18,9 @@ const administrations = [
 ];
 
 const statusOptions = [
-  { id: "actif", label: "Actif" },
-  { id: "retraite", label: "Retraité(e)" },
-  { id: "sympathisant", label: "Sympathisant" },
-  { id: "eleve", label: "Élève" }
+  { id: "en_attente", label: "En attente" },
+  { id: "validee", label: "Validée" },
+  { id: "refusee", label: "Refusée" }
 ];
 
 interface ProfessionalFieldsProps {
@@ -148,45 +146,26 @@ export const ProfessionalFields = ({ form }: ProfessionalFieldsProps) => {
       <FormField
         control={form.control}
         name="status"
-        render={() => (
+        render={({ field }) => (
           <FormItem>
             <FormLabel>Situation</FormLabel>
-            <div className="grid grid-cols-2 gap-4">
-              {statusOptions.map((option) => (
-                <FormField
-                  key={option.id}
-                  control={form.control}
-                  name="status"
-                  render={({ field }) => {
-                    return (
-                      <FormItem
-                        key={option.id}
-                        className="flex flex-row items-start space-x-3 space-y-0"
-                      >
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value?.includes(option.label)}
-                            onCheckedChange={(checked) => {
-                              const currentValue = field.value || [];
-                              if (checked) {
-                                field.onChange([...currentValue, option.label]);
-                              } else {
-                                field.onChange(
-                                  currentValue.filter((value) => value !== option.label)
-                                );
-                              }
-                            }}
-                          />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          {option.label}
-                        </FormLabel>
-                      </FormItem>
-                    );
-                  }}
-                />
-              ))}
-            </div>
+            <Select 
+              onValueChange={(value) => field.onChange([value])} 
+              value={field.value?.[0] || ""}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Sélectionnez votre situation" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {statusOptions.map((option) => (
+                  <SelectItem key={option.id} value={option.label}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}
