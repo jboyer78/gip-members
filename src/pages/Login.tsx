@@ -12,22 +12,32 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8 md:px-0">
-      <div className="w-full max-w-md space-y-6 md:space-y-8 p-6 md:p-8 bg-white rounded-lg shadow-lg">
+      <div className="w-full max-w-md space-y-6 md:space-y-8 p-6 md:p-8 bg-white rounded-xl shadow">
         <div className="text-center">
           <img 
-            src="/lovable-uploads/e17e4ca6-2674-4aa6-999e-4b76b7ae8f32.png" 
+            src="/lovable-uploads/76c591b5-d36e-4ac5-a4a3-9f2ba64321b4.png" 
             alt="Logo GIP" 
-            className="w-64 h-64 mx-auto mb-4"
+            className="w-32 h-32 mx-auto mb-4"
           />
-          <p className="mt-2 text-sm md:text-base text-gray-600">
+          <h2 className="text-lg text-gray-700">
             Connectez-vous ou créez un compte
-          </p>
+          </h2>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login">Connexion</TabsTrigger>
-            <TabsTrigger value="signup">Inscription</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 mb-8">
+            <TabsTrigger 
+              value="login"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+            >
+              Connexion
+            </TabsTrigger>
+            <TabsTrigger 
+              value="signup"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+            >
+              Inscription
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="login">

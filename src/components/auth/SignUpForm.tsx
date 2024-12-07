@@ -39,11 +39,12 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
   };
 
   return (
-    <form onSubmit={onSubmit} className="mt-8 space-y-6">
+    <form onSubmit={onSubmit} className="space-y-6">
       <div className="space-y-4">
         <EmailField 
           value={signUpEmail}
           onChange={setSignUpEmail}
+          label="Adresse email"
         />
 
         <PasswordField
@@ -52,6 +53,7 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
           value={signUpPassword}
           onChange={setSignUpPassword}
           showHelperText={true}
+          helperText="Le mot de passe doit contenir au moins 12 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial (!@#$%^&*(),.?\":{}|<>)"
         />
 
         <PasswordField
@@ -66,7 +68,7 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
 
       <Button 
         type="submit" 
-        className="w-full" 
+        className="w-full bg-blue-600 hover:bg-blue-700" 
         disabled={isSignUpLoading || isCheckingIp}
       >
         {isSignUpLoading || isCheckingIp ? "Inscription en cours..." : "S'inscrire"}
