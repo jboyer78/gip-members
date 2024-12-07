@@ -1,9 +1,19 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/shared/AppSidebar";
 import { TopNavigation } from "@/components/shared/TopNavigation";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const Members = () => {
   const navigate = useNavigate();
@@ -18,6 +28,19 @@ const Members = () => {
 
     checkAuth();
   }, [navigate]);
+
+  const { data: profiles, isLoading } = useQuery({
+    queryKey: ['profiles'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('last_name', { ascending: true });
+      
+      if (error) throw error;
+      return data;
+    }
+  });
 
   return (
     <SidebarProvider defaultOpen={true}>
@@ -37,9 +60,36 @@ const Members = () => {
           </div>
 
           <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg p-6">
-            <p className="text-gray-600 dark:text-gray-400">
-              La liste des membres sera bientôt disponible.
-            </p>
+            {isLoading ? (
+              <p className="text-gray-600 dark:text-gray-400">Chargement des membres...</p>
+            ) : (
+              <ScrollArea className="h-[600px] rounded-md">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Nom</TableHead>
+                      <TableHead>Prénom</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Grade</TableHead>
+                      <TableHead>Service</TableHead>
+                      <TableHead>Direction</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {profiles?.map((profile) => (
+                      <TableRow key={profile.id}>
+                        <TableCell className="font-medium">{profile.last_name || '-'}</TableCell>
+                        <TableCell>{profile.first_name || '-'}</TableCell>
+                        <TableCell>{profile.email || '-'}</TableCell>
+                        <TableCell>{profile.grade || '-'}</TableCell>
+                        <TableCell>{profile.assignment_service || '-'}</TableCell>
+                        <TableCell>{profile.assignment_direction || '-'}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </ScrollArea>
+            )}
           </div>
         </main>
       </div>
