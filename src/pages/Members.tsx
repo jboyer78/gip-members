@@ -49,6 +49,33 @@ const Members = () => {
     return differenceInYears(new Date(), new Date(birthDate));
   };
 
+  const calculateCompletionPercentage = (profile: any) => {
+    const personalFields = [
+      'first_name',
+      'last_name',
+      'birth_date',
+      'birth_city',
+      'birth_department',
+      'blood_type',
+      'marital_status',
+      'children_count',
+      'phone_home',
+      'phone_mobile',
+      'email',
+      'street',
+      'postal_code',
+      'city',
+      'country'
+    ];
+
+    const filledFields = personalFields.filter(field => 
+      profile[field] !== null && profile[field] !== ''
+    );
+
+    const percentage = Math.round((filledFields.length / personalFields.length) * 100);
+    return `${percentage}%`;
+  };
+
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full flex-col md:flex-row bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -82,6 +109,7 @@ const Members = () => {
                       <TableHead>Grade</TableHead>
                       <TableHead>Service</TableHead>
                       <TableHead>Direction</TableHead>
+                      <TableHead>Informations personnelles</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -104,6 +132,7 @@ const Members = () => {
                         <TableCell>{profile.grade || '-'}</TableCell>
                         <TableCell>{profile.assignment_service || '-'}</TableCell>
                         <TableCell>{profile.assignment_direction || '-'}</TableCell>
+                        <TableCell>{calculateCompletionPercentage(profile)}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
