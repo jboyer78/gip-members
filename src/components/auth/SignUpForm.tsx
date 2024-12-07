@@ -3,18 +3,35 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { validatePassword } from "@/utils/validation";
+import { useIpCheck } from "@/hooks/useIpCheck";
 import EmailField from "./EmailField";
 import PasswordField from "./PasswordField";
+import { LoginCaptcha } from "./login/LoginCaptcha";
 
 const SignUpForm = () => {
   const [signUpEmail, setSignUpEmail] = useState("");
   const [signUpPassword, setSignUpPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSignUpLoading, setIsSignUpLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const { toast } = useToast();
+  const { checkIpAddress, isCheckingIp } = useIpCheck();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!captchaToken) {
+      toast({
+        variant: "destructive",
+        title: "Erreur de validation",
+        description: "Veuillez compléter le CAPTCHA",
+      });
+      return;
+    }
+
+    const ipCheck = await checkIpAddress();
+    if (!ipCheck) return;
+
     setIsSignUpLoading(true);
 
     if (signUpPassword !== confirmPassword) {
@@ -96,10 +113,16 @@ const SignUpForm = () => {
           value={confirmPassword}
           onChange={setConfirmPassword}
         />
+
+        <LoginCaptcha onCaptchaChange={setCaptchaToken} />
       </div>
 
-      <Button type="submit" className="w-full" disabled={isSignUpLoading}>
-        {isSignUpLoading ? "Inscription en cours..." : "S'inscrire"}
+      <Button 
+        type="submit" 
+        className="w-full" 
+        disabled={isSignUpLoading || isCheckingIp}
+      >
+        {isSignUpLoading || isCheckingIp ? "Inscription en cours..." : "S'inscrire"}
       </Button>
     </form>
   );
