@@ -53,7 +53,6 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
           value={signUpPassword}
           onChange={setSignUpPassword}
           showHelperText={true}
-          helperText="Le mot de passe doit contenir au moins 12 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial (!@#$%^&*(),.?\":{}|<>)"
         />
 
         <PasswordField

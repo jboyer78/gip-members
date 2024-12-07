@@ -22,7 +22,7 @@ const PasswordField = ({ id, label, value, onChange, showHelperText }: PasswordF
     />
     {showHelperText && (
       <p className="text-sm text-gray-500 mt-1">
-        Le mot de passe doit contenir au moins 12 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial (!@#$%^&*(),.?":{}|&lt;&gt;)
+        Le mot de passe doit contenir au moins 12 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial (!@#$%^&*(),.?{'"{}|<>')
       </p>
     )}
   </div>
