@@ -13,14 +13,14 @@ export const ProfessionalTab = ({ user }: ProfessionalTabProps) => {
   };
 
   // Filter out registration status and keep only professional status
-  const professionalStatus = user.status?.find(status => 
+  const professionalStatus = user.status?.filter(status => 
     ["Actif", "Retraité(e)", "Sympathisant", "Élève"].includes(status)
   );
 
   return (
     <div className="grid grid-cols-2 gap-2">
       <p className="text-muted-foreground">Situation professionnelle</p>
-      <p>{professionalStatus || "-"}</p>
+      <p>{professionalStatus?.join(", ") || "-"}</p>
       <p className="text-muted-foreground">Administration</p>
       <p>{user.administration || "-"}</p>
       <p className="text-muted-foreground">Date d'entrée</p>
