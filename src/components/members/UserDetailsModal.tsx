@@ -25,7 +25,7 @@ export const UserDetailsModal = ({ user, open, onOpenChange }: UserDetailsModalP
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-[90vw] max-h-[90vh] w-[1200px] overflow-y-auto">
         <DialogHeader className="flex flex-row items-center gap-4">
           <Avatar className="h-12 w-12">
             <AvatarImage src={user.avatar_url || ''} />
