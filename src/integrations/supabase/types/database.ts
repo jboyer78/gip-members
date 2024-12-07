@@ -1,3 +1,5 @@
+import { Profile, ProfileInsert, ProfileUpdate } from './profile';
+
 export type Json =
   | string
   | number
