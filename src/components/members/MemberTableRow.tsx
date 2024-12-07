@@ -3,7 +3,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { MemberProgressBar } from "./MemberProgressBar";
 import { MemberActions } from "./MemberActions";
-import { calculateAge, calculateCompletionPercentage, calculateProfessionalCompletionPercentage } from "./utils/profileCalculations";
+import { 
+  calculateAge, 
+  calculateCompletionPercentage, 
+  calculateProfessionalCompletionPercentage,
+  calculateBankingCompletionPercentage 
+} from "./utils/profileCalculations";
 import { CheckCircle, XCircle } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -18,9 +23,6 @@ export const MemberTableRow = ({ profile, onRowClick }: MemberTableRowProps) => 
     if (!date) return "-";
     return format(new Date(date), "dd/MM/yyyy HH:mm:ss", { locale: fr });
   };
-
-  const currentStatus = profile.status?.[0] || "En attente";
-  const professionalStatus = profile.professional_status?.[0] || "-";
 
   return (
     <TableRow 
@@ -58,6 +60,9 @@ export const MemberTableRow = ({ profile, onRowClick }: MemberTableRowProps) => 
       </TableCell>
       <TableCell className="w-32">
         <MemberProgressBar value={calculateProfessionalCompletionPercentage(profile)} />
+      </TableCell>
+      <TableCell className="w-32">
+        <MemberProgressBar value={calculateBankingCompletionPercentage(profile)} />
       </TableCell>
       <TableCell>{formatDate(profile.created_at)}</TableCell>
       <TableCell>{formatDate(profile.updated_at)}</TableCell>
