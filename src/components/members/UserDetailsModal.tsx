@@ -4,7 +4,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Profile } from "@/integrations/supabase/types";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Profile } from "@/integrations/supabase/types/profile";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
@@ -31,9 +32,14 @@ export const UserDetailsModal = ({ user, open, onOpenChange }: UserDetailsModalP
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
-          <div className="space-y-4">
-            <h3 className="font-semibold text-lg">Informations personnelles</h3>
+        <Tabs defaultValue="personal" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="personal">Informations personnelles</TabsTrigger>
+            <TabsTrigger value="contact">Coordonnées</TabsTrigger>
+            <TabsTrigger value="professional">Informations professionnelles</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="personal" className="space-y-4">
             <div className="grid grid-cols-2 gap-2">
               <p className="text-muted-foreground">Email</p>
               <p>{user.email || "-"}</p>
@@ -50,10 +56,9 @@ export const UserDetailsModal = ({ user, open, onOpenChange }: UserDetailsModalP
               <p className="text-muted-foreground">Nombre d'enfants</p>
               <p>{user.children_count !== null ? user.children_count : "-"}</p>
             </div>
-          </div>
+          </TabsContent>
 
-          <div className="space-y-4">
-            <h3 className="font-semibold text-lg">Coordonnées</h3>
+          <TabsContent value="contact" className="space-y-4">
             <div className="grid grid-cols-2 gap-2">
               <p className="text-muted-foreground">Adresse</p>
               <p>{user.street || "-"}</p>
@@ -68,10 +73,9 @@ export const UserDetailsModal = ({ user, open, onOpenChange }: UserDetailsModalP
               <p className="text-muted-foreground">Téléphone mobile</p>
               <p>{user.phone_mobile || "-"}</p>
             </div>
-          </div>
+          </TabsContent>
 
-          <div className="space-y-4 md:col-span-2">
-            <h3 className="font-semibold text-lg">Informations professionnelles</h3>
+          <TabsContent value="professional" className="space-y-4">
             <div className="grid grid-cols-2 gap-2">
               <p className="text-muted-foreground">Statut</p>
               <p>{user.status?.join(", ") || "-"}</p>
@@ -88,8 +92,8 @@ export const UserDetailsModal = ({ user, open, onOpenChange }: UserDetailsModalP
               <p className="text-muted-foreground">Service</p>
               <p>{user.assignment_service || "-"}</p>
             </div>
-          </div>
-        </div>
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );

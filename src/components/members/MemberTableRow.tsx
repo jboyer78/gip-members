@@ -1,4 +1,4 @@
-import { Profile } from "@/integrations/supabase/types";
+import { Profile } from "@/integrations/supabase/types/profile";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { MemberProgressBar } from "./MemberProgressBar";

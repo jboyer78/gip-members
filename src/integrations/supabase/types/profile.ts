@@ -25,7 +25,7 @@ export type Profile = {
   assignment_direction: string | null;
   assignment_service: string | null;
   professional_document_url: string | null;
-}
+};
 
 export type ProfileInsert = {
   id: string;

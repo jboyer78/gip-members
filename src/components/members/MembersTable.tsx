@@ -3,7 +3,7 @@ import {
   TableBody,
 } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Profile } from "@/integrations/supabase/types";
+import { Profile } from "@/integrations/supabase/types/profile";
 import { MemberTableHeader } from "./MemberTableHeader";
 import { MemberTableRow } from "./MemberTableRow";
 import { UserDetailsModal } from "./UserDetailsModal";
