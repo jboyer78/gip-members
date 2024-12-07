@@ -27,6 +27,7 @@ interface Publication {
   content: string;
   image_url: string | null;
   created_at: string;
+  updated_at: string;
   is_published?: boolean;
 }
 
@@ -66,6 +67,7 @@ export const PublicationsTable = () => {
               <TableHead>Titre</TableHead>
               <TableHead>Contenu</TableHead>
               <TableHead>Date de création</TableHead>
+              <TableHead>Date de modification</TableHead>
               <TableHead>Publication</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -92,6 +94,11 @@ export const PublicationsTable = () => {
                 </TableCell>
                 <TableCell>
                   {format(new Date(publication.created_at), "dd MMMM yyyy HH:mm:ss", {
+                    locale: fr,
+                  })}
+                </TableCell>
+                <TableCell>
+                  {format(new Date(publication.updated_at), "dd MMMM yyyy HH:mm:ss", {
                     locale: fr,
                   })}
                 </TableCell>
