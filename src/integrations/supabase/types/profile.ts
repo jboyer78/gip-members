@@ -27,6 +27,8 @@ export type Profile = {
   assignment_service: string | null;
   professional_document_url: string | null;
   is_admin: boolean | null;
+  created_at: string;
+  banned_at: string | null;
 };
 
 export type ProfileInsert = {
