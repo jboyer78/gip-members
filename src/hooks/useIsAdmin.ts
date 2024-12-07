@@ -6,6 +6,8 @@ export const useIsAdmin = () => {
     queryKey: ['currentUserProfile'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
+      console.log("Current user:", user);
+      
       if (!user) return null;
       
       const { data } = await supabase
@@ -14,9 +16,13 @@ export const useIsAdmin = () => {
         .eq('id', user.id)
         .single();
       
+      console.log("Profile data:", data);
+      
       return data;
     },
   });
+
+  console.log("isAdmin value:", profile?.is_admin);
 
   return {
     isAdmin: profile?.is_admin || false,

@@ -11,7 +11,10 @@ import { LogoutButton } from "./sidebar/LogoutButton";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 export function AppSidebar() {
-  const { isAdmin } = useIsAdmin();
+  const { isAdmin, isLoading } = useIsAdmin();
+  
+  console.log("AppSidebar - isAdmin:", isAdmin);
+  console.log("AppSidebar - isLoading:", isLoading);
 
   return (
     <Sidebar variant="floating" className="w-full md:w-64 shrink-0 bg-gray-900/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg">
@@ -38,7 +41,7 @@ export function AppSidebar() {
               label="Profil"
               className="mb-4"
             />
-            {isAdmin && (
+            {!isLoading && isAdmin && (
               <SidebarMenuItem
                 to="/members"
                 icon={Users}
