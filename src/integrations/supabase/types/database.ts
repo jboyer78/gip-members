@@ -1,4 +1,8 @@
 import { Profile, ProfileInsert, ProfileUpdate } from './profile';
+import { BankingInfo, BankingInfoInsert, BankingInfoUpdate } from './banking';
+import { Publication, PublicationInsert, PublicationUpdate } from './publication';
+import { StatusComment, StatusCommentInsert, StatusCommentUpdate } from './status-comment';
+import { LoginAttempt, LoginAttemptInsert, LoginAttemptUpdate } from './login-attempt';
 
 export type Json =
   | string
@@ -15,6 +19,26 @@ export type Database = {
         Row: Profile
         Insert: ProfileInsert
         Update: ProfileUpdate
+      }
+      banking_info: {
+        Row: BankingInfo
+        Insert: BankingInfoInsert
+        Update: BankingInfoUpdate
+      }
+      publications: {
+        Row: Publication
+        Insert: PublicationInsert
+        Update: PublicationUpdate
+      }
+      status_comments: {
+        Row: StatusComment
+        Insert: StatusCommentInsert
+        Update: StatusCommentUpdate
+      }
+      login_attempts: {
+        Row: LoginAttempt
+        Insert: LoginAttemptInsert
+        Update: LoginAttemptUpdate
       }
     }
     Views: {
