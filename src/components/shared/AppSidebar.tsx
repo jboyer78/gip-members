@@ -1,48 +1,17 @@
-import { Link, useNavigate } from "react-router-dom";
-import { Newspaper, User, ListPlus, LogOut, Users } from "lucide-react";
+import { Newspaper, User, ListPlus, Users } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarMenuItem,
-  SidebarMenuButton,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { useQuery } from "@tanstack/react-query";
+import { SidebarMenuItem } from "./sidebar/SidebarMenuItem";
+import { LogoutButton } from "./sidebar/LogoutButton";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 export function AppSidebar() {
-  const navigate = useNavigate();
-
-  // Fetch the current user's admin status
-  const { data: profile } = useQuery({
-    queryKey: ['currentUserProfile'],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
-      
-      const { data } = await supabase
-        .from('profiles')
-        .select('is_admin')
-        .eq('id', user.id)
-        .single();
-      
-      return data;
-    },
-  });
-
-  const handleLogout = async () => {
-    try {
-      await supabase.auth.signOut();
-      toast.success("Déconnexion réussie");
-      navigate("/login");
-    } catch (error) {
-      toast.error("Erreur lors de la déconnexion");
-      console.error("Logout error:", error);
-    }
-  };
+  const { isAdmin } = useIsAdmin();
 
   return (
     <Sidebar variant="floating" className="w-full md:w-64 shrink-0 bg-gray-900/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg">
@@ -57,58 +26,38 @@ export function AppSidebar() {
         
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenuItem className="list-none mb-4">
-              <SidebarMenuButton asChild>
-                <Link to="/dashboard" className="flex items-center space-x-4 p-4 hover:bg-gray-700/90 rounded-lg transition-all duration-300">
-                  <Newspaper className="h-6 w-6 text-gray-300 hover:text-white" />
-                  <span className="text-lg font-medium text-gray-300 hover:text-white">Actualités</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem className="list-none mb-4">
-              <SidebarMenuButton asChild>
-                <Link to="/profile" className="flex items-center space-x-4 p-4 hover:bg-gray-700/90 rounded-lg transition-all duration-300">
-                  <User className="h-6 w-6 text-gray-300 hover:text-white" />
-                  <span className="text-lg font-medium text-gray-300 hover:text-white">Profil</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            {profile?.is_admin && (
-              <SidebarMenuItem className="list-none mb-4">
-                <SidebarMenuButton asChild>
-                  <Link to="/members" className="flex items-center space-x-4 p-4 hover:bg-gray-700/90 rounded-lg transition-all duration-300">
-                    <Users className="h-6 w-6 text-gray-300 hover:text-white" />
-                    <span className="text-lg font-medium text-gray-300 hover:text-white">Membres</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+            <SidebarMenuItem
+              to="/dashboard"
+              icon={Newspaper}
+              label="Actualités"
+              className="mb-4"
+            />
+            <SidebarMenuItem
+              to="/profile"
+              icon={User}
+              label="Profil"
+              className="mb-4"
+            />
+            {isAdmin && (
+              <SidebarMenuItem
+                to="/members"
+                icon={Users}
+                label="Membres"
+                className="mb-4"
+              />
             )}
-            <SidebarMenuItem className="list-none">
-              <SidebarMenuButton asChild>
-                <a href="/annonces" className="flex items-center space-x-4 p-4 hover:bg-gray-700/90 rounded-lg transition-all duration-300">
-                  <ListPlus className="h-6 w-6 text-gray-300 hover:text-white" />
-                  <span className="text-lg font-medium text-gray-300 hover:text-white">Annonces</span>
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+            <SidebarMenuItem
+              to="/annonces"
+              icon={ListPlus}
+              label="Annonces"
+              isExternal
+            />
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter className="p-4 mt-auto">
-        <SidebarMenuItem className="list-none">
-          <SidebarMenuButton asChild>
-            <button 
-              onClick={handleLogout}
-              className="w-full flex items-center space-x-4 p-4 bg-red-50 hover:bg-red-100 rounded-lg transition-all duration-300 text-left"
-            >
-              <LogOut className="h-6 w-6 text-red-600" />
-              <span className="text-lg font-medium text-gray-900">
-                Déconnexion
-              </span>
-            </button>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
+        <LogoutButton />
       </SidebarFooter>
     </Sidebar>
   );

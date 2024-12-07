@@ -7,14 +7,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { MembersHeader } from "@/components/members/MembersHeader";
 import { MembersTable } from "@/components/members/MembersTable";
 import { useToast } from "@/hooks/use-toast";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 const Members = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isAdmin, isLoading: isLoadingAdmin } = useIsAdmin();
 
   // Check both authentication and admin status
   useEffect(() => {
-    const checkAuthAndAdmin = async () => {
+    const checkAuth = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -22,14 +24,7 @@ const Members = () => {
         return;
       }
 
-      // Check if user is admin
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('is_admin')
-        .eq('id', user.id)
-        .single();
-
-      if (!profile?.is_admin) {
+      if (!isLoadingAdmin && !isAdmin) {
         toast({
           variant: "destructive",
           title: "Accès refusé",
@@ -39,8 +34,8 @@ const Members = () => {
       }
     };
 
-    checkAuthAndAdmin();
-  }, [navigate, toast]);
+    checkAuth();
+  }, [navigate, toast, isAdmin, isLoadingAdmin]);
 
   const { data: profiles, isLoading } = useQuery({
     queryKey: ['profiles'],
