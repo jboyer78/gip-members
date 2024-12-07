@@ -30,12 +30,6 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenuItem
-              to="/dashboard"
-              icon={Newspaper}
-              label="Actualités"
-              className="mb-4"
-            />
-            <SidebarMenuItem
               to="/profile"
               icon={User}
               label="Profil"
@@ -57,6 +51,12 @@ export function AppSidebar() {
                 />
               </>
             )}
+            <SidebarMenuItem
+              to="/dashboard"
+              icon={Newspaper}
+              label="Actualités"
+              className="mb-4"
+            />
             <SidebarMenuItem
               to="/accommodations"
               icon={ListPlus}
