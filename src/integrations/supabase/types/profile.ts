@@ -1,3 +1,5 @@
+import { BankingInfo } from './banking';
+
 export type Profile = {
   id: string;
   first_name: string | null;
@@ -30,6 +32,7 @@ export type Profile = {
   is_admin: boolean | null;
   created_at: string;
   banned_at: string | null;
+  banking_info?: BankingInfo | null;
 };
 
 export type ProfileInsert = {
