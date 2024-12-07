@@ -30,6 +30,21 @@ export const ProfessionalTab = ({ user }: ProfessionalTabProps) => {
       <p>{user.assignment_direction || "-"}</p>
       <p className="text-muted-foreground">Service</p>
       <p>{user.assignment_service || "-"}</p>
+      <p className="text-muted-foreground">Justificatif professionnel</p>
+      <p>
+        {user.professional_document_url ? (
+          <a 
+            href={user.professional_document_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:underline"
+          >
+            Télécharger le justificatif
+          </a>
+        ) : (
+          "-"
+        )}
+      </p>
     </div>
   );
 };
