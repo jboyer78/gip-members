@@ -23,10 +23,10 @@ export const LogoutButton = () => {
       <SidebarMenuButton asChild>
         <button 
           onClick={handleLogout}
-          className="w-full flex items-center space-x-4 p-4 bg-red-50 hover:bg-red-100 rounded-lg transition-all duration-300 text-left"
+          className="w-full flex items-center space-x-4 p-4 bg-red-50 hover:bg-red-200 rounded-lg transition-all duration-300 text-left group"
         >
-          <LogOut className="h-6 w-6 text-red-600" />
-          <span className="text-lg font-medium text-gray-900">
+          <LogOut className="h-6 w-6 text-red-600 group-hover:text-red-700" />
+          <span className="text-lg font-medium text-gray-900 group-hover:text-red-700">
             Déconnexion
           </span>
         </button>
