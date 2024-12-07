@@ -21,6 +21,8 @@ interface UserDetailsModalProps {
 export const UserDetailsModal = ({ user, open, onOpenChange }: UserDetailsModalProps) => {
   if (!user) return null;
 
+  const currentStatus = user.status && user.status.length > 0 ? user.status[0] : undefined;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
