@@ -37,20 +37,30 @@ const Members = () => {
     checkAuth();
   }, [navigate, toast, isAdmin, isLoadingAdmin]);
 
-  const { data: profiles, isLoading } = useQuery({
+  const { data: profiles, isLoading, error } = useQuery({
     queryKey: ['profiles'],
     queryFn: async () => {
+      console.log("Fetching profiles...");
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .order('updated_at', { ascending: false }) // Tri par date d'inscription décroissante
-        .order('last_name', { ascending: true }) // Tri secondaire par nom
-        .order('first_name', { ascending: true }); // Tri tertiaire par prénom
+        .order('updated_at', { ascending: false })
+        .order('last_name', { ascending: true })
+        .order('first_name', { ascending: true });
       
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching profiles:", error);
+        throw error;
+      }
+      
+      console.log("Fetched profiles:", data);
       return data;
     }
   });
+
+  if (error) {
+    console.error("Query error:", error);
+  }
 
   return (
     <SidebarProvider defaultOpen={true}>

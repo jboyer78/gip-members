@@ -28,6 +28,8 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
   const [serviceFilter, setServiceFilter] = useState<string>("");
   const [directionFilter, setDirectionFilter] = useState<string>("");
 
+  console.log("Raw profiles data:", profiles);
+
   const handleRowClick = (profile: Profile) => {
     setSelectedUser(profile);
     setModalOpen(true);
@@ -45,9 +47,13 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
     directionFilter
   );
 
+  console.log("Filtered profiles:", filteredProfiles);
+
   const totalPages = Math.ceil(filteredProfiles.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const displayedProfiles = filteredProfiles.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  console.log("Displayed profiles:", displayedProfiles);
 
   return (
     <div className="space-y-4">
