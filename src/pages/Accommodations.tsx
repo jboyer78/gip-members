@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/shared/AppSidebar";
@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 const Accommodations = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { isAdmin, isLoading: isLoadingAdmin } = useIsAdmin();
+  const { isAdmin, isVerified, isLoading: isLoadingAdmin } = useIsAdmin();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -20,18 +20,18 @@ const Accommodations = () => {
         return;
       }
 
-      if (!isLoadingAdmin && !isAdmin) {
+      if (!isLoadingAdmin && !isVerified && !isAdmin) {
         toast({
           variant: "destructive",
           title: "Accès refusé",
-          description: "Cette page est réservée aux administrateurs",
+          description: "Votre compte doit être vérifié pour accéder à cette page",
         });
-        navigate("/dashboard");
+        navigate("/profile");
       }
     };
 
     checkAuth();
-  }, [navigate, toast, isAdmin, isLoadingAdmin]);
+  }, [navigate, toast, isAdmin, isVerified, isLoadingAdmin]);
 
   return (
     <SidebarProvider defaultOpen={true}>
@@ -49,7 +49,6 @@ const Accommodations = () => {
           </div>
 
           <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg p-6">
-            {/* Contenu à venir */}
             <p className="text-gray-600 dark:text-gray-400">Le contenu de cette page est en cours de développement.</p>
           </div>
         </main>

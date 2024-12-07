@@ -12,7 +12,7 @@ export const useIsAdmin = () => {
       
       const { data } = await supabase
         .from('profiles')
-        .select('is_admin')
+        .select('is_admin, email_verified')
         .eq('id', user.id)
         .single();
       
@@ -23,9 +23,11 @@ export const useIsAdmin = () => {
   });
 
   console.log("isAdmin value:", profile?.is_admin);
+  console.log("isVerified value:", profile?.email_verified);
 
   return {
     isAdmin: profile?.is_admin || false,
+    isVerified: profile?.email_verified || false,
     isLoading,
   };
 };

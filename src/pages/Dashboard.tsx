@@ -8,6 +8,8 @@ import { AppSidebar } from "@/components/shared/AppSidebar";
 import { TopNavigation } from "@/components/shared/TopNavigation";
 import { supabase } from "@/integrations/supabase/client";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { useToast } from "@/hooks/use-toast";
 
 interface Publication {
   id: string;
@@ -20,17 +22,29 @@ interface Publication {
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { isAdmin, isVerified, isLoading: isLoadingAdmin } = useIsAdmin();
+  const { toast } = useToast();
 
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         navigate("/login");
+        return;
+      }
+
+      if (!isLoadingAdmin && !isVerified && !isAdmin) {
+        toast({
+          variant: "destructive",
+          title: "Accès refusé",
+          description: "Votre compte doit être vérifié pour accéder à cette page",
+        });
+        navigate("/profile");
       }
     };
 
     checkAuth();
-  }, [navigate]);
+  }, [navigate, toast, isAdmin, isVerified, isLoadingAdmin]);
 
   const { data: publications, isLoading } = useQuery({
     queryKey: ["published-publications"],
