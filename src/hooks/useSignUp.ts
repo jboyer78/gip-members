@@ -44,7 +44,8 @@ export const useSignUp = (onSwitchToLogin?: () => void) => {
     setIsSignUpLoading(true);
 
     try {
-      console.log("Starting signup process for email:", email);
+      console.log("[Signup] Starting signup process for email:", email);
+      console.log("[Signup] Redirect URL configured as:", `${window.location.origin}/login`);
       
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -57,10 +58,18 @@ export const useSignUp = (onSwitchToLogin?: () => void) => {
         }
       });
 
-      console.log("Signup API response:", { data, error });
+      console.log("[Signup] API response received:", {
+        success: !!data?.user,
+        error: error?.message || null,
+        emailDelivery: data?.user?.confirmation_sent_at ? 'initiated' : 'not initiated'
+      });
 
       if (error) {
-        console.error("Signup error details:", error);
+        console.error("[Signup] Error details:", {
+          message: error.message,
+          status: error.status,
+          name: error.name
+        });
         
         if (error.message.includes("User already registered")) {
           toast({
@@ -83,10 +92,15 @@ export const useSignUp = (onSwitchToLogin?: () => void) => {
       }
 
       if (data.user) {
-        console.log("User created successfully:", data.user);
-        console.log("Confirmation email status:", {
+        console.log("[Signup] User created successfully:", {
+          id: data.user.id,
+          email: data.user.email,
+          created_at: data.user.created_at
+        });
+        console.log("[Signup] Email confirmation details:", {
           sent_at: data.user.confirmation_sent_at,
-          email: data.user.email
+          email: data.user.email,
+          confirmed: data.user.confirmed_at ? true : false
         });
         
         toast({
@@ -97,7 +111,7 @@ export const useSignUp = (onSwitchToLogin?: () => void) => {
         return true;
       }
 
-      console.log("No user data returned from signup");
+      console.log("[Signup] No user data returned from signup");
       toast({
         variant: "destructive",
         title: "Erreur",
@@ -105,7 +119,7 @@ export const useSignUp = (onSwitchToLogin?: () => void) => {
       });
       return false;
     } catch (error) {
-      console.error("Unexpected error during signup:", error);
+      console.error("[Signup] Unexpected error:", error);
       toast({
         variant: "destructive",
         title: "Erreur",
