@@ -14,6 +14,9 @@ export const MemberTableHeader = () => {
         <TableHead>Direction</TableHead>
         <TableHead>Informations personnelles</TableHead>
         <TableHead>Informations professionnelles</TableHead>
+        <TableHead>Date de création</TableHead>
+        <TableHead>Dernière modification</TableHead>
+        <TableHead>Date de bannissement</TableHead>
         <TableHead>Actions</TableHead>
       </TableRow>
     </TableHeader>

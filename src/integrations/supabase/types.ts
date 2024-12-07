@@ -43,6 +43,7 @@ export type Database = {
           assignment_direction: string | null
           assignment_service: string | null
           avatar_url: string | null
+          banned_at: string | null
           birth_city: string | null
           birth_date: string | null
           birth_department: string | null
@@ -50,6 +51,7 @@ export type Database = {
           children_count: number | null
           city: string | null
           country: string | null
+          created_at: string
           email: string | null
           email_verified: boolean | null
           first_name: string | null
@@ -73,6 +75,7 @@ export type Database = {
           assignment_direction?: string | null
           assignment_service?: string | null
           avatar_url?: string | null
+          banned_at?: string | null
           birth_city?: string | null
           birth_date?: string | null
           birth_department?: string | null
@@ -80,6 +83,7 @@ export type Database = {
           children_count?: number | null
           city?: string | null
           country?: string | null
+          created_at?: string
           email?: string | null
           email_verified?: boolean | null
           first_name?: string | null
@@ -103,6 +107,7 @@ export type Database = {
           assignment_direction?: string | null
           assignment_service?: string | null
           avatar_url?: string | null
+          banned_at?: string | null
           birth_city?: string | null
           birth_date?: string | null
           birth_department?: string | null
@@ -110,6 +115,7 @@ export type Database = {
           children_count?: number | null
           city?: string | null
           country?: string | null
+          created_at?: string
           email?: string | null
           email_verified?: boolean | null
           first_name?: string | null

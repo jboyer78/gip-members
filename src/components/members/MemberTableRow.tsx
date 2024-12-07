@@ -5,6 +5,8 @@ import { MemberProgressBar } from "./MemberProgressBar";
 import { MemberActions } from "./MemberActions";
 import { calculateAge, calculateCompletionPercentage, calculateProfessionalCompletionPercentage } from "./utils/profileCalculations";
 import { CheckCircle, XCircle } from "lucide-react";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
 interface MemberTableRowProps {
   profile: Profile;
@@ -12,6 +14,11 @@ interface MemberTableRowProps {
 }
 
 export const MemberTableRow = ({ profile, onRowClick }: MemberTableRowProps) => {
+  const formatDate = (date: string | null) => {
+    if (!date) return "-";
+    return format(new Date(date), "dd/MM/yyyy HH:mm:ss", { locale: fr });
+  };
+
   return (
     <TableRow 
       className="cursor-pointer hover:bg-muted/50 transition-colors"
@@ -48,6 +55,15 @@ export const MemberTableRow = ({ profile, onRowClick }: MemberTableRowProps) => 
       </TableCell>
       <TableCell className="w-32">
         <MemberProgressBar value={calculateProfessionalCompletionPercentage(profile)} />
+      </TableCell>
+      <TableCell>{formatDate(profile.created_at)}</TableCell>
+      <TableCell>{formatDate(profile.updated_at)}</TableCell>
+      <TableCell>
+        {profile.banned_at ? (
+          <span className="text-red-500">{formatDate(profile.banned_at)}</span>
+        ) : (
+          "-"
+        )}
       </TableCell>
       <TableCell onClick={(e) => e.stopPropagation()}>
         <MemberActions profileId={profile.id} isAdmin={profile.is_admin || false} />
