@@ -11,9 +11,27 @@ import {
 } from "@/components/ui/sidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
 
 export function AppSidebar() {
   const navigate = useNavigate();
+
+  // Fetch the current user's admin status
+  const { data: profile } = useQuery({
+    queryKey: ['currentUserProfile'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+      
+      const { data } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', user.id)
+        .single();
+      
+      return data;
+    },
+  });
 
   const handleLogout = async () => {
     try {
@@ -55,14 +73,16 @@ export function AppSidebar() {
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-            <SidebarMenuItem className="list-none mb-4">
-              <SidebarMenuButton asChild>
-                <Link to="/members" className="flex items-center space-x-4 p-4 hover:bg-gray-700/90 rounded-lg transition-all duration-300">
-                  <Users className="h-6 w-6 text-gray-300 hover:text-white" />
-                  <span className="text-lg font-medium text-gray-300 hover:text-white">Membres</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+            {profile?.is_admin && (
+              <SidebarMenuItem className="list-none mb-4">
+                <SidebarMenuButton asChild>
+                  <Link to="/members" className="flex items-center space-x-4 p-4 hover:bg-gray-700/90 rounded-lg transition-all duration-300">
+                    <Users className="h-6 w-6 text-gray-300 hover:text-white" />
+                    <span className="text-lg font-medium text-gray-300 hover:text-white">Membres</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            )}
             <SidebarMenuItem className="list-none">
               <SidebarMenuButton asChild>
                 <a href="/annonces" className="flex items-center space-x-4 p-4 hover:bg-gray-700/90 rounded-lg transition-all duration-300">
