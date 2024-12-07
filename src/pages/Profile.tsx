@@ -11,6 +11,7 @@ import { AppSidebar } from "@/components/shared/AppSidebar";
 import { TopNavigation } from "@/components/shared/TopNavigation";
 import { StatusCard } from "@/components/profile/StatusCard";
 import { EmailCard } from "@/components/profile/EmailCard";
+import { BankingInfoCard } from "@/components/profile/BankingInfoCard";
 import { supabase } from "@/integrations/supabase/client";
 
 const Profile = () => {
@@ -69,6 +70,7 @@ const Profile = () => {
             </Card>
 
             <ProfessionalForm />
+            <BankingInfoCard />
           </div>
         </main>
       </div>
