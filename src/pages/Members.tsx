@@ -16,6 +16,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { differenceInYears } from "date-fns";
+import { Progress } from "@/components/ui/progress";
 
 const Members = () => {
   const navigate = useNavigate();
@@ -72,8 +73,7 @@ const Members = () => {
       profile[field] !== null && profile[field] !== ''
     );
 
-    const percentage = Math.round((filledFields.length / personalFields.length) * 100);
-    return `${percentage}%`;
+    return Math.round((filledFields.length / personalFields.length) * 100);
   };
 
   const calculateProfessionalCompletionPercentage = (profile: any) => {
@@ -95,8 +95,7 @@ const Members = () => {
       return profile[field] !== null && profile[field] !== '';
     });
 
-    const percentage = Math.round((filledFields.length / professionalFields.length) * 100);
-    return `${percentage}%`;
+    return Math.round((filledFields.length / professionalFields.length) * 100);
   };
 
   return (
@@ -156,8 +155,12 @@ const Members = () => {
                         <TableCell>{profile.grade || '-'}</TableCell>
                         <TableCell>{profile.assignment_service || '-'}</TableCell>
                         <TableCell>{profile.assignment_direction || '-'}</TableCell>
-                        <TableCell>{calculateCompletionPercentage(profile)}</TableCell>
-                        <TableCell>{calculateProfessionalCompletionPercentage(profile)}</TableCell>
+                        <TableCell className="w-32">
+                          <Progress value={calculateCompletionPercentage(profile)} className="h-2" />
+                        </TableCell>
+                        <TableCell className="w-32">
+                          <Progress value={calculateProfessionalCompletionPercentage(profile)} className="h-2" />
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
