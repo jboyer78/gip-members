@@ -3,12 +3,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 interface BankingInfoFormValues {
   iban: string;
+  authorize_debit: boolean;
 }
 
 export const BankingInfoCard = () => {
@@ -28,6 +30,7 @@ export const BankingInfoCard = () => {
         .upsert({ 
           profile_id: user.id,
           iban: values.iban,
+          authorize_debit: values.authorize_debit,
           updated_at: new Date().toISOString()
         });
 
@@ -60,7 +63,7 @@ export const BankingInfoCard = () => {
 
         const { data, error } = await supabase
           .from("banking_info")
-          .select("iban")
+          .select("iban, authorize_debit")
           .eq("profile_id", user.id)
           .maybeSingle();
 
@@ -70,7 +73,10 @@ export const BankingInfoCard = () => {
         }
         
         if (data) {
-          form.reset({ iban: data.iban });
+          form.reset({ 
+            iban: data.iban,
+            authorize_debit: data.authorize_debit || false
+          });
         }
       } catch (error) {
         console.error("Error fetching banking info:", error);
@@ -96,6 +102,25 @@ export const BankingInfoCard = () => {
                     <Input {...field} placeholder="FR76 XXXX XXXX XXXX XXXX XXXX XXX" />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="authorize_debit"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      J'autorise GROUPE INTERNATIONAL POLICE à effectuer sur mon compte bancaire le montant de la cotisation annuelle de 40 €
+                    </FormLabel>
+                  </div>
                 </FormItem>
               )}
             />
