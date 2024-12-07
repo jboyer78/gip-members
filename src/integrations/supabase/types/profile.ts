@@ -26,6 +26,7 @@ export type Profile = {
   assignment_direction: string | null;
   assignment_service: string | null;
   professional_document_url: string | null;
+  is_admin: boolean | null;
 };
 
 export type ProfileInsert = {
