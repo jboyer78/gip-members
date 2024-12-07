@@ -6,6 +6,7 @@ import { TopNavigation } from "@/components/shared/TopNavigation";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { PublicationsTable } from "@/components/publications/PublicationsTable";
 
 const Publications = () => {
   const navigate = useNavigate();
@@ -52,9 +53,7 @@ const Publications = () => {
           </div>
 
           <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg p-6">
-            <p className="text-gray-600 dark:text-gray-400">
-              Contenu de la page Publications à venir...
-            </p>
+            <PublicationsTable />
           </div>
         </main>
       </div>
