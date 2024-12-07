@@ -97,11 +97,29 @@ export const useSignUp = (onSwitchToLogin?: () => void) => {
           email: data.user.email,
           created_at: data.user.created_at
         });
-        console.log("[Signup] Email confirmation details:", {
-          sent_at: data.user.confirmation_sent_at,
-          email: data.user.email,
-          confirmed: data.user.confirmed_at ? true : false
-        });
+
+        // Envoi de l'email de confirmation via notre fonction Edge
+        try {
+          const response = await fetch(
+            `${window.location.origin}/functions/v1/send-confirmation`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+              },
+              body: JSON.stringify({ email }),
+            }
+          );
+
+          if (!response.ok) {
+            console.error("[Signup] Error sending confirmation email:", await response.text());
+          } else {
+            console.log("[Signup] Confirmation email sent successfully");
+          }
+        } catch (emailError) {
+          console.error("[Signup] Error calling send-confirmation function:", emailError);
+        }
         
         toast({
           title: "Inscription réussie",
