@@ -1,14 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useImageResize } from "@/hooks/use-image-resize";
+import { EditPublicationFormFields } from "./EditPublicationFormFields";
+import { EditPublicationFormActions } from "./EditPublicationFormActions";
 
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
@@ -32,18 +31,27 @@ interface EditPublicationDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export const EditPublicationDialog = ({ publication, open, onOpenChange }: EditPublicationDialogProps) => {
+export const EditPublicationDialog = ({ 
+  publication, 
+  open, 
+  onOpenChange 
+}: EditPublicationDialogProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { resizeImage } = useImageResize();
 
-  const form = useForm<EditPublicationFormValues>({
-    defaultValues: {
-      title: publication?.title || "",
-      content: publication?.content || "",
-    },
-  });
+  const form = useForm<EditPublicationFormValues>();
+
+  // Initialize form with publication data when it changes
+  useEffect(() => {
+    if (publication) {
+      form.reset({
+        title: publication.title,
+        content: publication.content,
+      });
+    }
+  }, [publication, form]);
 
   const validateFile = (file: File) => {
     if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
@@ -131,76 +139,15 @@ export const EditPublicationDialog = ({ publication, open, onOpenChange }: EditP
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="image"
-              render={({ field: { onChange, value, ...field } }) => (
-                <FormItem>
-                  <FormLabel>Image</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="file"
-                      accept={ACCEPTED_IMAGE_TYPES.join(',')}
-                      onChange={(e) => onChange(e.target.files)}
-                      {...field}
-                    />
-                  </FormControl>
-                  <p className="text-sm text-gray-500">
-                    Formats acceptés : JPEG, PNG, WEBP. Taille max : 1MB
-                  </p>
-                  {publication?.image_url && (
-                    <img
-                      src={publication.image_url}
-                      alt="Current"
-                      className="mt-2 w-32 h-32 object-cover rounded-md"
-                    />
-                  )}
-                  <FormMessage />
-                </FormItem>
-              )}
+            <EditPublicationFormFields
+              form={form}
+              publication={publication}
+              ACCEPTED_IMAGE_TYPES={ACCEPTED_IMAGE_TYPES}
             />
-
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Titre</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+            <EditPublicationFormActions
+              isSubmitting={isSubmitting}
+              onCancel={() => onOpenChange(false)}
             />
-
-            <FormField
-              control={form.control}
-              name="content"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Contenu</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} rows={5} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="flex justify-end gap-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={isSubmitting}
-              >
-                Annuler
-              </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Modification..." : "Modifier"}
-              </Button>
-            </div>
           </form>
         </Form>
       </DialogContent>
