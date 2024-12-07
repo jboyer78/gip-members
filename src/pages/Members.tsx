@@ -67,8 +67,8 @@ const Members = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Nom</TableHead>
                       <TableHead>Prénom</TableHead>
+                      <TableHead>Nom</TableHead>
                       <TableHead>Email</TableHead>
                       <TableHead>Grade</TableHead>
                       <TableHead>Service</TableHead>
@@ -78,8 +78,8 @@ const Members = () => {
                   <TableBody>
                     {profiles?.map((profile) => (
                       <TableRow key={profile.id}>
-                        <TableCell className="font-medium">{profile.last_name || '-'}</TableCell>
                         <TableCell>{profile.first_name || '-'}</TableCell>
+                        <TableCell className="font-medium">{profile.last_name || '-'}</TableCell>
                         <TableCell>{profile.email || '-'}</TableCell>
                         <TableCell>{profile.grade || '-'}</TableCell>
                         <TableCell>{profile.assignment_service || '-'}</TableCell>
