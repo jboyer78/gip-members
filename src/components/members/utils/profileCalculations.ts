@@ -30,7 +30,7 @@ export const calculateProfessionalCompletionPercentage = (profile: Profile) => {
   total += 4; // assignment_service, assignment_direction, professional_status, professional_document_url
   if (profile.assignment_service) completed++;
   if (profile.assignment_direction) completed++;
-  if (profile.professional_status) completed++;
+  if (profile.professional_status && profile.professional_status.length > 0) completed++;
   if (profile.professional_document_url) completed++;
 
   return total === 0 ? 0 : Math.round((completed / total) * 100);
@@ -42,9 +42,9 @@ export const calculateBankingCompletionPercentage = (profile: Profile) => {
 
   // Check if banking info exists
   if (profile.banking_info) {
-    total += 2; // IBAN and authorize_debit fields
+    total = 2; // IBAN and authorize_debit fields
     if (profile.banking_info.iban) completed++;
-    if (profile.banking_info.authorize_debit) completed++;
+    if (profile.banking_info.authorize_debit === true) completed++;
   }
 
   return total === 0 ? 0 : Math.round((completed / total) * 100);

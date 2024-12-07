@@ -11,6 +11,8 @@ import { useState } from "react";
 import { MembersFilters } from "./filters/MembersFilters";
 import { MembersPagination } from "./pagination/MembersPagination";
 import { filterProfiles } from "./utils/filterProfiles";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface MembersTableProps {
   profiles: Profile[] | null;
@@ -28,7 +30,31 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
   const [serviceFilter, setServiceFilter] = useState<string>("");
   const [directionFilter, setDirectionFilter] = useState<string>("");
 
-  console.log("Raw profiles data:", profiles);
+  const { data: profilesWithBankingInfo } = useQuery({
+    queryKey: ['profiles-with-banking'],
+    queryFn: async () => {
+      const { data: profiles, error } = await supabase
+        .from('profiles')
+        .select(`
+          *,
+          banking_info (*)
+        `)
+        .order('updated_at', { ascending: false })
+        .order('last_name', { ascending: true })
+        .order('first_name', { ascending: true });
+
+      if (error) {
+        console.error("Error fetching profiles with banking info:", error);
+        throw error;
+      }
+
+      console.log("Profiles with banking info:", profiles);
+      return profiles;
+    },
+    enabled: !isLoading && !!profiles
+  });
+
+  console.log("Raw profiles data:", profilesWithBankingInfo);
 
   const handleRowClick = (profile: Profile) => {
     setSelectedUser(profile);
@@ -40,7 +66,7 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
   }
 
   const filteredProfiles = filterProfiles(
-    profiles,
+    profilesWithBankingInfo || [],
     searchQuery,
     gradeFilter,
     serviceFilter,
