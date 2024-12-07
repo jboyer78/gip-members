@@ -30,18 +30,20 @@ export const DocumentUpload = ({ form }: DocumentUploadProps) => {
       const documentUrl = form.getValues('professional_document_url');
       if (!documentUrl) return;
 
-      // Extract the file path from the URL using the bucket name
-      const bucketPath = 'professional_docs/';
-      const filePathMatch = documentUrl.match(new RegExp(`${bucketPath}(.+)`));
-      const filePath = filePathMatch ? filePathMatch[1] : null;
+      // Get the file path by splitting the URL and taking the last part
+      const urlParts = documentUrl.split('/');
+      const fileName = urlParts[urlParts.length - 1];
       
-      if (!filePath) return;
+      console.log('Attempting to delete file:', fileName);
 
       const { error } = await supabase.storage
         .from('professional_docs')
-        .remove([filePath]);
+        .remove([fileName]);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error deleting file:', error);
+        throw error;
+      }
 
       form.setValue('professional_document_url', '');
       
@@ -50,12 +52,12 @@ export const DocumentUpload = ({ form }: DocumentUploadProps) => {
         description: "Le justificatif professionnel a été supprimé avec succès",
       });
     } catch (error) {
+      console.error('Error deleting document:', error);
       toast({
         variant: "destructive",
         title: "Erreur",
         description: "Une erreur est survenue lors de la suppression du document",
       });
-      console.error('Error deleting document:', error);
     }
   };
 
