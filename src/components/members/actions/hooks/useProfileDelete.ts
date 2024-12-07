@@ -9,20 +9,42 @@ export const useProfileDelete = () => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const deleteProfile = async (profileId: string) => {
-    console.log("Deleting profile:", profileId);
+    console.log("Starting deletion process for profile:", profileId);
     setIsDeleting(true);
 
     try {
-      const { error } = await supabase
+      // First, check if the profile exists
+      const { data: existingProfile, error: fetchError } = await supabase
         .from('profiles')
-        .delete()
-        .eq('id', profileId);
+        .select('id')
+        .eq('id', profileId)
+        .single();
 
-      if (error) {
-        console.error('Error deleting profile:', error);
-        throw error;
+      if (fetchError) {
+        console.error('Error fetching profile:', fetchError);
+        throw new Error('Could not verify profile existence');
       }
 
+      if (!existingProfile) {
+        console.error('Profile not found:', profileId);
+        throw new Error('Profile not found');
+      }
+
+      // Attempt to delete the profile
+      const { error: deleteError, data: deleteData } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', profileId)
+        .select();
+
+      console.log("Delete response:", { deleteError, deleteData });
+
+      if (deleteError) {
+        console.error('Error deleting profile:', deleteError);
+        throw deleteError;
+      }
+
+      // Invalidate the cache only if deletion was successful
       await queryClient.invalidateQueries({ queryKey: ['profiles'] });
 
       toast({
@@ -34,7 +56,7 @@ export const useProfileDelete = () => {
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue lors de la suppression du profil.",
+        description: "Une erreur est survenue lors de la suppression du profil. Veuillez réessayer.",
       });
     } finally {
       setIsDeleting(false);
