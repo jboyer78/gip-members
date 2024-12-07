@@ -43,8 +43,9 @@ const Members = () => {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .order('last_name', { ascending: true })
-        .order('first_name', { ascending: true }); // Ajout d'un tri secondaire
+        .order('updated_at', { ascending: false }) // Tri par date d'inscription décroissante
+        .order('last_name', { ascending: true }) // Tri secondaire par nom
+        .order('first_name', { ascending: true }); // Tri tertiaire par prénom
       
       if (error) throw error;
       return data;
