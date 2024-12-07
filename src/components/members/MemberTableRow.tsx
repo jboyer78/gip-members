@@ -1,4 +1,4 @@
-import { Profile } from "@/integrations/supabase/types/profile";
+import { Profile } from "@/integrations/supabase/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { MemberProgressBar } from "./MemberProgressBar";
@@ -7,11 +7,15 @@ import { calculateAge, calculateCompletionPercentage, calculateProfessionalCompl
 
 interface MemberTableRowProps {
   profile: Profile;
+  onRowClick: (profile: Profile) => void;
 }
 
-export const MemberTableRow = ({ profile }: MemberTableRowProps) => {
+export const MemberTableRow = ({ profile, onRowClick }: MemberTableRowProps) => {
   return (
-    <TableRow>
+    <TableRow 
+      className="cursor-pointer hover:bg-muted/50 transition-colors"
+      onClick={() => onRowClick(profile)}
+    >
       <TableCell>
         <Avatar className="h-10 w-10">
           <AvatarImage src={profile.avatar_url || ''} />
@@ -35,7 +39,7 @@ export const MemberTableRow = ({ profile }: MemberTableRowProps) => {
       <TableCell className="w-32">
         <MemberProgressBar value={calculateProfessionalCompletionPercentage(profile)} />
       </TableCell>
-      <TableCell>
+      <TableCell onClick={(e) => e.stopPropagation()}>
         <MemberActions profileId={profile.id} />
       </TableCell>
     </TableRow>
