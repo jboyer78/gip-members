@@ -4,11 +4,12 @@ import { Label } from "@/components/ui/label";
 interface EmailFieldProps {
   value: string;
   onChange: (value: string) => void;
+  label: string;
 }
 
-const EmailField = ({ value, onChange }: EmailFieldProps) => (
+const EmailField = ({ value, onChange, label }: EmailFieldProps) => (
   <div>
-    <Label htmlFor="signUpEmail">Adresse email</Label>
+    <Label htmlFor="signUpEmail">{label}</Label>
     <Input
       id="signUpEmail"
       type="email"
