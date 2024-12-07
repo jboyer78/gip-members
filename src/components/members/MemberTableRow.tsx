@@ -66,7 +66,11 @@ export const MemberTableRow = ({ profile, onRowClick }: MemberTableRowProps) => 
         )}
       </TableCell>
       <TableCell onClick={(e) => e.stopPropagation()}>
-        <MemberActions profileId={profile.id} isAdmin={profile.is_admin || false} />
+        <MemberActions 
+          profileId={profile.id} 
+          isAdmin={profile.is_admin || false} 
+          isBanned={!!profile.banned_at}
+        />
       </TableCell>
     </TableRow>
   );
