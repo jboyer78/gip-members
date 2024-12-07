@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Edit, Trash2, CheckSquare, XSquare } from "lucide-react";
+import { CheckSquare, XSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Table,
@@ -12,13 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 import { EditPublicationDialog } from "./EditPublicationDialog";
 import {
   Dialog,
@@ -29,6 +24,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { PublicationActions } from "./PublicationActions";
 
 interface Publication {
   id: string;
@@ -37,7 +33,7 @@ interface Publication {
   image_url: string | null;
   created_at: string;
   updated_at: string;
-  is_published?: boolean;
+  is_published: boolean;
 }
 
 export const PublicationsTable = () => {
@@ -115,7 +111,6 @@ export const PublicationsTable = () => {
               <TableHead>Contenu</TableHead>
               <TableHead>Date de création</TableHead>
               <TableHead>Date de modification</TableHead>
-              <TableHead>Publication</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -149,45 +144,12 @@ export const PublicationsTable = () => {
                     locale: fr,
                   })}
                 </TableCell>
-                <TableCell>
-                  {publication.is_published ? (
-                    <CheckSquare className="h-5 w-5 text-success" />
-                  ) : (
-                    <XSquare className="h-5 w-5 text-muted-foreground" />
-                  )}
-                </TableCell>
-                <TableCell className="text-right space-x-2">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="hover:text-primary"
-                        onClick={() => handleEdit(publication)}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Modifier</p>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="hover:text-destructive"
-                        onClick={() => handleDeleteClick(publication)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Supprimer</p>
-                    </TooltipContent>
-                  </Tooltip>
+                <TableCell className="text-right">
+                  <PublicationActions
+                    publication={publication}
+                    onEdit={() => handleEdit(publication)}
+                    onDelete={() => handleDeleteClick(publication)}
+                  />
                 </TableCell>
               </TableRow>
             ))}
