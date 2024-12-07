@@ -8,7 +8,11 @@ import EmailField from "./EmailField";
 import PasswordField from "./PasswordField";
 import { LoginCaptcha } from "./login/LoginCaptcha";
 
-const SignUpForm = () => {
+interface SignUpFormProps {
+  onSwitchToLogin?: () => void;
+}
+
+const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
   const [signUpEmail, setSignUpEmail] = useState("");
   const [signUpPassword, setSignUpPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -62,6 +66,20 @@ const SignUpForm = () => {
       });
 
       if (error) {
+        console.log("Signup error:", error);
+        
+        if (error.message.includes("User already registered")) {
+          toast({
+            variant: "destructive",
+            title: "Compte existant",
+            description: "Un compte existe déjà avec cette adresse email. Veuillez vous connecter.",
+          });
+          if (onSwitchToLogin) {
+            onSwitchToLogin();
+          }
+          return;
+        }
+
         toast({
           variant: "destructive",
           title: "Erreur d'inscription",

@@ -1,8 +1,15 @@
+import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LoginForm from "@/components/auth/LoginForm";
 import SignUpForm from "@/components/auth/SignUpForm";
 
 const Login = () => {
+  const [activeTab, setActiveTab] = useState("login");
+
+  const handleSwitchToLogin = () => {
+    setActiveTab("login");
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8 md:px-0">
       <div className="w-full max-w-md space-y-6 md:space-y-8 p-6 md:p-8 bg-white rounded-lg shadow-lg">
@@ -17,7 +24,7 @@ const Login = () => {
           </p>
         </div>
 
-        <Tabs defaultValue="login" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="login">Connexion</TabsTrigger>
             <TabsTrigger value="signup">Inscription</TabsTrigger>
@@ -28,7 +35,7 @@ const Login = () => {
           </TabsContent>
 
           <TabsContent value="signup">
-            <SignUpForm />
+            <SignUpForm onSwitchToLogin={handleSwitchToLogin} />
           </TabsContent>
         </Tabs>
       </div>
