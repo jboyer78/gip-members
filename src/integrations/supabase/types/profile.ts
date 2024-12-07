@@ -9,7 +9,7 @@ export type Profile = {
   phone_home: string | null;
   phone_mobile: string | null;
   email: string | null;
-  email_verified: boolean;
+  email_verified: boolean | null;
   updated_at: string;
   avatar_url: string | null;
   birth_date: string | null;

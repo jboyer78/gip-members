@@ -24,6 +24,7 @@ export type Database = {
           city: string | null
           country: string | null
           email: string | null
+          email_verified: boolean | null
           first_name: string | null
           grade: string | null
           id: string
@@ -52,6 +53,7 @@ export type Database = {
           city?: string | null
           country?: string | null
           email?: string | null
+          email_verified?: boolean | null
           first_name?: string | null
           grade?: string | null
           id: string
@@ -80,6 +82,7 @@ export type Database = {
           city?: string | null
           country?: string | null
           email?: string | null
+          email_verified?: boolean | null
           first_name?: string | null
           grade?: string | null
           id?: string
