@@ -45,8 +45,23 @@ export const useSignUp = (onSwitchToLogin?: () => void) => {
 
     try {
       console.log("[Signup] Starting signup process for email:", email);
-      console.log("[Signup] Redirect URL configured as:", `${window.location.origin}/login`);
       
+      // Vérifier d'abord si l'utilisateur existe
+      const { data: { user: existingUser }, error: checkError } = await supabase.auth.getUser();
+      
+      if (existingUser) {
+        toast({
+          variant: "destructive",
+          title: "Compte existant",
+          description: "Un compte existe déjà avec cette adresse email. Veuillez vous connecter.",
+        });
+        if (onSwitchToLogin) {
+          onSwitchToLogin();
+        }
+        return false;
+      }
+
+      // Procéder à l'inscription
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -56,12 +71,6 @@ export const useSignUp = (onSwitchToLogin?: () => void) => {
             email_confirmed: false,
           }
         }
-      });
-
-      console.log("[Signup] API response received:", {
-        success: !!data?.user,
-        error: error?.message || null,
-        emailDelivery: data?.user?.confirmation_sent_at ? 'initiated' : 'not initiated'
       });
 
       if (error) {
@@ -98,7 +107,6 @@ export const useSignUp = (onSwitchToLogin?: () => void) => {
           created_at: data.user.created_at
         });
 
-        // Envoi de l'email de confirmation via notre fonction Edge
         try {
           const { data: emailData, error: emailError } = await supabase.functions.invoke(
             'send-confirmation',
@@ -112,17 +120,26 @@ export const useSignUp = (onSwitchToLogin?: () => void) => {
 
           if (emailError) {
             console.error("[Signup] Error sending confirmation email:", emailError);
+            toast({
+              variant: "destructive",
+              title: "Erreur",
+              description: "L'inscription a réussi mais l'envoi de l'email a échoué. Veuillez réessayer de vous connecter.",
+            });
           } else {
             console.log("[Signup] Confirmation email sent successfully:", emailData);
+            toast({
+              title: "Inscription réussie",
+              description: "Un email de confirmation vous a été envoyé",
+            });
           }
         } catch (emailError) {
           console.error("[Signup] Error calling send-confirmation function:", emailError);
+          toast({
+            variant: "destructive",
+            title: "Erreur",
+            description: "L'inscription a réussi mais l'envoi de l'email a échoué. Veuillez réessayer de vous connecter.",
+          });
         }
-        
-        toast({
-          title: "Inscription réussie",
-          description: "Un email de confirmation vous a été envoyé",
-        });
         
         return true;
       }

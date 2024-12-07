@@ -20,29 +20,47 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending confirmation email to:", email);
     console.log("Redirect URL:", redirectUrl);
 
-    // Create a signup token using Supabase's auth API
-    const tokenResponse = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
-      method: "POST",
+    // Vérifier si l'utilisateur existe déjà
+    const checkUserResponse = await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
       },
-      body: JSON.stringify({
-        email,
-        password: crypto.randomUUID(), // temporary password
-        data: { email_confirmed: false },
-      }),
     });
 
-    if (!tokenResponse.ok) {
-      const error = await tokenResponse.text();
-      console.error("Error generating signup token:", error);
-      throw new Error("Failed to generate signup token");
+    const users = await checkUserResponse.json();
+    const existingUser = users.find((user: any) => user.email === email);
+
+    if (existingUser) {
+      console.log("User already exists, sending password reset email instead");
+      // Envoyer un email de réinitialisation de mot de passe
+      const resetResponse = await fetch(`${SUPABASE_URL}/auth/v1/recover`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+        },
+        body: JSON.stringify({
+          email,
+          gotrue_meta_security: {},
+        }),
+      });
+
+      if (!resetResponse.ok) {
+        throw new Error("Failed to send password reset email");
+      }
+
+      return new Response(
+        JSON.stringify({ message: "Password reset email sent" }),
+        {
+          status: 200,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
     }
 
-    const tokenData = await tokenResponse.json();
-    const confirmationToken = tokenData.confirmation_token;
-
+    // Si l'utilisateur n'existe pas, procéder à l'inscription
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -56,7 +74,7 @@ const handler = async (req: Request): Promise<Response> => {
         html: `
           <h1>Bienvenue sur GIP France</h1>
           <p>Merci de confirmer votre inscription en cliquant sur le lien ci-dessous :</p>
-          <a href="${SUPABASE_URL}/auth/v1/verify?token=${confirmationToken}&type=signup&redirect_to=${redirectUrl}/login">
+          <a href="${redirectUrl}/login">
             Confirmer mon email
           </a>
         `,
