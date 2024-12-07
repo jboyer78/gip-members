@@ -156,10 +156,16 @@ const Members = () => {
                         <TableCell>{profile.assignment_service || '-'}</TableCell>
                         <TableCell>{profile.assignment_direction || '-'}</TableCell>
                         <TableCell className="w-32">
-                          <Progress value={calculateCompletionPercentage(profile)} className="h-2" />
+                          <div className="space-y-1">
+                            <Progress value={calculateCompletionPercentage(profile)} className="h-2" />
+                            <p className="text-xs text-gray-500 dark:text-gray-400 text-right">{calculateCompletionPercentage(profile)}%</p>
+                          </div>
                         </TableCell>
                         <TableCell className="w-32">
-                          <Progress value={calculateProfessionalCompletionPercentage(profile)} className="h-2" />
+                          <div className="space-y-1">
+                            <Progress value={calculateProfessionalCompletionPercentage(profile)} className="h-2" />
+                            <p className="text-xs text-gray-500 dark:text-gray-400 text-right">{calculateProfessionalCompletionPercentage(profile)}%</p>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
