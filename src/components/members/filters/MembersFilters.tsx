@@ -32,7 +32,7 @@ export const MembersFilters = ({
   const uniqueDirections = Array.from(new Set(profiles?.map(p => p.assignment_direction).filter(Boolean) || []));
 
   const handleFilterChange = (setter: (value: string) => void) => (value: string) => {
-    setter(value);
+    setter(value === "all" ? "" : value);
     setCurrentPage(1);
   };
 
@@ -48,7 +48,7 @@ export const MembersFilters = ({
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <SelectFilter
-          value={gradeFilter}
+          value={gradeFilter || "all"}
           onChange={handleFilterChange(setGradeFilter)}
           placeholder="Filtrer par grade"
           options={uniqueGrades}
@@ -56,7 +56,7 @@ export const MembersFilters = ({
         />
 
         <SelectFilter
-          value={serviceFilter}
+          value={serviceFilter || "all"}
           onChange={handleFilterChange(setServiceFilter)}
           placeholder="Filtrer par service"
           options={uniqueServices}
@@ -64,7 +64,7 @@ export const MembersFilters = ({
         />
 
         <SelectFilter
-          value={directionFilter}
+          value={directionFilter || "all"}
           onChange={handleFilterChange(setDirectionFilter)}
           placeholder="Filtrer par direction"
           options={uniqueDirections}
