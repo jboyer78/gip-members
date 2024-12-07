@@ -23,10 +23,18 @@ export const StatusTab = ({ user }: StatusTabProps) => {
     }
   });
 
+  // Récupérer le dernier commentaire correspondant au statut actuel
+  const latestComment = statusComments?.find(
+    comment => comment.status === user.status?.[0]
+  )?.comment;
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
-        <StatusDisplay currentStatus={user.status?.[0]} />
+        <StatusDisplay 
+          currentStatus={user.status?.[0]} 
+          latestComment={latestComment}
+        />
       </div>
       
       <StatusUpdateForm user={user} />
