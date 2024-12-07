@@ -48,13 +48,9 @@ const Dashboard = () => {
               </AspectRatio>
               <div className="p-6">
                 <h2 className="text-xl font-semibold mb-4">Comment bien démarrer avec React</h2>
-                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                <p className="text-gray-600 dark:text-gray-400">
                   Un guide complet pour comprendre les bases de React et commencer à développer des applications web modernes.
                 </p>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">5 min de lecture</span>
-                  <button className="text-primary hover:underline">Lire plus</button>
-                </div>
               </div>
             </article>
             
@@ -68,13 +64,9 @@ const Dashboard = () => {
               </AspectRatio>
               <div className="p-6">
                 <h2 className="text-xl font-semibold mb-4">Les meilleures pratiques Tailwind CSS</h2>
-                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                <p className="text-gray-600 dark:text-gray-400">
                   Découvrez comment optimiser votre workflow avec Tailwind CSS et créer des interfaces utilisateur élégantes.
                 </p>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">7 min de lecture</span>
-                  <button className="text-primary hover:underline">Lire plus</button>
-                </div>
               </div>
             </article>
             
@@ -88,13 +80,9 @@ const Dashboard = () => {
               </AspectRatio>
               <div className="p-6">
                 <h2 className="text-xl font-semibold mb-4">TypeScript pour les débutants</h2>
-                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                <p className="text-gray-600 dark:text-gray-400">
                   Un aperçu des fonctionnalités essentielles de TypeScript et comment les utiliser dans vos projets.
                 </p>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">6 min de lecture</span>
-                  <button className="text-primary hover:underline">Lire plus</button>
-                </div>
               </div>
             </article>
           </div>
