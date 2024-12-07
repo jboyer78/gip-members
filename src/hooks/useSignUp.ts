@@ -92,6 +92,16 @@ export const useSignUp = (onSwitchToLogin?: () => void) => {
           return false;
         }
 
+        // Gestion spécifique de l'erreur de limite d'envoi d'emails
+        if (error.message.includes("rate limit") || error.status === 429) {
+          toast({
+            variant: "destructive",
+            title: "Limite d'envoi atteinte",
+            description: "Trop de tentatives d'inscription. Veuillez réessayer dans quelques minutes.",
+          });
+          return false;
+        }
+
         toast({
           variant: "destructive",
           title: "Erreur d'inscription",
