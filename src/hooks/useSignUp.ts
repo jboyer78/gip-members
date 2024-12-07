@@ -44,16 +44,23 @@ export const useSignUp = (onSwitchToLogin?: () => void) => {
     setIsSignUpLoading(true);
 
     try {
-      console.log("Attempting signup with email:", email);
+      console.log("Starting signup process for email:", email);
+      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/login`,
+          data: {
+            email_confirmed: false,
+          }
+        }
       });
 
-      console.log("Signup response:", { data, error });
+      console.log("Signup API response:", { data, error });
 
       if (error) {
-        console.log("Signup error:", error);
+        console.error("Signup error details:", error);
         
         if (error.message.includes("User already registered")) {
           toast({
@@ -77,6 +84,10 @@ export const useSignUp = (onSwitchToLogin?: () => void) => {
 
       if (data.user) {
         console.log("User created successfully:", data.user);
+        console.log("Confirmation email status:", {
+          sent_at: data.user.confirmation_sent_at,
+          email: data.user.email
+        });
         
         toast({
           title: "Inscription réussie",
@@ -86,7 +97,7 @@ export const useSignUp = (onSwitchToLogin?: () => void) => {
         return true;
       }
 
-      console.log("No user data returned");
+      console.log("No user data returned from signup");
       toast({
         variant: "destructive",
         title: "Erreur",
@@ -94,7 +105,7 @@ export const useSignUp = (onSwitchToLogin?: () => void) => {
       });
       return false;
     } catch (error) {
-      console.error("Erreur lors de l'inscription:", error);
+      console.error("Unexpected error during signup:", error);
       toast({
         variant: "destructive",
         title: "Erreur",
