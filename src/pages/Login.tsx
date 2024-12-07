@@ -10,7 +10,7 @@ const Login = () => {
           <img 
             src="/lovable-uploads/e17e4ca6-2674-4aa6-999e-4b76b7ae8f32.png" 
             alt="Logo GIP" 
-            className="w-48 h-48 mx-auto mb-4"
+            className="w-64 h-64 mx-auto mb-4"
           />
           <p className="mt-2 text-sm md:text-base text-gray-600">
             Connectez-vous ou créez un compte
