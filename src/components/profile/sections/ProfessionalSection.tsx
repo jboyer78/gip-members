@@ -1,10 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { ProfessionalFields } from "../fields/ProfessionalFields";
+import { ProfessionalFields } from "../ProfessionalFields";
+import { UserCog } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import { ProfessionalFormValues } from "../types";
-import { UserCog } from "lucide-react";
 
 interface ProfessionalSectionProps {
   form: UseFormReturn<ProfessionalFormValues>;

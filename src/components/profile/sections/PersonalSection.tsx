@@ -1,10 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { ProfileFormFields } from "../fields/ProfileFormFields";
+import { ProfileFormFields } from "../ProfileFormFields";
+import { UserRound } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import { ProfileFormValues } from "../types";
-import { UserRound } from "lucide-react";
 
 interface PersonalSectionProps {
   form: UseFormReturn<ProfileFormValues>;
