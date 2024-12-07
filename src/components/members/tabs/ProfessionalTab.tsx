@@ -15,7 +15,7 @@ export const ProfessionalTab = ({ user }: ProfessionalTabProps) => {
   return (
     <div className="grid grid-cols-2 gap-2">
       <p className="text-muted-foreground">Situation professionnelle</p>
-      <p>{user.administration || "-"}</p>
+      <p>Sympathisant</p>
       <p className="text-muted-foreground">Administration</p>
       <p>{user.administration || "-"}</p>
       <p className="text-muted-foreground">Date d'entrée</p>
