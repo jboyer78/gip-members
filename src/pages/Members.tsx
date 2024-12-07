@@ -14,6 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Members = () => {
   const navigate = useNavigate();
@@ -67,6 +68,7 @@ const Members = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead>Photo</TableHead>
                       <TableHead>Prénom</TableHead>
                       <TableHead>Nom</TableHead>
                       <TableHead>Email</TableHead>
@@ -78,6 +80,16 @@ const Members = () => {
                   <TableBody>
                     {profiles?.map((profile) => (
                       <TableRow key={profile.id}>
+                        <TableCell>
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={profile.avatar_url || ''} />
+                            <AvatarFallback>
+                              {profile.first_name && profile.last_name 
+                                ? `${profile.first_name[0]}${profile.last_name[0]}`
+                                : 'U'}
+                            </AvatarFallback>
+                          </Avatar>
+                        </TableCell>
                         <TableCell>{profile.first_name || '-'}</TableCell>
                         <TableCell>{profile.last_name || '-'}</TableCell>
                         <TableCell>{profile.email || '-'}</TableCell>
