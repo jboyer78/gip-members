@@ -18,6 +18,41 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const checkIpAddress = async () => {
+    try {
+      const response = await fetch("https://api.ipify.org?format=json");
+      const { ip } = await response.json();
+      
+      const checkResponse = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/check-ip`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({ ip_address: ip }),
+        }
+      );
+
+      const result: { suspicious: boolean; message?: string } = await checkResponse.json();
+      
+      if (result.suspicious) {
+        toast({
+          variant: "destructive",
+          title: "Accès refusé",
+          description: result.message || "Activité suspecte détectée",
+        });
+        return false;
+      }
+      
+      return true;
+    } catch (error) {
+      console.error("Erreur lors de la vérification de l'IP:", error);
+      return true; // En cas d'erreur, on permet la connexion pour ne pas bloquer les utilisateurs
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -33,6 +68,13 @@ const LoginForm = () => {
     setIsLoading(true);
 
     try {
+      // Vérifier l'IP avant de tenter la connexion
+      const ipCheck = await checkIpAddress();
+      if (!ipCheck) {
+        setIsLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
