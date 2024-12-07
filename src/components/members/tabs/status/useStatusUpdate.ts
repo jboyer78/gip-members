@@ -27,6 +27,7 @@ export const useStatusUpdate = (user: Profile) => {
         throw new Error("No user found");
       }
 
+      // Ensure status is a single-element array to comply with the check constraint
       const statusArray = [newStatus];
       console.log("Updating profile with status:", statusArray);
 
