@@ -30,8 +30,10 @@ export const DocumentUpload = ({ form }: DocumentUploadProps) => {
       const documentUrl = form.getValues('professional_document_url');
       if (!documentUrl) return;
 
-      // Extract the file path from the URL
-      const filePath = documentUrl.split('/').pop();
+      // Extract the file path from the URL by removing the base storage URL
+      const storageBaseUrl = `${supabase.storageUrl}/object/public/professional_docs/`;
+      const filePath = documentUrl.replace(storageBaseUrl, '');
+      
       if (!filePath) return;
 
       const { error } = await supabase.storage
