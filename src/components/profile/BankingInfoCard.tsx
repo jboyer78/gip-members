@@ -24,14 +24,40 @@ export const BankingInfoCard = () => {
       
       if (!user) return;
 
-      const { error } = await supabase
+      // First check if a record exists
+      const { data: existingRecord } = await supabase
         .from("banking_info")
-        .upsert({ 
-          profile_id: user.id,
-          iban: values.iban,
-          authorize_debit: values.authorize_debit,
-          updated_at: new Date().toISOString()
-        });
+        .select("id")
+        .eq("profile_id", user.id)
+        .single();
+
+      let error;
+      
+      if (existingRecord) {
+        // Update existing record
+        const { error: updateError } = await supabase
+          .from("banking_info")
+          .update({ 
+            iban: values.iban,
+            authorize_debit: values.authorize_debit,
+            updated_at: new Date().toISOString()
+          })
+          .eq("profile_id", user.id);
+          
+        error = updateError;
+      } else {
+        // Insert new record
+        const { error: insertError } = await supabase
+          .from("banking_info")
+          .insert({ 
+            profile_id: user.id,
+            iban: values.iban,
+            authorize_debit: values.authorize_debit,
+            updated_at: new Date().toISOString()
+          });
+          
+        error = insertError;
+      }
 
       if (error) throw error;
 
