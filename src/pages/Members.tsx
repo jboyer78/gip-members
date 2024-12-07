@@ -6,20 +6,41 @@ import { AppSidebar } from "@/components/shared/AppSidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { MembersHeader } from "@/components/members/MembersHeader";
 import { MembersTable } from "@/components/members/MembersTable";
+import { useToast } from "@/hooks/use-toast";
 
 const Members = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
+  // Check both authentication and admin status
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuthAndAdmin = async () => {
       const { data: { user } } = await supabase.auth.getUser();
+      
       if (!user) {
         navigate("/login");
+        return;
+      }
+
+      // Check if user is admin
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', user.id)
+        .single();
+
+      if (!profile?.is_admin) {
+        toast({
+          variant: "destructive",
+          title: "Accès refusé",
+          description: "Cette page est réservée aux administrateurs",
+        });
+        navigate("/dashboard");
       }
     };
 
-    checkAuth();
-  }, [navigate]);
+    checkAuthAndAdmin();
+  }, [navigate, toast]);
 
   const { data: profiles, isLoading } = useQuery({
     queryKey: ['profiles'],
