@@ -27,11 +27,13 @@ export const StatusUpdateForm = ({ user }: StatusUpdateFormProps) => {
     }
 
     setIsSubmitting(true);
+    console.log("Starting status update with:", { newStatus, userId: user.id });
     
     try {
       const { data: { user: currentUser }, error: userError } = await supabase.auth.getUser();
       
       if (userError) {
+        console.error("User error:", userError);
         throw userError;
       }
       
@@ -39,20 +41,26 @@ export const StatusUpdateForm = ({ user }: StatusUpdateFormProps) => {
         throw new Error("No user found");
       }
 
-      // Update profile status as an array
-      const { error: profileError } = await supabase
+      // Ensure status is an array and log the update payload
+      const statusArray = [newStatus];
+      console.log("Updating profile with status:", statusArray);
+
+      const { data: updateData, error: profileError } = await supabase
         .from("profiles")
         .update({ 
-          status: [newStatus] // Ensure status is always an array
+          status: statusArray
         })
-        .eq("id", user.id);
+        .eq("id", user.id)
+        .select();
+
+      console.log("Profile update response:", { data: updateData, error: profileError });
 
       if (profileError) {
         throw profileError;
       }
 
-      // Add comment if provided
       if (comment.trim()) {
+        console.log("Adding comment:", comment);
         const { error: commentError } = await supabase
           .from("status_comments")
           .insert({
@@ -63,6 +71,7 @@ export const StatusUpdateForm = ({ user }: StatusUpdateFormProps) => {
           });
 
         if (commentError) {
+          console.error("Comment error:", commentError);
           throw commentError;
         }
       }
