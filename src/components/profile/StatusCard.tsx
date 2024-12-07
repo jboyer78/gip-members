@@ -2,6 +2,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Check, AlertCircle, Loader } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
 export const StatusCard = () => {
   const { data: userStatus } = useQuery({
@@ -28,7 +30,8 @@ export const StatusCard = () => {
       return {
         email: user.email,
         status: profile?.status?.[0] || 'En attente',
-        lastComment: comments?.[0]?.comment || null
+        lastComment: comments?.[0]?.comment || null,
+        commentDate: comments?.[0]?.created_at || null
       };
     },
   });
@@ -73,9 +76,16 @@ export const StatusCard = () => {
                 {getStatusText(userStatus.status)}
               </span>
               {userStatus.lastComment && (
-                <p className="text-sm text-gray-600 dark:text-gray-400 text-center mt-2 max-w-md">
-                  {userStatus.lastComment}
-                </p>
+                <div className="space-y-2 text-center">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 max-w-md">
+                    {userStatus.lastComment}
+                  </p>
+                  {userStatus.commentDate && (
+                    <p className="text-xs text-gray-500 dark:text-gray-500">
+                      {format(new Date(userStatus.commentDate), "d MMMM yyyy 'à' HH:mm", { locale: fr })}
+                    </p>
+                  )}
+                </div>
               )}
             </>
           )}
