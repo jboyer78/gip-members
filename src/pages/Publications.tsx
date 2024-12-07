@@ -7,6 +7,8 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { PublicationsTable } from "@/components/publications/PublicationsTable";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 const Publications = () => {
   const navigate = useNavigate();
@@ -49,7 +51,13 @@ const Publications = () => {
                 <p className="text-sm text-gray-600 dark:text-gray-400">Gérez les publications du site</p>
               </div>
             </div>
-            <TopNavigation />
+            <div className="flex items-center gap-4">
+              <Button className="flex items-center gap-2">
+                <Plus className="h-4 w-4" />
+                Ajouter
+              </Button>
+              <TopNavigation />
+            </div>
           </div>
 
           <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg p-6">
