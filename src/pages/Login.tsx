@@ -15,7 +15,7 @@ const Login = () => {
       <div className="w-full max-w-md space-y-6 md:space-y-8 p-6 md:p-8 bg-white rounded-xl shadow">
         <div className="text-center">
           <img 
-            src="/lovable-uploads/76c591b5-d36e-4ac5-a4a3-9f2ba64321b4.png" 
+            src="/lovable-uploads/cabb0ff6-8a51-4eab-ac37-ba19b5101bcc.png" 
             alt="Logo GIP" 
             className="w-32 h-32 mx-auto mb-4"
           />
