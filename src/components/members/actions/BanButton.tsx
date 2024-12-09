@@ -50,8 +50,9 @@ export const BanButton = ({ profileId, isBanned }: BanButtonProps) => {
 
       if (error) throw error;
 
-      // Invalider le cache pour forcer un rechargement des données
+      // Invalider les deux caches pour forcer un rechargement complet des données
       queryClient.invalidateQueries({ queryKey: ['profiles'] });
+      queryClient.invalidateQueries({ queryKey: ['profiles-with-banking'] });
       
       toast({
         title: isBanned ? "Utilisateur réactivé" : "Utilisateur banni",
