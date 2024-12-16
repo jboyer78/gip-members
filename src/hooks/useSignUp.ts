@@ -56,24 +56,6 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       }
 
       if (data?.user) {
-        // Send confirmation email using our edge function
-        const { error: emailError } = await supabase.functions.invoke('send-confirmation', {
-          body: {
-            email,
-            confirmationUrl: `https://gip-members.lovable.app/auth/callback?token=${data.session?.access_token}`,
-          },
-        });
-
-        if (emailError) {
-          console.error('Error sending confirmation email:', emailError);
-          toast({
-            variant: "destructive",
-            title: "Erreur d'envoi d'email",
-            description: "L'inscription a réussi mais l'envoi de l'email a échoué. Veuillez contacter le support.",
-          });
-          return false;
-        }
-
         toast({
           title: "Inscription réussie",
           description: "Veuillez vérifier votre email pour confirmer votre compte",
