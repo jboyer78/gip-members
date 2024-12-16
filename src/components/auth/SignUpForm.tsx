@@ -16,6 +16,7 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showVerificationMessage, setShowVerificationMessage] = useState(false);
   const { handleSignUp } = useSignUp();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -45,10 +46,7 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
         setSignUpPassword("");
         setConfirmPassword("");
         setCaptchaToken(null);
-        
-        if (onSwitchToLogin) {
-          onSwitchToLogin();
-        }
+        setShowVerificationMessage(true);
       }
     } catch (error) {
       console.error("Error during signup:", error);
@@ -61,6 +59,28 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
       setLoading(false);
     }
   };
+
+  if (showVerificationMessage) {
+    return (
+      <div className="text-center space-y-4">
+        <h3 className="text-lg font-semibold text-green-600">Inscription réussie !</h3>
+        <p className="text-gray-600">
+          Un email de confirmation a été envoyé à votre adresse email.
+          Veuillez cliquer sur le lien dans l'email pour activer votre compte.
+        </p>
+        <p className="text-sm text-gray-500">
+          N'oubliez pas de vérifier vos spams si vous ne trouvez pas l'email.
+        </p>
+        <Button
+          onClick={onSwitchToLogin}
+          variant="outline"
+          className="mt-4"
+        >
+          Retour à la connexion
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
