@@ -16,7 +16,6 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Load last attempt from localStorage on component mount
   useEffect(() => {
     const storedLastAttempt = localStorage.getItem(STORAGE_KEY);
     if (storedLastAttempt) {
@@ -38,7 +37,6 @@ const ResetPassword = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Check if we're still in cooldown
     const remainingCooldown = getRemainingCooldown();
     if (remainingCooldown > 0) {
       const remainingMinutes = Math.ceil(remainingCooldown / 60000);
@@ -54,7 +52,6 @@ const ResetPassword = () => {
     updateLastAttempt(Date.now());
 
     try {
-      // Send reset password email using our edge function
       const { error: functionError } = await supabase.functions.invoke('send-reset-password', {
         body: {
           to: [email],
@@ -72,7 +69,6 @@ const ResetPassword = () => {
         description: "Vérifiez votre boîte de réception pour réinitialiser votre mot de passe",
       });
       
-      // Redirect to login page after 3 seconds
       setTimeout(() => {
         navigate("/login");
       }, 3000);
@@ -87,6 +83,8 @@ const ResetPassword = () => {
       setIsLoading(false);
     }
   };
+
+  const isButtonDisabled = isLoading || getRemainingCooldown() > 0;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -111,7 +109,6 @@ const ResetPassword = () => {
               placeholder="exemple@email.com"
               required
               className="mt-1"
-              disabled={isLoading || getRemainingCooldown() > 0}
             />
           </div>
 
@@ -119,7 +116,7 @@ const ResetPassword = () => {
             <Button 
               type="submit" 
               className="w-full" 
-              disabled={isLoading || getRemainingCooldown() > 0}
+              disabled={isButtonDisabled}
             >
               {isLoading ? "Envoi en cours..." : "Envoyer le lien"}
             </Button>
