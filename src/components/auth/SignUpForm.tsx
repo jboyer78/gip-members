@@ -42,13 +42,12 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
       }
 
       // Check if user exists first
-      const { data: existingUser } = await supabase
+      const { data: existingUsers } = await supabase
         .from('profiles')
         .select('email')
-        .eq('email', email)
-        .single();
+        .eq('email', email);
 
-      if (existingUser) {
+      if (existingUsers && existingUsers.length > 0) {
         toast.error("Un compte existe déjà avec cet email");
         return;
       }
