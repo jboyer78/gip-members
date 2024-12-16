@@ -17,26 +17,13 @@ const ResetPassword = () => {
     setIsLoading(true);
 
     try {
-      // Demander à Supabase de générer un lien de réinitialisation
-      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/update-password`,
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
       });
 
       if (error) {
+        console.error("Erreur lors de la réinitialisation:", error);
         throw error;
-      }
-
-      // Envoyer l'email via notre Edge Function
-      const resetLink = `${window.location.origin}/update-password`;
-      const response = await supabase.functions.invoke('send-reset-password', {
-        body: {
-          to: [email],
-          resetLink: resetLink,
-        },
-      });
-
-      if (response.error) {
-        throw new Error(response.error.message);
       }
 
       toast({
@@ -49,11 +36,11 @@ const ResetPassword = () => {
         navigate("/login");
       }, 3000);
     } catch (error: any) {
-      console.error("Erreur lors de la réinitialisation:", error);
+      console.error("Erreur détaillée:", error);
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue lors de l'envoi de l'email de réinitialisation",
+        description: "Une erreur est survenue lors de l'envoi de l'email de réinitialisation. Veuillez réessayer plus tard.",
       });
     } finally {
       setIsLoading(false);
