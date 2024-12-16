@@ -46,6 +46,7 @@ const ChangePassword = () => {
 
       setIsLoading(true);
 
+      // Use updateUser directly without checking session
       const { error: updateError } = await supabase.auth.updateUser({
         password: password,
       });
@@ -69,6 +70,7 @@ const ChangePassword = () => {
         description: "Votre mot de passe a été modifié avec succès",
       });
       
+      // Redirect after a short delay to allow the toast to be seen
       setTimeout(() => {
         navigate("/login");
       }, 2000);
