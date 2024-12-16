@@ -15,9 +15,11 @@ export const useAuth = () => {
         email,
         password,
         options: {
-          // Si "Se souvenir de moi" est coché, la session expire après 30 jours
-          // Sinon, elle expire après 1 heure
-          persistSession: rememberMe,
+          session: {
+            // Si "Se souvenir de moi" est coché, la session expire après 30 jours
+            // Sinon, elle expire après 1 heure
+            persistSession: rememberMe
+          }
         }
       });
 
