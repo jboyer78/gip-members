@@ -23,42 +23,12 @@ export const usePasswordChange = () => {
         throw new Error("Les mots de passe ne correspondent pas ou ne respectent pas les critères de sécurité");
       }
 
-      // Verify token and get associated user
-      const { data: tokenData, error: tokenError } = await supabase
-        .from('password_reset_tokens')
-        .select('user_id, used_at, expires_at')
-        .eq('token', token)
-        .maybeSingle();
-
-      if (tokenError || !tokenData) {
-        throw new Error("Token invalide");
-      }
-
-      if (tokenData.used_at) {
-        throw new Error("Ce lien a déjà été utilisé");
-      }
-
-      if (new Date(tokenData.expires_at) < new Date()) {
-        throw new Error("Ce lien a expiré");
-      }
-
-      // Update password using standard password update
-      const { error: updateError } = await supabase.auth.updateUser({ 
-        password: password 
+      const { error } = await supabase.functions.invoke("update-password", {
+        body: { token, password }
       });
 
-      if (updateError) {
-        throw updateError;
-      }
-
-      // Mark token as used
-      const { error: markUsedError } = await supabase
-        .from('password_reset_tokens')
-        .update({ used_at: new Date().toISOString() })
-        .eq('token', token);
-
-      if (markUsedError) {
-        console.error("Error marking token as used:", markUsedError);
+      if (error) {
+        throw error;
       }
 
       toast({
