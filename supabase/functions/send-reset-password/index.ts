@@ -23,6 +23,9 @@ const handler = async (req: Request): Promise<Response> => {
     const emailRequest: EmailRequest = await req.json();
     console.log("Sending reset password email to:", emailRequest.to);
     
+    // Add the email as a query parameter to the reset link
+    const resetLinkWithEmail = `${emailRequest.resetLink}?email=${encodeURIComponent(emailRequest.to[0])}`;
+    
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -37,7 +40,7 @@ const handler = async (req: Request): Promise<Response> => {
           <h2>Réinitialisation de votre mot de passe</h2>
           <p>Vous avez demandé la réinitialisation de votre mot de passe.</p>
           <p>Cliquez sur le lien ci-dessous pour définir un nouveau mot de passe :</p>
-          <p><a href="${emailRequest.resetLink.replace('/reset-password', '/change-password')}">Réinitialiser mon mot de passe</a></p>
+          <p><a href="${resetLinkWithEmail}">Réinitialiser mon mot de passe</a></p>
           <p>Si vous n'avez pas demandé cette réinitialisation, vous pouvez ignorer cet email.</p>
           <p>Ce lien expirera dans 24 heures.</p>
         `,

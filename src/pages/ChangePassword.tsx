@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import PasswordField from "@/components/auth/PasswordField";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { validatePassword, validatePasswords } from "@/utils/validation";
+import { validatePassword } from "@/utils/validation";
 
 const ChangePassword = () => {
   const [password, setPassword] = useState("");
@@ -14,7 +14,8 @@ const ChangePassword = () => {
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
 
-  // Check if we have a recovery token in the URL
+  // Get both the token and email from URL parameters
+  const email = searchParams.get("email");
   const isPasswordRecovery = searchParams.has("token");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,12 +45,11 @@ const ChangePassword = () => {
     try {
       let error;
 
-      if (isPasswordRecovery) {
-        // Use the recovery flow
+      if (isPasswordRecovery && email) {
+        // Use the recovery flow with the email from the URL
         const { error: updateError } = await supabase.auth.updateUser({
+          email: email,
           password: password
-        }, {
-          emailRedirectTo: `${window.location.origin}/login`
         });
         error = updateError;
       } else {
