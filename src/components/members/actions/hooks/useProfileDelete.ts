@@ -44,8 +44,11 @@ export const useProfileDelete = () => {
         throw deleteError;
       }
 
-      // Invalidate the cache only if deletion was successful
-      await queryClient.invalidateQueries({ queryKey: ['profiles'] });
+      // Invalidate both queries to ensure all data is refreshed
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['profiles'] }),
+        queryClient.invalidateQueries({ queryKey: ['profiles-with-banking'] })
+      ]);
 
       toast({
         title: "Succès",
