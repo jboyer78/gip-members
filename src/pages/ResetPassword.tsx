@@ -6,15 +6,32 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
+const RESET_COOLDOWN = 60000; // 1 minute cooldown
+
 const ResetPassword = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [lastAttempt, setLastAttempt] = useState<number>(0);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Check if we're still in cooldown
+    const now = Date.now();
+    if (now - lastAttempt < RESET_COOLDOWN) {
+      const remainingSeconds = Math.ceil((RESET_COOLDOWN - (now - lastAttempt)) / 1000);
+      toast({
+        variant: "destructive",
+        title: "Trop de tentatives",
+        description: `Veuillez attendre ${remainingSeconds} secondes avant de réessayer`,
+      });
+      return;
+    }
+
     setIsLoading(true);
+    setLastAttempt(now);
 
     try {
       // First, request password reset from Supabase
@@ -24,6 +41,17 @@ const ResetPassword = () => {
 
       if (supabaseError) {
         console.error("Erreur Supabase:", supabaseError);
+        
+        // Handle rate limit error specifically
+        if (supabaseError.message.includes("rate limit") || supabaseError.status === 429) {
+          toast({
+            variant: "destructive",
+            title: "Limite atteinte",
+            description: "Trop de tentatives de réinitialisation. Veuillez réessayer dans quelques minutes.",
+          });
+          return;
+        }
+        
         throw supabaseError;
       }
 
