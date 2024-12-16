@@ -19,8 +19,14 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    if (!RESEND_API_KEY) {
+      console.error("RESEND_API_KEY is not configured");
+      throw new Error("RESEND_API_KEY is not configured");
+    }
+
     const emailRequest: EmailRequest = await req.json();
     console.log("Sending reset password email to:", emailRequest.to);
+    console.log("Reset link:", emailRequest.resetLink);
     
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -29,7 +35,7 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "website@support.gip-france.org",
+        from: "G.I.P. <website@support.gip-france.org>",
         to: emailRequest.to,
         subject: "Réinitialisation de votre mot de passe",
         html: `
@@ -43,27 +49,29 @@ const handler = async (req: Request): Promise<Response> => {
       }),
     });
 
-    if (res.ok) {
-      const data = await res.json();
-      console.log("Email sent successfully:", data);
-      return new Response(JSON.stringify(data), {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    } else {
-      const error = await res.text();
-      console.error("Error sending email:", error);
-      return new Response(JSON.stringify({ error }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    // Log de la réponse de Resend pour le debugging
+    const resText = await res.text();
+    console.log("Resend API response:", res.status, resText);
+
+    if (!res.ok) {
+      console.error("Error from Resend API:", resText);
+      throw new Error(`Resend API error: ${resText}`);
     }
-  } catch (error: any) {
-    console.error("Error in send-reset-password function:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
+
+    return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+  } catch (error: any) {
+    console.error("Detailed error:", error);
+    return new Response(
+      JSON.stringify({ 
+        error: error.message,
+        details: error.toString()
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      }
+    );
   }
 };
 
