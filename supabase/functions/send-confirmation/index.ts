@@ -1,71 +1,63 @@
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts"
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
+};
+
+interface EmailRequest {
+  to: string[];
+  confirmationUrl: string;
 }
 
-serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders })
+const handler = async (req: Request): Promise<Response> => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { email, confirmationUrl } = await req.json()
-    console.log('Sending confirmation email to:', email)
-    console.log('Confirmation URL:', confirmationUrl)
+    const { to, confirmationUrl }: EmailRequest = await req.json();
 
-    // Verify Resend API key
-    const resendApiKey = Deno.env.get('RESEND_API_KEY')
-    if (!resendApiKey) {
-      console.error('RESEND_API_KEY is not set')
-      throw new Error('RESEND_API_KEY is not set')
-    }
-    console.log('RESEND_API_KEY is configured')
-
-    // Send email via Resend
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${resendApiKey}`,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'G.I.P. <website@support.gip-france.org>',
-        to: [email],
-        subject: 'Confirmez votre inscription',
+        from: "GIP Members <no-reply@your-domain.com>",
+        to,
+        subject: "Confirmez votre inscription",
         html: `
-          <h2>Bienvenue sur G.I.P.</h2>
-          <p>Cliquez sur le lien ci-dessous pour confirmer votre adresse email :</p>
+          <h2>Bienvenue sur GIP Members</h2>
+          <p>Cliquez sur le lien ci-dessous pour confirmer votre email :</p>
           <p><a href="${confirmationUrl}">Confirmer mon email</a></p>
-          <p>Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet email.</p>
+          <p>Si vous n'avez pas créé de compte, vous pouvez ignorer cet email.</p>
         `,
       }),
-    })
-
-    // Log Resend response for debugging
-    const resText = await res.text()
-    console.log('Resend API response:', res.status, resText)
+    });
 
     if (!res.ok) {
-      console.error('Error from Resend API:', resText)
-      throw new Error(`Resend API error: ${resText}`)
+      const error = await res.text();
+      console.error("Resend API error:", error);
+      throw new Error(error);
     }
 
-    return new Response(JSON.stringify({ success: true }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+    const data = await res.json();
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (error) {
-    console.error('Detailed error:', error)
-    return new Response(
-      JSON.stringify({ 
-        error: error.message,
-        details: error.toString()
-      }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    )
+    console.error("Error in send-confirmation function:", error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
-})
+};
+
+serve(handler);
