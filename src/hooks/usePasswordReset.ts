@@ -12,15 +12,15 @@ export const usePasswordReset = () => {
     try {
       setIsLoading(true);
 
-      const { error } = await supabase.functions.invoke("initiate-password-reset", {
-        body: { email }
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/change-password`,
       });
 
       if (error) throw error;
 
       toast({
-        title: "Email sent",
-        description: "Check your inbox to reset your password",
+        title: "Email envoyé",
+        description: "Vérifiez votre boîte de réception pour réinitialiser votre mot de passe",
       });
       
       setTimeout(() => {
@@ -28,11 +28,11 @@ export const usePasswordReset = () => {
       }, 3000);
 
     } catch (error: any) {
-      console.error("Detailed error:", error);
+      console.error("Error resetting password:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: error.message || "An error occurred while sending the reset email",
+        title: "Erreur",
+        description: error.message || "Une erreur est survenue lors de l'envoi de l'email",
       });
     } finally {
       setIsLoading(false);

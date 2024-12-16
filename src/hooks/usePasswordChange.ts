@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { validatePasswords } from "@/utils/validation";
@@ -7,29 +7,19 @@ import { validatePasswords } from "@/utils/validation";
 export const usePasswordChange = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const { toast } = useToast();
 
   const handlePasswordChange = async (password: string, confirmPassword: string) => {
     try {
       setIsLoading(true);
-      const token = searchParams.get('token');
-
-      if (!token) {
-        throw new Error("Token manquant");
-      }
 
       if (!validatePasswords(password, confirmPassword)) {
         throw new Error("Les mots de passe ne correspondent pas ou ne respectent pas les critères de sécurité");
       }
 
-      const { error } = await supabase.functions.invoke("update-password", {
-        body: { token, password }
-      });
+      const { error } = await supabase.auth.updateUser({ password });
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
       toast({
         title: "Succès",
