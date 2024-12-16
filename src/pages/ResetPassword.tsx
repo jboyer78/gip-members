@@ -13,6 +13,7 @@ const ResetPassword = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [lastAttempt, setLastAttempt] = useState<number>(0);
+  const [countdown, setCountdown] = useState<string>("");
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -22,6 +23,21 @@ const ResetPassword = () => {
       setLastAttempt(parseInt(storedLastAttempt, 10));
     }
   }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const remaining = getRemainingCooldown();
+      if (remaining > 0) {
+        const minutes = Math.floor(remaining / 60000);
+        const seconds = Math.floor((remaining % 60000) / 1000);
+        setCountdown(`${minutes}:${seconds.toString().padStart(2, '0')}`);
+      } else {
+        setCountdown("");
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [lastAttempt]);
 
   const updateLastAttempt = (timestamp: number) => {
     setLastAttempt(timestamp);
@@ -111,6 +127,12 @@ const ResetPassword = () => {
               className="mt-1"
             />
           </div>
+
+          {countdown && (
+            <div className="text-center text-sm text-gray-600">
+              Temps restant avant de pouvoir réessayer : <span className="font-medium text-primary">{countdown}</span>
+            </div>
+          )}
 
           <div className="space-y-4">
             <Button 
