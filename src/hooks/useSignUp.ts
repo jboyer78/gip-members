@@ -20,19 +20,19 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       if (!validatePasswords(password, confirmPassword)) return false;
       if (!validateCaptcha(captchaToken)) return false;
 
-      // Check if there's a recent signup attempt for this email
+      // Get the most recent attempt for this email
       const { data: attempts, error: attemptsError } = await supabase
         .from('password_reset_attempts')
-        .select('*')
+        .select('last_attempt')
         .eq('email', email)
-        .order('created_at', { ascending: false })
+        .order('last_attempt', { ascending: false })
         .limit(1);
 
       if (attemptsError) {
         console.error('Error checking signup attempts:', attemptsError);
       } else if (attempts && attempts.length > 0) {
-        const lastAttempt = attempts[0];
-        const timeSinceLastAttempt = Date.now() - new Date(lastAttempt.last_attempt).getTime();
+        const lastAttempt = new Date(attempts[0].last_attempt);
+        const timeSinceLastAttempt = Date.now() - lastAttempt.getTime();
         const minimumWaitTime = 60000; // 1 minute in milliseconds
 
         if (timeSinceLastAttempt < minimumWaitTime) {
@@ -65,7 +65,7 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
         password,
         options: {
           captchaToken,
-          emailRedirectTo: `/auth/callback`,
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
             email_confirmed: false,
           },
@@ -92,33 +92,6 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       }
 
       if (data?.user) {
-        // Send confirmation email using our edge function
-        const confirmationUrl = `${window.location.origin}/auth/callback`;
-        const response = await fetch(
-          `${window.location.origin}/functions/v1/send-confirmation`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY}`,
-            },
-            body: JSON.stringify({
-              email,
-              confirmationUrl,
-            }),
-          }
-        );
-
-        if (!response.ok) {
-          console.error('Error sending confirmation email:', await response.text());
-          toast({
-            variant: "destructive",
-            title: "Erreur lors de l'envoi de l'email",
-            description: "Une erreur est survenue lors de l'envoi de l'email de confirmation",
-          });
-          return false;
-        }
-
         toast({
           title: "Inscription réussie",
           description: "Veuillez vérifier votre email pour confirmer votre compte",

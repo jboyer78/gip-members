@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-const RESET_COOLDOWN = 300000; // 5 minutes cooldown
+const RESET_COOLDOWN = 60000; // 1 minute cooldown
 
 export const useResetAttempts = (email: string) => {
   const [countdown, setCountdown] = useState<string>("");
@@ -14,15 +14,16 @@ export const useResetAttempts = (email: string) => {
         .from('password_reset_attempts')
         .select('last_attempt')
         .eq('email', email)
-        .maybeSingle();
+        .order('last_attempt', { ascending: false })
+        .limit(1);
 
-      if (error && error.code !== 'PGRST116') {
+      if (error) {
         console.error("Error checking reset attempts:", error);
         return;
       }
 
-      if (data?.last_attempt) {
-        updateCountdown(new Date(data.last_attempt).getTime());
+      if (data?.[0]?.last_attempt) {
+        updateCountdown(new Date(data[0].last_attempt).getTime());
       }
     };
 
@@ -37,16 +38,17 @@ export const useResetAttempts = (email: string) => {
         .from('password_reset_attempts')
         .select('last_attempt')
         .eq('email', email)
-        .maybeSingle();
+        .order('last_attempt', { ascending: false })
+        .limit(1);
 
-      if (error && error.code !== 'PGRST116') {
+      if (error) {
         console.error("Error checking attempts:", error);
         setCountdown("");
         return;
       }
 
-      if (data?.last_attempt) {
-        updateCountdown(new Date(data.last_attempt).getTime());
+      if (data?.[0]?.last_attempt) {
+        updateCountdown(new Date(data[0].last_attempt).getTime());
       } else {
         setCountdown("");
       }
@@ -60,9 +62,8 @@ export const useResetAttempts = (email: string) => {
     const remaining = RESET_COOLDOWN - (now - lastAttempt);
     
     if (remaining > 0) {
-      const minutes = Math.floor(remaining / 60000);
-      const seconds = Math.floor((remaining % 60000) / 1000);
-      setCountdown(`${minutes}:${seconds.toString().padStart(2, '0')}`);
+      const seconds = Math.ceil(remaining / 1000);
+      setCountdown(`${seconds}`);
     } else {
       setCountdown("");
     }
