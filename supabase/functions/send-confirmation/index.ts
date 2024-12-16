@@ -24,6 +24,7 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { email, confirmation_url }: EmailRequest = await req.json();
     console.log("Received request for email:", email);
+    console.log("Confirmation URL:", confirmation_url);
 
     if (!email || !confirmation_url) {
       console.error("Missing required fields");
@@ -73,9 +74,12 @@ const handler = async (req: Request): Promise<Response> => {
       }),
     });
 
+    // Log the Resend API response for debugging
+    const resText = await res.text();
+    console.log("Resend API response:", res.status, resText);
+
     if (!res.ok) {
-      const error = await res.text();
-      console.error("Resend API error:", error);
+      console.error("Error from Resend API:", resText);
       return new Response(
         JSON.stringify({ error: "Failed to send confirmation email" }),
         {
@@ -85,10 +89,7 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const data = await res.json();
-    console.log("Email sent successfully:", data);
-
-    return new Response(JSON.stringify(data), {
+    return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
