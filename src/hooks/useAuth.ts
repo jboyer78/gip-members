@@ -88,10 +88,12 @@ export const useAuth = () => {
         }
 
         // If rememberMe is true, set session expiry to 30 days
-        if (rememberMe) {
-          await supabase.auth.updateSession({
-            expires_in: 30 * 24 * 60 * 60 // 30 days in seconds
+        if (rememberMe && data.session) {
+          const { data: sessionData } = await supabase.auth.setSession({
+            access_token: data.session.access_token,
+            refresh_token: data.session.refresh_token
           });
+          console.log("Session updated:", sessionData);
         }
 
         toast({
