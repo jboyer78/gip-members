@@ -17,13 +17,28 @@ const ResetPassword = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      // First, request password reset from Supabase
+      const { error: supabaseError } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`,
       });
 
-      if (error) {
-        console.error("Erreur lors de la réinitialisation:", error);
-        throw error;
+      if (supabaseError) {
+        console.error("Erreur Supabase:", supabaseError);
+        throw supabaseError;
+      }
+
+      // Then send a custom email using our edge function
+      const resetLink = `${window.location.origin}/reset-password`;
+      const { error: functionError } = await supabase.functions.invoke('send-reset-password', {
+        body: {
+          to: [email],
+          resetLink,
+        },
+      });
+
+      if (functionError) {
+        console.error("Erreur fonction:", functionError);
+        throw functionError;
       }
 
       toast({
@@ -31,7 +46,7 @@ const ResetPassword = () => {
         description: "Vérifiez votre boîte de réception pour réinitialiser votre mot de passe",
       });
       
-      // Rediriger vers la page de connexion après 3 secondes
+      // Redirect to login page after 3 seconds
       setTimeout(() => {
         navigate("/login");
       }, 3000);
