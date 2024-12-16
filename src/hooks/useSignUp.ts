@@ -63,7 +63,7 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
         const { error: emailError } = await supabase.functions.invoke('send-confirmation', {
           body: {
             email,
-            confirmationUrl: `https://gip-members.lovable.app/auth/callback?token=${data.user.confirmation_token}`,
+            confirmationUrl: `https://gip-members.lovable.app/auth/callback?token=${data.session?.access_token}`,
           },
         });
 
