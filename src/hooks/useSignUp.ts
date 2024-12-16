@@ -27,12 +27,17 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       const attemptRecorded = await recordSignupAttempt(email);
       if (!attemptRecorded) return false;
 
+      // Use window.location.origin for development, production URL for production
+      const redirectUrl = process.env.NODE_ENV === 'production'
+        ? 'https://gip-members.lovable.app/auth/callback'
+        : `${window.location.origin}/auth/callback`;
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           captchaToken,
-          emailRedirectTo: 'https://gip-members.lovable.app/auth/callback',
+          emailRedirectTo: redirectUrl,
           data: {
             email_confirmed: false,
           }
