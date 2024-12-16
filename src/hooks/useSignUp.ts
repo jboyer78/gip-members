@@ -25,7 +25,7 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
         password,
         options: {
           captchaToken,
-          emailRedirectTo: `${window.location.origin}/login?verified=true`,
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
 
@@ -40,27 +40,10 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       }
 
       if (data?.user) {
-        // Call the send-confirmation edge function
-        const { error: confirmationError } = await supabase.functions.invoke('send-confirmation', {
-          body: {
-            email: email,
-            confirmationUrl: `${window.location.origin}/login?verified=true`,
-          },
+        toast({
+          title: "Inscription réussie",
+          description: "Veuillez vérifier votre email pour confirmer votre compte",
         });
-
-        if (confirmationError) {
-          console.error('Error sending confirmation email:', confirmationError);
-          toast({
-            variant: "destructive",
-            title: "Erreur",
-            description: "L'inscription a réussi mais l'envoi de l'email de confirmation a échoué. Veuillez contacter le support.",
-          });
-        } else {
-          toast({
-            title: "Inscription réussie",
-            description: "Veuillez vérifier votre email pour confirmer votre compte",
-          });
-        }
         return true;
       }
 
