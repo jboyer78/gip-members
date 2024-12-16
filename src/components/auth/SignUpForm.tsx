@@ -51,11 +51,14 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
       });
 
       if (error) {
-        if (error.message.includes("User already registered") || error.message.includes("user_already_exists")) {
-          toast.error("Un compte existe déjà avec cet email");
+        if (error.message.includes("User already registered")) {
+          toast.error("Un compte existe déjà avec cet email. Veuillez vous connecter.");
+          if (onSwitchToLogin) {
+            onSwitchToLogin();
+          }
         } else {
           console.error("Error during signup:", error);
-          toast.error(error.message);
+          toast.error("Une erreur est survenue lors de l'inscription");
         }
         return;
       }
