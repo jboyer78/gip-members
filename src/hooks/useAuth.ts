@@ -28,6 +28,19 @@ export const useAuth = () => {
         return false;
       }
 
+      // First check if the user exists
+      const { data: { users }, error: getUserError } = await supabase.auth.admin.listUsers();
+      const userExists = users?.some(user => user.email === email);
+
+      if (!userExists) {
+        toast({
+          variant: "destructive",
+          title: "Erreur de connexion",
+          description: "Aucun compte n'existe avec cet email",
+        });
+        return false;
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -36,19 +49,13 @@ export const useAuth = () => {
       if (error) {
         console.error('Auth error:', error);
         
-        // Parse the error body if it exists
-        try {
-          const errorBody = JSON.parse(error.message);
-          if (errorBody.code === "invalid_credentials") {
-            toast({
-              variant: "destructive",
-              title: "Erreur de connexion",
-              description: "Veuillez vérifier votre email et votre mot de passe",
-            });
-          } else {
-            handleAuthError(error as AuthError, toast);
-          }
-        } catch {
+        if (error.message.includes("Invalid login credentials")) {
+          toast({
+            variant: "destructive",
+            title: "Erreur de connexion",
+            description: "Mot de passe incorrect",
+          });
+        } else {
           handleAuthError(error as AuthError, toast);
         }
         
