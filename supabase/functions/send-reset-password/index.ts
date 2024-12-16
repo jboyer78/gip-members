@@ -14,7 +14,6 @@ interface EmailRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -22,9 +21,6 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const emailRequest: EmailRequest = await req.json();
     console.log("Sending reset password email to:", emailRequest.to);
-    
-    // Add the email as a query parameter to the reset link
-    const resetLinkWithEmail = `${emailRequest.resetLink}?email=${encodeURIComponent(emailRequest.to[0])}`;
     
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -40,7 +36,7 @@ const handler = async (req: Request): Promise<Response> => {
           <h2>Réinitialisation de votre mot de passe</h2>
           <p>Vous avez demandé la réinitialisation de votre mot de passe.</p>
           <p>Cliquez sur le lien ci-dessous pour définir un nouveau mot de passe :</p>
-          <p><a href="${resetLinkWithEmail}">Réinitialiser mon mot de passe</a></p>
+          <p><a href="${emailRequest.resetLink}">Réinitialiser mon mot de passe</a></p>
           <p>Si vous n'avez pas demandé cette réinitialisation, vous pouvez ignorer cet email.</p>
           <p>Ce lien expirera dans 24 heures.</p>
         `,
@@ -50,7 +46,6 @@ const handler = async (req: Request): Promise<Response> => {
     if (res.ok) {
       const data = await res.json();
       console.log("Email sent successfully:", data);
-
       return new Response(JSON.stringify(data), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

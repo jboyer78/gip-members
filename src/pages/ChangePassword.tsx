@@ -16,47 +16,52 @@ const ChangePassword = () => {
 
   const email = searchParams.get("email");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  useEffect(() => {
     if (!email) {
       toast({
         variant: "destructive",
         title: "Erreur",
         description: "Email manquant dans l'URL",
       });
-      return;
+      navigate("/login");
     }
+  }, [email, navigate, toast]);
 
-    const passwordValidation = validatePassword(password);
-    if (!passwordValidation.isValid) {
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: passwordValidation.message,
-      });
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Les mots de passe ne correspondent pas",
-      });
-      return;
-    }
-
-    setIsLoading(true);
-
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
     try {
-      const { error } = await supabase.auth.updateUser({
+      if (!email) {
+        throw new Error("Email manquant dans l'URL");
+      }
+
+      const passwordValidation = validatePassword(password);
+      if (!passwordValidation.isValid) {
+        throw new Error(passwordValidation.message);
+      }
+
+      if (password !== confirmPassword) {
+        throw new Error("Les mots de passe ne correspondent pas");
+      }
+
+      setIsLoading(true);
+
+      const { error: updateError } = await supabase.auth.updateUser({
         password: password,
       });
 
-      if (error) {
-        console.error("Error updating password:", error);
-        throw error;
+      if (updateError) {
+        throw updateError;
+      }
+
+      // Supprimer la tentative de réinitialisation
+      const { error: deleteError } = await supabase
+        .from('password_reset_attempts')
+        .delete()
+        .eq('email', email);
+
+      if (deleteError) {
+        console.error("Erreur lors de la suppression de la tentative:", deleteError);
       }
 
       toast({
@@ -64,25 +69,16 @@ const ChangePassword = () => {
         description: "Votre mot de passe a été modifié avec succès",
       });
       
-      // Clear the password reset attempt
-      const { error: clearError } = await supabase
-        .from('password_reset_attempts')
-        .delete()
-        .eq('email', email);
-
-      if (clearError) {
-        console.error("Error clearing reset attempt:", clearError);
-      }
-
       setTimeout(() => {
         navigate("/login");
       }, 2000);
+
     } catch (error: any) {
-      console.error("Error changing password:", error);
+      console.error("Erreur lors de la modification du mot de passe:", error);
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Impossible de modifier le mot de passe. Veuillez réessayer.",
+        description: error.message || "Impossible de modifier le mot de passe. Veuillez réessayer.",
       });
     } finally {
       setIsLoading(false);

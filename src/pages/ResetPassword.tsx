@@ -6,7 +6,6 @@ import ResetPasswordHeader from "@/components/auth/reset-password/ResetPasswordH
 import ResetPasswordActions from "@/components/auth/reset-password/ResetPasswordActions";
 import EmailInput from "@/components/auth/reset-password/EmailInput";
 import CountdownTimer from "@/components/auth/reset-password/CountdownTimer";
-import { Database } from "@/integrations/supabase/types/database";
 
 const RESET_COOLDOWN = 300000; // 5 minutes cooldown
 
@@ -82,62 +81,46 @@ const ResetPassword = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Check for existing attempts
-    const { data: existingAttempt, error: checkError } = await supabase
-      .from('password_reset_attempts')
-      .select('last_attempt')
-      .eq('email', email)
-      .maybeSingle();
-
-    if (checkError && checkError.code !== 'PGRST116') {
-      console.error("Error checking attempts:", checkError);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Une erreur est survenue. Veuillez réessayer plus tard.",
-      });
-      return;
-    }
-
-    if (existingAttempt?.last_attempt) {
-      const lastAttempt = new Date(existingAttempt.last_attempt).getTime();
-      const remainingCooldown = RESET_COOLDOWN - (Date.now() - lastAttempt);
-      
-      if (remainingCooldown > 0) {
-        const remainingMinutes = Math.ceil(remainingCooldown / 60000);
-        toast({
-          variant: "destructive",
-          title: "Trop de tentatives",
-          description: `Veuillez attendre ${remainingMinutes} minute${remainingMinutes > 1 ? 's' : ''} avant de réessayer`,
-        });
-        return;
-      }
-    }
-
-    setIsLoading(true);
-
     try {
-      // First try to update if exists, then insert if not
-      const { error: updateError } = await supabase
+      setIsLoading(true);
+
+      // Vérifier les tentatives existantes
+      const { data: existingAttempt, error: checkError } = await supabase
         .from('password_reset_attempts')
-        .update({ last_attempt: new Date().toISOString() })
-        .eq('email', email);
+        .select('last_attempt')
+        .eq('email', email)
+        .maybeSingle();
 
-      if (updateError && updateError.code === 'PGRST116') {
-        // If no row to update, then insert
-        const { error: insertError } = await supabase
-          .from('password_reset_attempts')
-          .insert({ email, last_attempt: new Date().toISOString() });
-
-        if (insertError) throw insertError;
-      } else if (updateError) {
-        throw updateError;
+      if (checkError && checkError.code !== 'PGRST116') {
+        throw new Error("Erreur lors de la vérification des tentatives");
       }
 
-      // Create the reset link with only one email parameter
-      const baseUrl = `${window.location.origin}/change-password`;
-      const resetLink = `${baseUrl}?email=${encodeURIComponent(email)}`;
+      if (existingAttempt?.last_attempt) {
+        const lastAttempt = new Date(existingAttempt.last_attempt).getTime();
+        const remainingCooldown = RESET_COOLDOWN - (Date.now() - lastAttempt);
+        
+        if (remainingCooldown > 0) {
+          const remainingMinutes = Math.ceil(remainingCooldown / 60000);
+          throw new Error(`Veuillez attendre ${remainingMinutes} minute${remainingMinutes > 1 ? 's' : ''} avant de réessayer`);
+        }
+      }
+
+      // Mettre à jour ou créer une nouvelle tentative
+      const { error: upsertError } = await supabase
+        .from('password_reset_attempts')
+        .upsert({ 
+          email, 
+          last_attempt: new Date().toISOString() 
+        });
+
+      if (upsertError) {
+        throw new Error("Erreur lors de l'enregistrement de la tentative");
+      }
+
+      // Générer le lien de réinitialisation
+      const resetLink = `${window.location.origin}/change-password?email=${encodeURIComponent(email)}`;
       
+      // Envoyer l'email
       const { error: functionError } = await supabase.functions.invoke('send-reset-password', {
         body: {
           to: [email],
@@ -145,7 +128,9 @@ const ResetPassword = () => {
         },
       });
 
-      if (functionError) throw functionError;
+      if (functionError) {
+        throw functionError;
+      }
 
       toast({
         title: "Email envoyé",
@@ -155,19 +140,18 @@ const ResetPassword = () => {
       setTimeout(() => {
         navigate("/login");
       }, 3000);
+
     } catch (error: any) {
       console.error("Erreur détaillée:", error);
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue lors de l'envoi de l'email de réinitialisation. Veuillez réessayer plus tard.",
+        description: error.message || "Une erreur est survenue lors de l'envoi de l'email de réinitialisation",
       });
     } finally {
       setIsLoading(false);
     }
   };
-
-  const isButtonDisabled = isLoading || countdown !== "";
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -183,7 +167,7 @@ const ResetPassword = () => {
           <CountdownTimer countdown={countdown} />
 
           <ResetPasswordActions 
-            isLoading={isButtonDisabled}
+            isLoading={isLoading || countdown !== ""}
             onCancel={() => navigate("/login")}
           />
         </form>
