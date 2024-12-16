@@ -62,7 +62,9 @@ const LoginForm = () => {
         email,
         password,
         options: {
-          redirectTo: 'https://gip-members.lovable.app/auth/callback'
+          data: {
+            redirectTo: 'https://gip-members.lovable.app/auth/callback'
+          }
         }
       });
 
