@@ -30,7 +30,7 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
         email,
         password,
         options: {
-          emailRedirectTo: 'https://gip-members.lovable.app/auth/callback'
+          emailRedirectTo: 'https://fb98aae1-22cf-4b45-84bb-0250daf8d7f2.lovableproject.com/auth/callback'
         }
       });
 
