@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import PasswordField from "@/components/auth/PasswordField";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { validatePasswords } from "@/utils/validation";
 
 const ChangePassword = () => {
   const [password, setPassword] = useState("");
@@ -12,25 +12,38 @@ const ChangePassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
+
+  // Check if we have a recovery token in the URL
+  const isPasswordRecovery = searchParams.has("token");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (password !== confirmPassword) {
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Les mots de passe ne correspondent pas",
-      });
+    if (!validatePasswords(password, confirmPassword)) {
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.updateUser({
-        password: password
-      });
+      let error;
+
+      if (isPasswordRecovery) {
+        // Use the recovery flow
+        const { error: updateError } = await supabase.auth.updateUser({
+          password: password
+        }, {
+          emailRedirectTo: `${window.location.origin}/login`
+        });
+        error = updateError;
+      } else {
+        // Use the standard update password flow for authenticated users
+        const { error: updateError } = await supabase.auth.updateUser({
+          password: password
+        });
+        error = updateError;
+      }
 
       if (error) throw error;
 
@@ -68,31 +81,20 @@ const ChangePassword = () => {
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           <div className="space-y-4">
-            <div>
-              <Label htmlFor="new-password">Nouveau mot de passe</Label>
-              <Input
-                id="new-password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="mt-1"
-                minLength={6}
-              />
-            </div>
+            <PasswordField
+              id="new-password"
+              label="Nouveau mot de passe"
+              value={password}
+              onChange={setPassword}
+              showHelperText
+            />
 
-            <div>
-              <Label htmlFor="confirm-password">Confirmer le mot de passe</Label>
-              <Input
-                id="confirm-password"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                className="mt-1"
-                minLength={6}
-              />
-            </div>
+            <PasswordField
+              id="confirm-password"
+              label="Confirmer le mot de passe"
+              value={confirmPassword}
+              onChange={setConfirmPassword}
+            />
           </div>
 
           <div className="space-y-4">
