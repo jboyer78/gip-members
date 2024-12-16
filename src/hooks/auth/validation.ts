@@ -1,3 +1,5 @@
+import { toast } from "@/hooks/use-toast";
+
 export const validateEmail = (email: string): string | null => {
   if (!email) {
     return "L'email est requis";
@@ -66,4 +68,38 @@ export const validateName = (name: string): string | null => {
   }
 
   return null;
+};
+
+export const validatePasswords = (password: string, confirmPassword: string): boolean => {
+  const passwordError = validatePassword(password);
+  if (passwordError) {
+    toast({
+      variant: "destructive",
+      title: "Erreur de validation",
+      description: passwordError,
+    });
+    return false;
+  }
+
+  if (password !== confirmPassword) {
+    toast({
+      variant: "destructive",
+      title: "Erreur de validation",
+      description: "Les mots de passe ne correspondent pas",
+    });
+    return false;
+  }
+  return true;
+};
+
+export const validateCaptcha = (captchaToken: string | null): boolean => {
+  if (!captchaToken) {
+    toast({
+      variant: "destructive",
+      title: "Erreur de validation",
+      description: "Veuillez compléter le CAPTCHA",
+    });
+    return false;
+  }
+  return true;
 };
