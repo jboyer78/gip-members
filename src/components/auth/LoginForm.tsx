@@ -14,7 +14,7 @@ const LoginForm = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   
-  const { signIn, isLoading } = useAuth();
+  const { signIn, loading } = useAuth();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,7 +49,7 @@ const LoginForm = () => {
         <LoginCaptcha onCaptchaChange={setCaptchaToken} />
       </div>
 
-      <SubmitButton isLoading={isLoading} />
+      <SubmitButton isLoading={loading} />
     </form>
   );
 };
