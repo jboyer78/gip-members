@@ -46,7 +46,7 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
         }
       }
 
-      // Record this attempt
+      // Record this attempt before trying to sign up
       const { error: insertError } = await supabase
         .from('password_reset_attempts')
         .insert([
@@ -75,19 +75,20 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       if (error) {
         console.error('SignUp error:', error);
         
-        if (error.message.includes("rate limit")) {
+        if (error.message.includes("rate limit") || error.message.includes("email rate limit exceeded")) {
           toast({
             variant: "destructive",
-            title: "Trop de tentatives",
-            description: "Veuillez attendre quelques minutes avant de réessayer",
+            title: "Limite de tentatives atteinte",
+            description: "Trop de tentatives d'inscription. Veuillez réessayer dans quelques minutes.",
           });
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Erreur lors de l'inscription",
-            description: error.message,
-          });
+          return false;
         }
+        
+        toast({
+          variant: "destructive",
+          title: "Erreur lors de l'inscription",
+          description: error.message,
+        });
         return false;
       }
 
