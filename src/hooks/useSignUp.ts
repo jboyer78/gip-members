@@ -20,6 +20,46 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       if (!validatePasswords(password, confirmPassword)) return false;
       if (!validateCaptcha(captchaToken)) return false;
 
+      // Check if there's a recent signup attempt for this email
+      const { data: attempts, error: attemptsError } = await supabase
+        .from('password_reset_attempts')
+        .select('*')
+        .eq('email', email)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (attemptsError) {
+        console.error('Error checking signup attempts:', attemptsError);
+      } else if (attempts && attempts.length > 0) {
+        const lastAttempt = attempts[0];
+        const timeSinceLastAttempt = Date.now() - new Date(lastAttempt.last_attempt).getTime();
+        const minimumWaitTime = 60000; // 1 minute in milliseconds
+
+        if (timeSinceLastAttempt < minimumWaitTime) {
+          const remainingSeconds = Math.ceil((minimumWaitTime - timeSinceLastAttempt) / 1000);
+          toast({
+            variant: "destructive",
+            title: "Trop de tentatives",
+            description: `Veuillez attendre ${remainingSeconds} secondes avant de réessayer`,
+          });
+          return false;
+        }
+      }
+
+      // Record this attempt
+      const { error: insertError } = await supabase
+        .from('password_reset_attempts')
+        .insert([
+          { 
+            email,
+            last_attempt: new Date().toISOString(),
+          }
+        ]);
+
+      if (insertError) {
+        console.error('Error recording signup attempt:', insertError);
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -34,11 +74,20 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
 
       if (error) {
         console.error('SignUp error:', error);
-        toast({
-          variant: "destructive",
-          title: "Erreur lors de l'inscription",
-          description: error.message,
-        });
+        
+        if (error.message.includes("rate limit")) {
+          toast({
+            variant: "destructive",
+            title: "Trop de tentatives",
+            description: "Veuillez attendre quelques minutes avant de réessayer",
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Erreur lors de l'inscription",
+            description: error.message,
+          });
+        }
         return false;
       }
 
