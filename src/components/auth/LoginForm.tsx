@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { EmailInput } from "./login/EmailInput";
 import { PasswordInput } from "./login/PasswordInput";
 import { RememberMeCheckbox } from "./login/RememberMeCheckbox";
@@ -17,6 +18,7 @@ const LoginForm = () => {
   
   const { signIn, loading } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,6 +93,7 @@ const LoginForm = () => {
           title: "Connexion réussie",
           description: "Vous êtes maintenant connecté",
         });
+        navigate("/profile");
       }
     } catch (error) {
       console.error("Erreur lors de la connexion:", error);
