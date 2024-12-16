@@ -18,6 +18,8 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
     captchaToken: string | null
   ): Promise<boolean> => {
     try {
+      console.log("Starting signup process...");
+      
       if (!validatePasswords(password, confirmPassword)) return false;
       if (!validateCaptcha(captchaToken)) return false;
 
@@ -27,6 +29,7 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       const attemptRecorded = await recordSignupAttempt(email);
       if (!attemptRecorded) return false;
 
+      console.log("Attempting signup with Supabase...");
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -40,13 +43,24 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       });
 
       if (error) {
-        console.error("SignUp error:", error);
+        console.error("SignUp error details:", {
+          name: error.name,
+          message: error.message,
+          status: error.status,
+          code: error?.code
+        });
         
         if (error.message.includes("Email rate limit exceeded")) {
           toast({
             variant: "destructive",
             title: "Limite atteinte",
             description: "Trop de tentatives. Veuillez réessayer plus tard.",
+          });
+        } else if (error.message.includes("User already registered")) {
+          toast({
+            variant: "destructive",
+            title: "Utilisateur déjà inscrit",
+            description: "Un compte existe déjà avec cet email.",
           });
         } else {
           toast({
@@ -59,6 +73,7 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       }
 
       if (data?.user) {
+        console.log("Signup successful, user created:", data.user.id);
         toast({
           title: "Inscription réussie",
           description: "Veuillez vérifier votre email pour confirmer votre compte",
@@ -68,7 +83,7 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
 
       return false;
     } catch (error) {
-      console.error("Error during signup:", error);
+      console.error("Unexpected error during signup:", error);
       toast({
         variant: "destructive",
         title: "Erreur lors de l'inscription",
