@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import ResetPasswordHeader from "@/components/auth/reset-password/ResetPasswordHeader";
+import ResetPasswordActions from "@/components/auth/reset-password/ResetPasswordActions";
+import EmailInput from "@/components/auth/reset-password/EmailInput";
+import CountdownTimer from "@/components/auth/reset-password/CountdownTimer";
 
 const RESET_COOLDOWN = 300000; // 5 minutes cooldown
 const STORAGE_KEY = "lastPasswordResetAttempt";
@@ -71,7 +72,7 @@ const ResetPassword = () => {
       const { error: functionError } = await supabase.functions.invoke('send-reset-password', {
         body: {
           to: [email],
-          resetLink: `${window.location.origin}/reset-password`,
+          resetLink: `${window.location.origin}/change-password`,
         },
       });
 
@@ -105,53 +106,20 @@ const ResetPassword = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="w-full max-w-md space-y-8 p-8 bg-white rounded-lg shadow-lg">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900">
-            Réinitialisation du mot de passe
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Entrez votre email pour recevoir un lien de réinitialisation
-          </p>
-        </div>
+        <ResetPasswordHeader />
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-          <div>
-            <Label htmlFor="reset-email">Adresse email</Label>
-            <Input
-              id="reset-email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="exemple@email.com"
-              required
-              className="mt-1"
-            />
-          </div>
+          <EmailInput 
+            email={email}
+            onChange={setEmail}
+          />
 
-          {countdown && (
-            <div className="text-center text-sm text-gray-600">
-              Temps restant avant de pouvoir réessayer : <span className="font-medium text-primary">{countdown}</span>
-            </div>
-          )}
+          <CountdownTimer countdown={countdown} />
 
-          <div className="space-y-4">
-            <Button 
-              type="submit" 
-              className="w-full" 
-              disabled={isButtonDisabled}
-            >
-              {isLoading ? "Envoi en cours..." : "Envoyer le lien"}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              onClick={() => navigate("/login")}
-              disabled={isLoading}
-            >
-              Retour à la connexion
-            </Button>
-          </div>
+          <ResetPasswordActions 
+            isLoading={isButtonDisabled}
+            onCancel={() => navigate("/login")}
+          />
         </form>
       </div>
     </div>
