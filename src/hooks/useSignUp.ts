@@ -27,17 +27,12 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       const attemptRecorded = await recordSignupAttempt(email);
       if (!attemptRecorded) return false;
 
-      // Use window.location.origin for development, production URL for production
-      const redirectUrl = process.env.NODE_ENV === 'production'
-        ? 'https://gip-members.lovable.app/auth/callback'
-        : `${window.location.origin}/auth/callback`;
-
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           captchaToken,
-          emailRedirectTo: redirectUrl,
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
             email_confirmed: false,
           }
@@ -52,12 +47,6 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
             variant: "destructive",
             title: "Limite atteinte",
             description: "Trop de tentatives. Veuillez réessayer plus tard.",
-          });
-        } else if (error.message.includes("Error sending confirmation email")) {
-          toast({
-            variant: "destructive",
-            title: "Erreur d'envoi d'email",
-            description: "Impossible d'envoyer l'email de confirmation. Veuillez réessayer.",
           });
         } else {
           toast({
