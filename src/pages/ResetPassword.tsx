@@ -54,33 +54,11 @@ const ResetPassword = () => {
     updateLastAttempt(Date.now());
 
     try {
-      // First, request password reset from Supabase
-      const { error: supabaseError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
-      });
-
-      if (supabaseError) {
-        console.error("Erreur Supabase:", supabaseError);
-        
-        // Handle rate limit error specifically
-        if (supabaseError.message.includes("rate limit") || supabaseError.status === 429) {
-          toast({
-            variant: "destructive",
-            title: "Limite atteinte",
-            description: "Trop de tentatives de réinitialisation. Veuillez réessayer dans 5 minutes.",
-          });
-          return;
-        }
-        
-        throw supabaseError;
-      }
-
-      // Then send a custom email using our edge function
-      const resetLink = `${window.location.origin}/reset-password`;
+      // Send reset password email using our edge function
       const { error: functionError } = await supabase.functions.invoke('send-reset-password', {
         body: {
           to: [email],
-          resetLink,
+          resetLink: `${window.location.origin}/reset-password`,
         },
       });
 
