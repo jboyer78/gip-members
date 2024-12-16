@@ -71,6 +71,27 @@ export type Database = {
         }
         Relationships: []
       }
+      password_reset_attempts: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          last_attempt: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          last_attempt?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          last_attempt?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           administration: string | null

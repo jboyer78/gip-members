@@ -6,6 +6,7 @@ import ResetPasswordHeader from "@/components/auth/reset-password/ResetPasswordH
 import ResetPasswordActions from "@/components/auth/reset-password/ResetPasswordActions";
 import EmailInput from "@/components/auth/reset-password/EmailInput";
 import CountdownTimer from "@/components/auth/reset-password/CountdownTimer";
+import { Database } from "@/integrations/supabase/types/database";
 
 const RESET_COOLDOWN = 300000; // 5 minutes cooldown
 
@@ -32,9 +33,8 @@ const ResetPassword = () => {
         return;
       }
 
-      if (data) {
-        const lastAttempt = new Date(data.last_attempt).getTime();
-        updateCountdown(lastAttempt);
+      if (data?.last_attempt) {
+        updateCountdown(new Date(data.last_attempt).getTime());
       }
     };
 
@@ -52,13 +52,12 @@ const ResetPassword = () => {
         .eq('email', email)
         .single();
 
-      if (error || !data) {
+      if (error || !data?.last_attempt) {
         setCountdown("");
         return;
       }
 
-      const lastAttempt = new Date(data.last_attempt).getTime();
-      updateCountdown(lastAttempt);
+      updateCountdown(new Date(data.last_attempt).getTime());
     }, 1000);
 
     return () => clearInterval(timer);
@@ -97,7 +96,7 @@ const ResetPassword = () => {
       return;
     }
 
-    if (existingAttempt) {
+    if (existingAttempt?.last_attempt) {
       const lastAttempt = new Date(existingAttempt.last_attempt).getTime();
       const remainingCooldown = RESET_COOLDOWN - (Date.now() - lastAttempt);
       
@@ -119,7 +118,7 @@ const ResetPassword = () => {
       const { error: upsertError } = await supabase
         .from('password_reset_attempts')
         .upsert({
-          email: email,
+          email,
           last_attempt: new Date().toISOString()
         });
 
@@ -128,7 +127,7 @@ const ResetPassword = () => {
       const { error: functionError } = await supabase.functions.invoke('send-reset-password', {
         body: {
           to: [email],
-          resetLink: `${window.location.origin}/change-password`,
+          resetLink: `${window.location.origin}/change-password?email=${encodeURIComponent(email)}`,
         },
       });
 

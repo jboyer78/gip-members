@@ -3,6 +3,7 @@ import { BankingInfo, BankingInfoInsert, BankingInfoUpdate } from './banking';
 import { Publication, PublicationInsert, PublicationUpdate } from './publication';
 import { StatusComment, StatusCommentInsert, StatusCommentUpdate } from './status-comment';
 import { LoginAttempt, LoginAttemptInsert, LoginAttemptUpdate } from './login-attempt';
+import { PasswordResetAttempt, PasswordResetAttemptInsert } from './password-reset';
 
 export type Json =
   | string
@@ -39,6 +40,11 @@ export type Database = {
         Row: LoginAttempt
         Insert: LoginAttemptInsert
         Update: LoginAttemptUpdate
+      }
+      password_reset_attempts: {
+        Row: PasswordResetAttempt
+        Insert: PasswordResetAttemptInsert
+        Update: PasswordResetAttemptInsert
       }
     }
     Views: {
