@@ -5,7 +5,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-Deno.serve(async (req) => {
+serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
@@ -16,7 +16,7 @@ Deno.serve(async (req) => {
     console.log('Sending confirmation email to:', email)
     console.log('Confirmation URL:', confirmationUrl)
 
-    // Vérifier la clé API Resend
+    // Verify Resend API key
     const resendApiKey = Deno.env.get('RESEND_API_KEY')
     if (!resendApiKey) {
       console.error('RESEND_API_KEY is not set')
@@ -24,7 +24,7 @@ Deno.serve(async (req) => {
     }
     console.log('RESEND_API_KEY is configured')
 
-    // Tentative d'envoi de l'email via Resend
+    // Send email via Resend
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
       }),
     })
 
-    // Log de la réponse de Resend pour le debugging
+    // Log Resend response for debugging
     const resText = await res.text()
     console.log('Resend API response:', res.status, resText)
 
