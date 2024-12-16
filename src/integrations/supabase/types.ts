@@ -257,6 +257,27 @@ export type Database = {
         }
         Relationships: []
       }
+      signup_attempts: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          last_attempt: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          last_attempt?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          last_attempt?: string | null
+        }
+        Relationships: []
+      }
       status_comments: {
         Row: {
           comment: string | null

@@ -22,7 +22,7 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
 
       // First check if we're within the rate limit period
       const { data: attempts, error: attemptsError } = await supabase
-        .from('password_reset_attempts')
+        .from('signup_attempts')
         .select('last_attempt')
         .eq('email', email)
         .order('last_attempt', { ascending: false })
@@ -56,7 +56,7 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
 
       // Record this attempt before trying to sign up
       const { error: insertError } = await supabase
-        .from('password_reset_attempts')
+        .from('signup_attempts')
         .insert([{ 
           email,
           last_attempt: new Date().toISOString(),
