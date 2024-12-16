@@ -8,67 +8,123 @@ import EmailInput from "@/components/auth/reset-password/EmailInput";
 import CountdownTimer from "@/components/auth/reset-password/CountdownTimer";
 
 const RESET_COOLDOWN = 300000; // 5 minutes cooldown
-const STORAGE_KEY = "lastPasswordResetAttempt";
 
 const ResetPassword = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [lastAttempt, setLastAttempt] = useState<number>(0);
   const [countdown, setCountdown] = useState<string>("");
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Check for existing attempts on component mount and start countdown if needed
   useEffect(() => {
-    const storedLastAttempt = localStorage.getItem(STORAGE_KEY);
-    if (storedLastAttempt) {
-      setLastAttempt(parseInt(storedLastAttempt, 10));
-    }
-  }, []);
+    const checkExistingAttempt = async () => {
+      if (!email) return;
+      
+      const { data, error } = await supabase
+        .from('password_reset_attempts')
+        .select('last_attempt')
+        .eq('email', email)
+        .single();
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const remaining = getRemainingCooldown();
-      if (remaining > 0) {
-        const minutes = Math.floor(remaining / 60000);
-        const seconds = Math.floor((remaining % 60000) / 1000);
-        setCountdown(`${minutes}:${seconds.toString().padStart(2, '0')}`);
-      } else {
-        setCountdown("");
+      if (error) {
+        console.error("Error checking reset attempts:", error);
+        return;
       }
+
+      if (data) {
+        const lastAttempt = new Date(data.last_attempt).getTime();
+        updateCountdown(lastAttempt);
+      }
+    };
+
+    checkExistingAttempt();
+  }, [email]);
+
+  // Update countdown timer
+  useEffect(() => {
+    const timer = setInterval(async () => {
+      if (!email) return;
+
+      const { data, error } = await supabase
+        .from('password_reset_attempts')
+        .select('last_attempt')
+        .eq('email', email)
+        .single();
+
+      if (error || !data) {
+        setCountdown("");
+        return;
+      }
+
+      const lastAttempt = new Date(data.last_attempt).getTime();
+      updateCountdown(lastAttempt);
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [lastAttempt]);
+  }, [email]);
 
-  const updateLastAttempt = (timestamp: number) => {
-    setLastAttempt(timestamp);
-    localStorage.setItem(STORAGE_KEY, timestamp.toString());
-  };
-
-  const getRemainingCooldown = () => {
+  const updateCountdown = (lastAttempt: number) => {
     const now = Date.now();
     const remaining = RESET_COOLDOWN - (now - lastAttempt);
-    return Math.max(0, remaining);
+    
+    if (remaining > 0) {
+      const minutes = Math.floor(remaining / 60000);
+      const seconds = Math.floor((remaining % 60000) / 1000);
+      setCountdown(`${minutes}:${seconds.toString().padStart(2, '0')}`);
+    } else {
+      setCountdown("");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const remainingCooldown = getRemainingCooldown();
-    if (remainingCooldown > 0) {
-      const remainingMinutes = Math.ceil(remainingCooldown / 60000);
+    // Check for existing attempts
+    const { data: existingAttempt, error: checkError } = await supabase
+      .from('password_reset_attempts')
+      .select('last_attempt')
+      .eq('email', email)
+      .single();
+
+    if (checkError && checkError.code !== 'PGRST116') { // PGRST116 means no rows found
+      console.error("Error checking attempts:", checkError);
       toast({
         variant: "destructive",
-        title: "Trop de tentatives",
-        description: `Veuillez attendre ${remainingMinutes} minute${remainingMinutes > 1 ? 's' : ''} avant de réessayer`,
+        title: "Erreur",
+        description: "Une erreur est survenue. Veuillez réessayer plus tard.",
       });
       return;
     }
 
+    if (existingAttempt) {
+      const lastAttempt = new Date(existingAttempt.last_attempt).getTime();
+      const remainingCooldown = RESET_COOLDOWN - (Date.now() - lastAttempt);
+      
+      if (remainingCooldown > 0) {
+        const remainingMinutes = Math.ceil(remainingCooldown / 60000);
+        toast({
+          variant: "destructive",
+          title: "Trop de tentatives",
+          description: `Veuillez attendre ${remainingMinutes} minute${remainingMinutes > 1 ? 's' : ''} avant de réessayer`,
+        });
+        return;
+      }
+    }
+
     setIsLoading(true);
-    updateLastAttempt(Date.now());
 
     try {
+      // Update or insert the attempt
+      const { error: upsertError } = await supabase
+        .from('password_reset_attempts')
+        .upsert({
+          email: email,
+          last_attempt: new Date().toISOString()
+        });
+
+      if (upsertError) throw upsertError;
+
       const { error: functionError } = await supabase.functions.invoke('send-reset-password', {
         body: {
           to: [email],
@@ -76,10 +132,7 @@ const ResetPassword = () => {
         },
       });
 
-      if (functionError) {
-        console.error("Erreur fonction:", functionError);
-        throw functionError;
-      }
+      if (functionError) throw functionError;
 
       toast({
         title: "Email envoyé",
@@ -101,7 +154,7 @@ const ResetPassword = () => {
     }
   };
 
-  const isButtonDisabled = isLoading || getRemainingCooldown() > 0;
+  const isButtonDisabled = isLoading || countdown !== "";
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
