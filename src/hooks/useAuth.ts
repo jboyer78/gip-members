@@ -34,13 +34,12 @@ export const useAuth = () => {
       });
 
       if (error) {
+        console.error('Auth error:', error);
         handleAuthError(error as AuthError, toast);
         return;
       }
 
       if (data?.user) {
-        // Si rememberMe est true, on utilise la persistance de session par défaut
-        // Sinon, on ne fait rien de spécial car Supabase gère déjà la session
         console.log("Utilisateur connecté:", data.user);
 
         toast({
