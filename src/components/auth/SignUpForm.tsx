@@ -5,6 +5,8 @@ import PasswordField from "./PasswordField";
 import { LoginCaptcha } from "./login/LoginCaptcha";
 import { toast } from "@/hooks/use-toast";
 import { useSignUp } from "@/hooks/useSignUp";
+import { useResetAttempts } from "@/hooks/useResetAttempts";
+import CountdownTimer from "./reset-password/CountdownTimer";
 
 interface SignUpFormProps {
   onSwitchToLogin?: () => void;
@@ -18,6 +20,7 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
   const [loading, setLoading] = useState(false);
   const [showVerificationMessage, setShowVerificationMessage] = useState(false);
   const { handleSignUp } = useSignUp();
+  const countdown = useResetAttempts(signUpEmail);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,9 +108,17 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
         onChange={setConfirmPassword}
       />
 
+      {countdown && (
+        <CountdownTimer countdown={countdown} />
+      )}
+
       <LoginCaptcha onCaptchaChange={setCaptchaToken} />
 
-      <Button type="submit" className="w-full" disabled={loading}>
+      <Button 
+        type="submit" 
+        className="w-full" 
+        disabled={loading || !!countdown}
+      >
         {loading ? "Inscription en cours..." : "S'inscrire"}
       </Button>
     </form>
