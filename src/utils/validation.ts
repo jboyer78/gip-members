@@ -43,16 +43,22 @@ export const validatePassword = (password: string): { isValid: boolean; message:
   return { isValid: true, message: "" };
 };
 
-export const validatePasswords = (password: string, confirmPassword: string): boolean => {
-  const passwordValidation = validatePassword(password);
-  
-  if (!passwordValidation.isValid) {
-    return false;
+export const validateEmail = (email: string): { isValid: boolean; message: string } => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!email) {
+    return {
+      isValid: false,
+      message: "L'email est requis",
+    };
   }
 
-  if (password !== confirmPassword) {
-    return false;
+  if (!emailRegex.test(email)) {
+    return {
+      isValid: false,
+      message: "L'email n'est pas valide",
+    };
   }
 
-  return true;
+  return { isValid: true, message: "" };
 };

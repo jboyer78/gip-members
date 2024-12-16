@@ -1,73 +1,108 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Icons } from "@/components/ui/icons";
+import EmailField from "./EmailField";
+import PasswordField from "./PasswordField";
+import { validateEmail, validatePassword } from "@/utils/validation";
 
 interface SignUpFormProps {
   onSwitchToLogin?: () => void;
 }
 
 const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
-  const handleGoogleSignIn = async () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+      // Validate email
+      const emailValidation = validateEmail(email);
+      if (!emailValidation.isValid) {
+        toast.error(emailValidation.message);
+        return;
+      }
+
+      // Validate password
+      const passwordValidation = validatePassword(password);
+      if (!passwordValidation.isValid) {
+        toast.error(passwordValidation.message);
+        return;
+      }
+
+      // Check if passwords match
+      if (password !== confirmPassword) {
+        toast.error("Les mots de passe ne correspondent pas");
+        return;
+      }
+
+      // Sign up with Supabase
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`
-        }
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
       });
 
       if (error) {
-        console.error('Google SignIn error:', error);
+        console.error("Error during signup:", error);
         toast.error(error.message);
+        return;
       }
-    } catch (error) {
-      console.error('Unexpected error:', error);
-      toast.error("Une erreur est survenue lors de la connexion avec Google");
-    }
-  };
 
-  const handleAppleSignIn = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'apple',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`
+      if (data) {
+        toast.success(
+          "Inscription réussie ! Veuillez vérifier votre email pour confirmer votre compte."
+        );
+        if (onSwitchToLogin) {
+          onSwitchToLogin();
         }
-      });
-
-      if (error) {
-        console.error('Apple SignIn error:', error);
-        toast.error(error.message);
       }
     } catch (error) {
-      console.error('Unexpected error:', error);
-      toast.error("Une erreur est survenue lors de la connexion avec Apple");
+      console.error("Unexpected error during signup:", error);
+      toast.error("Une erreur est survenue lors de l'inscription");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="space-y-4">
-      <Button 
-        type="button" 
-        variant="outline" 
-        className="w-full flex items-center justify-center gap-2"
-        onClick={handleGoogleSignIn}
-      >
-        <Icons.google className="h-4 w-4" />
-        Continuer avec Google
-      </Button>
+    <form onSubmit={handleSignUp} className="space-y-4">
+      <EmailField
+        value={email}
+        onChange={setEmail}
+        label="Email"
+      />
+
+      <PasswordField
+        id="signUpPassword"
+        label="Mot de passe"
+        value={password}
+        onChange={setPassword}
+        showHelperText={true}
+      />
+
+      <PasswordField
+        id="confirmPassword"
+        label="Confirmer le mot de passe"
+        value={confirmPassword}
+        onChange={setConfirmPassword}
+      />
 
       <Button 
-        type="button" 
-        variant="outline" 
-        className="w-full flex items-center justify-center gap-2"
-        onClick={handleAppleSignIn}
+        type="submit" 
+        className="w-full"
+        disabled={loading}
       >
-        <Icons.apple className="h-4 w-4" />
-        Continuer avec Apple
+        {loading ? "Inscription en cours..." : "S'inscrire"}
       </Button>
-    </div>
+    </form>
   );
 };
 
