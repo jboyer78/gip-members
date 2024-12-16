@@ -1,11 +1,27 @@
 import { usePasswordChange } from "@/hooks/usePasswordChange";
 import PasswordChangeHeader from "@/components/auth/change-password/PasswordChangeHeader";
 import PasswordChangeForm from "@/components/auth/change-password/PasswordChangeForm";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const ChangePassword = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { toast } = useToast();
   const { isLoading, handlePasswordChange } = usePasswordChange();
+
+  useEffect(() => {
+    const token = searchParams.get('token');
+    if (!token) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Lien invalide. Veuillez demander un nouveau lien de réinitialisation.",
+      });
+      navigate("/login");
+    }
+  }, [searchParams, navigate, toast]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">

@@ -35,7 +35,35 @@ export const usePasswordReset = () => {
         }
       }
 
-      // Update or create attempt record using upsert
+      // Get user ID from email
+      const { data: { users }, error: userError } = await supabase.auth.admin.listUsers();
+      if (userError) throw userError;
+
+      const user = users.find(u => u.email === email);
+      if (!user) {
+        throw new Error("Aucun compte trouvé avec cette adresse email");
+      }
+
+      // Generate secure token
+      const token = crypto.randomUUID();
+      const expiresAt = new Date();
+      expiresAt.setHours(expiresAt.getHours() + 24); // Token expires in 24 hours
+
+      // Store token
+      const { error: tokenError } = await supabase
+        .from('password_reset_tokens')
+        .insert({
+          user_id: user.id,
+          token,
+          expires_at: expiresAt.toISOString()
+        });
+
+      if (tokenError) {
+        console.error("Token error:", tokenError);
+        throw new Error("Erreur lors de la création du token");
+      }
+
+      // Update or create attempt record
       const { error: upsertError } = await supabase
         .from('password_reset_attempts')
         .upsert(
@@ -53,10 +81,9 @@ export const usePasswordReset = () => {
         throw new Error("Erreur lors de l'enregistrement de la tentative");
       }
 
-      // Generate reset link
-      const resetLink = `${window.location.origin}/change-password?email=${encodeURIComponent(email)}`;
+      // Send email with token
+      const resetLink = `${window.location.origin}/change-password?token=${encodeURIComponent(token)}`;
       
-      // Send email
       const { error: functionError } = await supabase.functions.invoke('send-reset-password', {
         body: {
           to: [email],
