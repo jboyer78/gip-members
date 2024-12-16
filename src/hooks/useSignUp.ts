@@ -41,14 +41,14 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       if (attempts && attempts.length > 0) {
         const lastAttempt = new Date(attempts[0].last_attempt);
         const timeSinceLastAttempt = Date.now() - lastAttempt.getTime();
-        const minimumWaitTime = 60000; // 1 minute in milliseconds
+        const minimumWaitTime = 300000; // 5 minutes in milliseconds
 
         if (timeSinceLastAttempt < minimumWaitTime) {
-          const remainingSeconds = Math.ceil((minimumWaitTime - timeSinceLastAttempt) / 1000);
+          const remainingMinutes = Math.ceil((minimumWaitTime - timeSinceLastAttempt) / 60000);
           toast({
             variant: "destructive",
             title: "Trop de tentatives",
-            description: `Veuillez attendre ${remainingSeconds} secondes avant de réessayer`,
+            description: `Veuillez attendre ${remainingMinutes} minute${remainingMinutes > 1 ? 's' : ''} avant de réessayer`,
           });
           return false;
         }
@@ -87,11 +87,13 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       if (error) {
         console.error('SignUp error:', error);
         
-        if (error.message.includes("rate limit") || error.message.includes("email rate limit exceeded")) {
+        if (error.message.includes("rate limit") || 
+            error.message.includes("email rate limit exceeded") ||
+            error.message.includes("over_email_send_rate_limit")) {
           toast({
             variant: "destructive",
             title: "Limite de tentatives atteinte",
-            description: "Trop de tentatives d'inscription. Veuillez réessayer dans quelques minutes.",
+            description: "Trop de tentatives d'inscription. Veuillez réessayer dans 5 minutes.",
           });
           return false;
         }
