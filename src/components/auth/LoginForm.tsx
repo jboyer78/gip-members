@@ -62,8 +62,7 @@ const LoginForm = () => {
         email,
         password,
         options: {
-          captchaToken,
-          emailRedirectTo: 'https://gip-members.lovable.app/auth/callback'
+          captchaToken
         }
       });
 
