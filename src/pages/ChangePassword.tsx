@@ -14,13 +14,20 @@ const ChangePassword = () => {
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
 
-  // Get both the token and email from URL parameters
   const email = searchParams.get("email");
-  const isPasswordRecovery = searchParams.has("token");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!email) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Email manquant dans l'URL",
+      });
+      return;
+    }
+
     const passwordValidation = validatePassword(password);
     if (!passwordValidation.isValid) {
       toast({
@@ -43,30 +50,30 @@ const ChangePassword = () => {
     setIsLoading(true);
 
     try {
-      let error;
+      const { error } = await supabase.auth.updateUser({
+        password: password,
+      });
 
-      if (isPasswordRecovery && email) {
-        // Use the recovery flow with the email from the URL
-        const { error: updateError } = await supabase.auth.updateUser({
-          email: email,
-          password: password
-        });
-        error = updateError;
-      } else {
-        // Use the standard update password flow for authenticated users
-        const { error: updateError } = await supabase.auth.updateUser({
-          password: password
-        });
-        error = updateError;
+      if (error) {
+        console.error("Error updating password:", error);
+        throw error;
       }
-
-      if (error) throw error;
 
       toast({
         title: "Succès",
         description: "Votre mot de passe a été modifié avec succès",
       });
       
+      // Clear the password reset attempt
+      const { error: clearError } = await supabase
+        .from('password_reset_attempts')
+        .delete()
+        .eq('email', email);
+
+      if (clearError) {
+        console.error("Error clearing reset attempt:", clearError);
+      }
+
       setTimeout(() => {
         navigate("/login");
       }, 2000);

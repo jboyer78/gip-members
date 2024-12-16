@@ -129,10 +129,12 @@ const ResetPassword = () => {
 
       if (upsertError) throw upsertError;
 
+      const resetLink = `${window.location.origin}/change-password?email=${encodeURIComponent(email)}`;
+      
       const { error: functionError } = await supabase.functions.invoke('send-reset-password', {
         body: {
           to: [email],
-          resetLink: `${window.location.origin}/change-password?email=${encodeURIComponent(email)}`,
+          resetLink,
         },
       });
 
