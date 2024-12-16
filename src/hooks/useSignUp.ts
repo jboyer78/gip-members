@@ -20,7 +20,7 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       if (!validatePasswords(password, confirmPassword)) return false;
       if (!validateCaptcha(captchaToken)) return false;
 
-      // Get the most recent attempt for this email
+      // First check if we're within the rate limit period
       const { data: attempts, error: attemptsError } = await supabase
         .from('password_reset_attempts')
         .select('last_attempt')
@@ -30,7 +30,15 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
 
       if (attemptsError) {
         console.error('Error checking signup attempts:', attemptsError);
-      } else if (attempts && attempts.length > 0) {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Une erreur est survenue lors de la vérification des tentatives",
+        });
+        return false;
+      }
+
+      if (attempts && attempts.length > 0) {
         const lastAttempt = new Date(attempts[0].last_attempt);
         const timeSinceLastAttempt = Date.now() - lastAttempt.getTime();
         const minimumWaitTime = 60000; // 1 minute in milliseconds
@@ -49,15 +57,19 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       // Record this attempt before trying to sign up
       const { error: insertError } = await supabase
         .from('password_reset_attempts')
-        .insert([
-          { 
-            email,
-            last_attempt: new Date().toISOString(),
-          }
-        ]);
+        .insert([{ 
+          email,
+          last_attempt: new Date().toISOString(),
+        }]);
 
       if (insertError) {
         console.error('Error recording signup attempt:', insertError);
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Une erreur est survenue lors de l'enregistrement de la tentative",
+        });
+        return false;
       }
 
       const { data, error } = await supabase.auth.signUp({
