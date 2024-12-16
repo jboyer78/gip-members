@@ -14,20 +14,21 @@ interface EmailRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
-  console.log("Handling confirmation email request");
+  console.log("Starting confirmation email request handler");
 
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
+    console.log("Handling CORS preflight request");
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    console.log("Parsing request body");
     const { email, confirmation_url }: EmailRequest = await req.json();
-    console.log("Received request for email:", email);
-    console.log("Confirmation URL:", confirmation_url);
+    console.log("Request data:", { email, confirmation_url });
 
     if (!email || !confirmation_url) {
-      console.error("Missing required fields");
+      console.error("Missing required fields:", { email, confirmation_url });
       return new Response(
         JSON.stringify({ error: "Email and confirmation URL are required" }),
         {
@@ -37,7 +38,7 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Send confirmation email using Resend
+    console.log("Sending email via Resend API");
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -74,37 +75,48 @@ const handler = async (req: Request): Promise<Response> => {
       }),
     });
 
-    const resData = await res.json().catch(async () => {
-      // If JSON parsing fails, try to get the text response
+    console.log("Resend API response status:", res.status);
+    
+    let responseData;
+    try {
+      responseData = await res.json();
+      console.log("Resend API response data:", responseData);
+    } catch (e) {
       const text = await res.text();
-      console.error("Failed to parse JSON response:", text);
-      return { error: text };
-    });
-
-    console.log("Resend API response:", {
-      status: res.status,
-      data: resData
-    });
+      console.error("Failed to parse Resend API response as JSON:", text);
+      responseData = { error: text };
+    }
 
     if (!res.ok) {
-      console.error("Error from Resend API:", resData);
+      console.error("Error from Resend API:", responseData);
       return new Response(
-        JSON.stringify({ error: "Failed to send confirmation email", details: resData }),
+        JSON.stringify({ 
+          error: "Failed to send confirmation email", 
+          details: responseData,
+          status: res.status 
+        }),
         {
-          status: 500,
+          status: res.status,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         }
       );
     }
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  } catch (error) {
-    console.error("Error in send-confirmation function:", error);
+    console.log("Email sent successfully");
     return new Response(
-      JSON.stringify({ error: "Internal server error" }),
+      JSON.stringify({ success: true, data: responseData }),
+      {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      }
+    );
+  } catch (error) {
+    console.error("Unexpected error in send-confirmation function:", error);
+    return new Response(
+      JSON.stringify({ 
+        error: "Internal server error", 
+        details: error.message 
+      }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
