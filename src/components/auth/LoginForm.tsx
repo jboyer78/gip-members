@@ -29,7 +29,7 @@ const LoginForm = () => {
       return;
     }
 
-    await signIn(email, password);
+    await signIn(email, password, rememberMe);
   };
 
   return (

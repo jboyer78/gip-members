@@ -8,12 +8,17 @@ export const useAuth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (email: string, password: string, rememberMe: boolean = false) => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
+        options: {
+          // Si "Se souvenir de moi" est coché, la session expire après 30 jours
+          // Sinon, elle expire après 1 heure
+          persistSession: rememberMe,
+        }
       });
 
       if (error) {
