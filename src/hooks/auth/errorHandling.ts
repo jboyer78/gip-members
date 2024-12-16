@@ -36,36 +36,56 @@ export const handleAuthError = (error: AuthError, toastFn = toast) => {
   }
 };
 
-export const handleSignUpError = async (error: SignUpError) => {
+export const handleSignUpError = async (error: SignUpError): Promise<boolean> => {
   console.error('SignUp error:', error);
   
-  switch (error.message) {
+  // Parse the error body if it's a string
+  let errorBody;
+  try {
+    if (typeof error.body === 'string') {
+      errorBody = JSON.parse(error.body);
+    }
+  } catch (e) {
+    console.error('Error parsing error body:', e);
+  }
+
+  const errorCode = errorBody?.code || error.message;
+  
+  switch (errorCode) {
+    case 'over_email_send_rate_limit':
+      toast({
+        variant: "destructive",
+        title: "Limite de tentatives atteinte",
+        description: "Trop de tentatives d'inscription. Veuillez réessayer dans 5 minutes.",
+      });
+      return false;
     case 'User already registered':
       toast({
         variant: "destructive",
         title: "Erreur d'inscription",
         description: "Un compte existe déjà avec cet email",
       });
-      break;
+      return false;
     case 'Password too short':
       toast({
         variant: "destructive",
         title: "Erreur d'inscription",
         description: "Le mot de passe doit contenir au moins 6 caractères",
       });
-      break;
+      return false;
     case 'Invalid email':
       toast({
         variant: "destructive",
         title: "Erreur d'inscription",
         description: "L'adresse email n'est pas valide",
       });
-      break;
+      return false;
     default:
       toast({
         variant: "destructive",
         title: "Erreur d'inscription",
-        description: "Une erreur est survenue lors de l'inscription",
+        description: error.message || "Une erreur est survenue lors de l'inscription",
       });
+      return false;
   }
 };
