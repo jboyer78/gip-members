@@ -57,10 +57,13 @@ const LoginForm = () => {
         return;
       }
 
-      // Attempt to sign in
+      // Attempt to sign in with redirect URL
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
+        options: {
+          redirectTo: 'https://gip-members.lovable.app/auth/callback'
+        }
       });
 
       if (error) {
