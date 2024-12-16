@@ -1,4 +1,4 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -32,7 +32,7 @@ Deno.serve(async (req) => {
         'Authorization': `Bearer ${resendApiKey}`,
       },
       body: JSON.stringify({
-        from: 'G.I.P. <onboarding@resend.dev>',
+        from: 'G.I.P. <website@support.gip-france.org>',
         to: email,
         subject: 'Confirmez votre inscription',
         html: `
