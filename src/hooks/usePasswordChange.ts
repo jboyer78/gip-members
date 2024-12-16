@@ -42,11 +42,10 @@ export const usePasswordChange = () => {
         throw new Error("Ce lien a expiré");
       }
 
-      // Update password using admin API
-      const { error: updateError } = await supabase.auth.admin.updateUserById(
-        tokenData.user_id,
-        { password: password }
-      );
+      // Update password using standard password update
+      const { error: updateError } = await supabase.auth.updateUser({ 
+        password: password 
+      });
 
       if (updateError) {
         throw updateError;
