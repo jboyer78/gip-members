@@ -26,9 +26,9 @@ const ResetPassword = () => {
         .from('password_reset_attempts')
         .select('last_attempt')
         .eq('email', email)
-        .single();
+        .maybeSingle();
 
-      if (error) {
+      if (error && error.code !== 'PGRST116') {
         console.error("Error checking reset attempts:", error);
         return;
       }
@@ -50,14 +50,19 @@ const ResetPassword = () => {
         .from('password_reset_attempts')
         .select('last_attempt')
         .eq('email', email)
-        .single();
+        .maybeSingle();
 
-      if (error || !data?.last_attempt) {
+      if (error && error.code !== 'PGRST116') {
+        console.error("Error checking attempts:", error);
         setCountdown("");
         return;
       }
 
-      updateCountdown(new Date(data.last_attempt).getTime());
+      if (data?.last_attempt) {
+        updateCountdown(new Date(data.last_attempt).getTime());
+      } else {
+        setCountdown("");
+      }
     }, 1000);
 
     return () => clearInterval(timer);
@@ -84,9 +89,9 @@ const ResetPassword = () => {
       .from('password_reset_attempts')
       .select('last_attempt')
       .eq('email', email)
-      .single();
+      .maybeSingle();
 
-    if (checkError && checkError.code !== 'PGRST116') { // PGRST116 means no rows found
+    if (checkError && checkError.code !== 'PGRST116') {
       console.error("Error checking attempts:", checkError);
       toast({
         variant: "destructive",
