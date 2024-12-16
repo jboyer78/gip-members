@@ -41,6 +41,18 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
         return;
       }
 
+      // Check if user exists first
+      const { data: existingUser } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('email', email)
+        .single();
+
+      if (existingUser) {
+        toast.error("Un compte existe déjà avec cet email");
+        return;
+      }
+
       // Sign up with Supabase
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -51,8 +63,12 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
       });
 
       if (error) {
-        console.error("Error during signup:", error);
-        toast.error(error.message);
+        if (error.message.includes("User already registered")) {
+          toast.error("Un compte existe déjà avec cet email");
+        } else {
+          console.error("Error during signup:", error);
+          toast.error(error.message);
+        }
         return;
       }
 
