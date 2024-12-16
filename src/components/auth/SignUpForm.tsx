@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useIpCheck } from "@/hooks/useIpCheck";
 import { Button } from "@/components/ui/button";
 import EmailField from "./EmailField";
 import PasswordField from "./PasswordField";
@@ -17,7 +16,6 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { checkIpAddress } = useIpCheck();
   const { handleSignUp } = useSignUp();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,9 +32,6 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
 
     try {
       setLoading(true);
-      
-      const ipCheck = await checkIpAddress();
-      if (!ipCheck) return;
 
       const success = await handleSignUp(
         signUpEmail,
@@ -50,22 +45,11 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
         setSignUpPassword("");
         setConfirmPassword("");
         setCaptchaToken(null);
-        toast({
-          title: "Inscription réussie",
-          description: "Veuillez vérifier votre email pour confirmer votre compte",
-        });
-
+        
         if (onSwitchToLogin) {
           onSwitchToLogin();
         }
       }
-    } catch (error) {
-      console.error("Error during signup:", error);
-      toast({
-        variant: "destructive",
-        title: "Erreur lors de l'inscription",
-        description: "Une erreur est survenue lors de l'inscription",
-      });
     } finally {
       setLoading(false);
     }

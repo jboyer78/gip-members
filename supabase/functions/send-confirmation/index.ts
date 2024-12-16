@@ -6,21 +6,19 @@ const corsHeaders = {
 }
 
 Deno.serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
 
   try {
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    )
-
     const { email, confirmationUrl } = await req.json()
+    console.log('Sending confirmation email to:', email)
 
     // Use Resend to send the email
     const resendApiKey = Deno.env.get('RESEND_API_KEY')
     if (!resendApiKey) {
+      console.error('RESEND_API_KEY is not set')
       throw new Error('RESEND_API_KEY is not set')
     }
 
@@ -47,6 +45,9 @@ Deno.serve(async (req) => {
       console.error('Error sending email:', error)
       throw new Error('Failed to send email')
     }
+
+    const data = await res.json()
+    console.log('Email sent successfully:', data)
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useIpCheck } from "./useIpCheck";
 import { toast } from "./use-toast";
 import { validatePasswords, validateCaptcha } from "./auth/validation";
-import { handleSignUpError } from "./auth/errorHandling";
-import { UseSignUpProps, SignUpResult, SignUpError } from "./auth/types";
+
+export interface UseSignUpProps {
+  onSwitchToLogin?: () => void;
+}
 
 export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
   const [isSignUpLoading, setIsSignUpLoading] = useState(false);
-  const { checkIpAddress } = useIpCheck();
 
   const handleSignUp = async (
     email: string,
@@ -17,13 +17,10 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
     captchaToken: string | null
   ): Promise<boolean> => {
     try {
-      setIsSignUpLoading(true);
-
       if (!validatePasswords(password, confirmPassword)) return false;
       if (!validateCaptcha(captchaToken)) return false;
-      if (!await checkIpAddress()) return false;
 
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -33,25 +30,49 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       });
 
       if (error) {
-        await handleSignUpError(error);
+        console.error('SignUp error:', error);
+        toast({
+          variant: "destructive",
+          title: "Erreur lors de l'inscription",
+          description: error.message,
+        });
         return false;
       }
 
-      toast({
-        title: "Inscription réussie",
-        description: "Veuillez vérifier votre email pour confirmer votre compte",
-      });
+      if (data?.user) {
+        // Call the send-confirmation edge function
+        const { error: confirmationError } = await supabase.functions.invoke('send-confirmation', {
+          body: {
+            email: email,
+            confirmationUrl: `${window.location.origin}/login`,
+          },
+        });
 
-      if (onSwitchToLogin) {
-        onSwitchToLogin();
+        if (confirmationError) {
+          console.error('Error sending confirmation email:', confirmationError);
+          toast({
+            variant: "destructive",
+            title: "Erreur",
+            description: "L'inscription a réussi mais l'envoi de l'email de confirmation a échoué. Veuillez contacter le support.",
+          });
+        } else {
+          toast({
+            title: "Inscription réussie",
+            description: "Veuillez vérifier votre email pour confirmer votre compte",
+          });
+        }
+        return true;
       }
 
-      return true;
-    } catch (error) {
-      await handleSignUpError(error as SignUpError);
       return false;
-    } finally {
-      setIsSignUpLoading(false);
+    } catch (error) {
+      console.error("Error during signup:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur lors de l'inscription",
+        description: "Une erreur inattendue est survenue",
+      });
+      return false;
     }
   };
 
