@@ -2,7 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "./use-toast";
 import { validatePasswords, validateCaptcha } from "./auth/validation";
-import { checkSignupAttempts, recordSignupAttempt, handleSignupError } from "./auth/signupUtils";
+import { checkSignupAttempts, recordSignupAttempt } from "./auth/signupUtils";
 
 export interface UseSignUpProps {
   onSwitchToLogin?: () => void;
@@ -32,7 +32,6 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
         password,
         options: {
           captchaToken,
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
             email_confirmed: false,
           },
@@ -40,7 +39,22 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       });
 
       if (error) {
-        return handleSignupError(error);
+        console.error("SignUp error:", error);
+        
+        if (error.message.includes("Email rate limit exceeded")) {
+          toast({
+            variant: "destructive",
+            title: "Limite atteinte",
+            description: "Trop de tentatives. Veuillez réessayer plus tard.",
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Erreur lors de l'inscription",
+            description: "Une erreur est survenue. Veuillez réessayer.",
+          });
+        }
+        return false;
       }
 
       if (data?.user) {
