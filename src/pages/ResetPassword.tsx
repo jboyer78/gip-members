@@ -17,7 +17,6 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Check for existing attempts on component mount and start countdown if needed
   useEffect(() => {
     const checkExistingAttempt = async () => {
       if (!email) return;
@@ -41,7 +40,6 @@ const ResetPassword = () => {
     checkExistingAttempt();
   }, [email]);
 
-  // Update countdown timer
   useEffect(() => {
     const timer = setInterval(async () => {
       if (!email) return;
@@ -119,15 +117,22 @@ const ResetPassword = () => {
     setIsLoading(true);
 
     try {
-      // Update or insert the attempt
-      const { error: upsertError } = await supabase
+      // First try to update if exists, then insert if not
+      const { error: updateError } = await supabase
         .from('password_reset_attempts')
-        .upsert({
-          email,
-          last_attempt: new Date().toISOString()
-        });
+        .update({ last_attempt: new Date().toISOString() })
+        .eq('email', email);
 
-      if (upsertError) throw upsertError;
+      if (updateError && updateError.code === 'PGRST116') {
+        // If no row to update, then insert
+        const { error: insertError } = await supabase
+          .from('password_reset_attempts')
+          .insert({ email, last_attempt: new Date().toISOString() });
+
+        if (insertError) throw insertError;
+      } else if (updateError) {
+        throw updateError;
+      }
 
       const resetLink = `${window.location.origin}/change-password?email=${encodeURIComponent(email)}`;
       
