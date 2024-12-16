@@ -10,12 +10,14 @@ const corsHeaders = {
 const RESET_COOLDOWN = 300000; // 5 minutes
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const { email } = await req.json();
+    console.log("Processing password reset request for email:", email);
 
     // Initialize Supabase client with service role key
     const supabaseAdmin = createClient(
@@ -24,6 +26,7 @@ serve(async (req) => {
     );
 
     // Check for existing attempts
+    console.log("Checking for existing reset attempts...");
     const { data: existingAttempt, error: checkError } = await supabaseAdmin
       .from("password_reset_attempts")
       .select("last_attempt")
@@ -31,6 +34,7 @@ serve(async (req) => {
       .maybeSingle();
 
     if (checkError && checkError.code !== "PGRST116") {
+      console.error("Error checking reset attempts:", checkError);
       throw new Error("Error checking reset attempts");
     }
 
@@ -45,8 +49,12 @@ serve(async (req) => {
     }
 
     // Get user from auth.users
+    console.log("Fetching user details...");
     const { data: { users }, error: userError } = await supabaseAdmin.auth.admin.listUsers();
-    if (userError) throw userError;
+    if (userError) {
+      console.error("Error fetching user:", userError);
+      throw userError;
+    }
 
     const user = users.find(u => u.email === email);
     if (!user) {
@@ -59,6 +67,7 @@ serve(async (req) => {
     expiresAt.setHours(expiresAt.getHours() + 24);
 
     // Store token
+    console.log("Storing reset token...");
     const { error: tokenError } = await supabaseAdmin
       .from("password_reset_tokens")
       .insert({
@@ -68,11 +77,12 @@ serve(async (req) => {
       });
 
     if (tokenError) {
-      console.error("Token error:", tokenError);
+      console.error("Token storage error:", tokenError);
       throw new Error("Error creating reset token");
     }
 
     // Update or create attempt record
+    console.log("Recording reset attempt...");
     const { error: upsertError } = await supabaseAdmin
       .from("password_reset_attempts")
       .upsert(
@@ -82,6 +92,7 @@ serve(async (req) => {
         },
         { 
           onConflict: "email",
+          ignoreDuplicates: false
         }
       );
 
@@ -92,6 +103,7 @@ serve(async (req) => {
 
     // Send email with token
     const resetLink = `${req.headers.get("origin")}/change-password?token=${encodeURIComponent(token)}`;
+    console.log("Sending reset email...");
     
     const { error: functionError } = await supabaseAdmin.functions.invoke("send-reset-password", {
       body: {
@@ -101,10 +113,11 @@ serve(async (req) => {
     });
 
     if (functionError) {
-      console.error("Function error:", functionError);
+      console.error("Email function error:", functionError);
       throw functionError;
     }
 
+    console.log("Password reset process completed successfully");
     return new Response(
       JSON.stringify({ message: "Password reset email sent successfully" }), 
       { 
@@ -114,10 +127,11 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error in password reset process:", error);
     return new Response(
       JSON.stringify({ 
-        error: error instanceof Error ? error.message : "An error occurred" 
+        error: error instanceof Error ? error.message : "An error occurred",
+        details: error instanceof Error ? error.toString() : "Unknown error"
       }),
       { 
         headers: { ...corsHeaders, "Content-Type": "application/json" },
