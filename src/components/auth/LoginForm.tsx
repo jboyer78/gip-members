@@ -29,7 +29,23 @@ const LoginForm = () => {
       return;
     }
 
-    await signIn(email, password, rememberMe);
+    try {
+      const result = await signIn(email, password, rememberMe);
+      if (!result) {
+        toast({
+          variant: "destructive",
+          title: "Erreur de connexion",
+          description: "Email ou mot de passe incorrect",
+        });
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur de connexion",
+        description: "Une erreur est survenue lors de la connexion",
+      });
+    }
   };
 
   return (

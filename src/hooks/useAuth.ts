@@ -11,7 +11,7 @@ export const useAuth = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
-  const signIn = async (email: string, password: string, rememberMe: boolean = false) => {
+  const signIn = async (email: string, password: string, rememberMe: boolean = false): Promise<boolean> => {
     try {
       setLoading(true);
 
@@ -25,7 +25,7 @@ export const useAuth = () => {
           title: "Erreur de validation",
           description: emailError || passwordError,
         });
-        return;
+        return false;
       }
 
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -36,7 +36,7 @@ export const useAuth = () => {
       if (error) {
         console.error('Auth error:', error);
         handleAuthError(error as AuthError, toast);
-        return;
+        return false;
       }
 
       if (data?.user) {
@@ -48,7 +48,10 @@ export const useAuth = () => {
         });
 
         navigate("/");
+        return true;
       }
+
+      return false;
     } catch (error) {
       console.error("Erreur lors de la connexion:", error);
       toast({
@@ -56,6 +59,7 @@ export const useAuth = () => {
         title: "Erreur",
         description: "Une erreur est survenue lors de la connexion",
       });
+      return false;
     } finally {
       setLoading(false);
     }
