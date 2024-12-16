@@ -33,6 +33,9 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
         options: {
           captchaToken,
           emailRedirectTo: `${window.location.origin}/auth/callback`,
+          data: {
+            email_confirmed: false,
+          }
         },
       });
 
@@ -44,6 +47,12 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
             variant: "destructive",
             title: "Limite atteinte",
             description: "Trop de tentatives. Veuillez réessayer plus tard.",
+          });
+        } else if (error.message.includes("Error sending confirmation email")) {
+          toast({
+            variant: "destructive",
+            title: "Erreur d'envoi d'email",
+            description: "Impossible d'envoyer l'email de confirmation. Veuillez réessayer.",
           });
         } else {
           toast({
