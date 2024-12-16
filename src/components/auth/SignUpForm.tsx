@@ -6,6 +6,7 @@ import EmailField from "./EmailField";
 import PasswordField from "./PasswordField";
 import { LoginCaptcha } from "./login/LoginCaptcha";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SignUpFormProps {
   onSwitchToLogin?: () => void;
@@ -26,14 +27,31 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
       const ipCheck = await checkIpAddress();
       if (!ipCheck) return;
 
-      const success = await handleSignUp(
-        signUpEmail,
-        signUpPassword,
-        confirmPassword,
-        captchaToken
-      );
+      const { data, error } = await supabase.auth.signUp({
+        email: signUpEmail,
+        password: signUpPassword,
+        options: {
+          captchaToken,
+          emailRedirectTo: `${window.location.origin}/login`,
+        },
+      });
 
-      if (success) {
+      if (error) throw error;
+
+      if (data?.user) {
+        // Send confirmation email using our Edge Function
+        const { error: emailError } = await supabase.functions.invoke('send-confirmation', {
+          body: {
+            email: signUpEmail,
+            confirmationUrl: `${window.location.origin}/login?email=${encodeURIComponent(signUpEmail)}`,
+          },
+        });
+
+        if (emailError) {
+          console.error('Error sending confirmation email:', emailError);
+          throw new Error('Failed to send confirmation email');
+        }
+
         setSignUpEmail("");
         setSignUpPassword("");
         setConfirmPassword("");
@@ -41,6 +59,10 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
           title: "Inscription réussie",
           description: "Veuillez vérifier votre email pour confirmer votre compte",
         });
+
+        if (onSwitchToLogin) {
+          onSwitchToLogin();
+        }
       }
     } catch (error) {
       console.error("Error during signup:", error);
