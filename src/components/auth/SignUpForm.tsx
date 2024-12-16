@@ -29,20 +29,22 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: undefined,
+          data: {
+            email_confirmed: true
+          }
+        }
       });
 
       if (error) {
         console.error('SignUp error:', error);
-        if (error.message.includes("Error sending confirmation email")) {
-          toast.error("Erreur lors de l'envoi de l'email de confirmation. Veuillez réessayer plus tard.");
-        } else {
-          toast.error(error.message);
-        }
+        toast.error(error.message);
         return;
       }
 
       if (data?.user) {
-        toast.success("Inscription réussie ! Un email de confirmation vous sera envoyé sous peu.");
+        toast.success("Inscription réussie !");
         if (onSwitchToLogin) {
           onSwitchToLogin();
         }
