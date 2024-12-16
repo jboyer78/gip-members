@@ -26,6 +26,9 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
         options: {
           captchaToken,
           emailRedirectTo: `/auth/callback`,
+          data: {
+            email_confirmed: false,
+          },
         },
       });
 
@@ -40,6 +43,33 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       }
 
       if (data?.user) {
+        // Send confirmation email using our edge function
+        const confirmationUrl = `${window.location.origin}/auth/callback`;
+        const response = await fetch(
+          `${window.location.origin}/functions/v1/send-confirmation`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+            },
+            body: JSON.stringify({
+              email,
+              confirmationUrl,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          console.error('Error sending confirmation email:', await response.text());
+          toast({
+            variant: "destructive",
+            title: "Erreur lors de l'envoi de l'email",
+            description: "Une erreur est survenue lors de l'envoi de l'email de confirmation",
+          });
+          return false;
+        }
+
         toast({
           title: "Inscription réussie",
           description: "Veuillez vérifier votre email pour confirmer votre compte",
