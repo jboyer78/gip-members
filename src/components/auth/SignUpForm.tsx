@@ -26,23 +26,26 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
     try {
       setLoading(true);
       
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          emailRedirectTo: 'https://fb98aae1-22cf-4b45-84bb-0250daf8d7f2.lovableproject.com/auth/callback'
-        }
       });
 
       if (error) {
         console.error('SignUp error:', error);
-        toast.error(error.message);
+        if (error.message.includes("Error sending confirmation email")) {
+          toast.error("Erreur lors de l'envoi de l'email de confirmation. Veuillez réessayer plus tard.");
+        } else {
+          toast.error(error.message);
+        }
         return;
       }
 
-      toast.success("Inscription réussie ! Veuillez vérifier votre email.");
-      if (onSwitchToLogin) {
-        onSwitchToLogin();
+      if (data?.user) {
+        toast.success("Inscription réussie ! Un email de confirmation vous sera envoyé sous peu.");
+        if (onSwitchToLogin) {
+          onSwitchToLogin();
+        }
       }
     } catch (error) {
       console.error('Unexpected error:', error);
