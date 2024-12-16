@@ -28,23 +28,35 @@ export const useAuth = () => {
         return false;
       }
 
-      const { data: { user }, error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
         console.error('Auth error:', error);
-        toast({
-          variant: "destructive",
-          title: "Erreur de connexion",
-          description: "Email ou mot de passe incorrect",
-        });
+        
+        // Parse the error body if it exists
+        try {
+          const errorBody = JSON.parse(error.message);
+          if (errorBody.code === "invalid_credentials") {
+            toast({
+              variant: "destructive",
+              title: "Erreur de connexion",
+              description: "Veuillez vérifier votre email et votre mot de passe",
+            });
+          } else {
+            handleAuthError(error as AuthError, toast);
+          }
+        } catch {
+          handleAuthError(error as AuthError, toast);
+        }
+        
         return false;
       }
 
-      if (user) {
-        console.log("Utilisateur connecté:", user);
+      if (data?.user) {
+        console.log("Utilisateur connecté:", data.user);
         toast({
           title: "Connexion réussie",
           description: "Vous êtes maintenant connecté",
