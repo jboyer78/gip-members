@@ -30,18 +30,14 @@ export const useProfileDelete = () => {
         throw new Error('Profile not found');
       }
 
-      // Attempt to delete the profile
-      const { error: deleteError, data: deleteData } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', profileId)
-        .select();
+      // Delete the user from auth.users (this will trigger the cascade delete for the profile)
+      const { error: deleteAuthError } = await supabase.auth.admin.deleteUser(
+        profileId
+      );
 
-      console.log("Delete response:", { deleteError, deleteData });
-
-      if (deleteError) {
-        console.error('Error deleting profile:', deleteError);
-        throw deleteError;
+      if (deleteAuthError) {
+        console.error('Error deleting auth user:', deleteAuthError);
+        throw deleteAuthError;
       }
 
       // Invalidate both queries to ensure all data is refreshed
