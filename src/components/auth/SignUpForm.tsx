@@ -50,6 +50,13 @@ const SignUpForm = ({ onSwitchToLogin }: SignUpFormProps) => {
           onSwitchToLogin();
         }
       }
+    } catch (error) {
+      console.error("Error during signup:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'inscription",
+      });
     } finally {
       setLoading(false);
     }
