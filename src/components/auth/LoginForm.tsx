@@ -7,6 +7,7 @@ import { LoginCaptcha } from "./login/LoginCaptcha";
 import { SubmitButton } from "./login/SubmitButton";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -30,19 +31,69 @@ const LoginForm = () => {
     }
 
     try {
-      const result = await signIn(email, password, rememberMe);
-      if (!result) {
+      // First check if the user exists and is verified
+      const { data: userResponse, error: userError } = await supabase
+        .from('profiles')
+        .select('email_verified')
+        .eq('email', email)
+        .single();
+
+      if (userError) {
+        console.error('Error checking user:', userError);
         toast({
           variant: "destructive",
           title: "Erreur de connexion",
-          description: "Email ou mot de passe incorrect",
+          description: "Une erreur est survenue lors de la vérification de l'utilisateur",
+        });
+        return;
+      }
+
+      if (!userResponse) {
+        toast({
+          variant: "destructive",
+          title: "Erreur de connexion",
+          description: "Aucun compte n'existe avec cet email",
+        });
+        return;
+      }
+
+      // Attempt to sign in
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error('Auth error:', error);
+        
+        if (error.message.includes("Invalid login credentials")) {
+          toast({
+            variant: "destructive",
+            title: "Erreur de connexion",
+            description: "Email ou mot de passe incorrect",
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Erreur de connexion",
+            description: "Une erreur est survenue lors de la connexion",
+          });
+        }
+        return;
+      }
+
+      if (data?.user) {
+        console.log("Utilisateur connecté:", data.user);
+        toast({
+          title: "Connexion réussie",
+          description: "Vous êtes maintenant connecté",
         });
       }
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Erreur lors de la connexion:", error);
       toast({
         variant: "destructive",
-        title: "Erreur de connexion",
+        title: "Erreur",
         description: "Une erreur est survenue lors de la connexion",
       });
     }
