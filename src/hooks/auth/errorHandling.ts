@@ -1,5 +1,6 @@
 import { toast } from "@/hooks/use-toast";
 import { AuthError } from "@supabase/supabase-js";
+import { SignUpError } from "./types";
 
 export const handleAuthError = (error: AuthError, toastFn = toast) => {
   console.error('Auth error:', error);
@@ -35,7 +36,36 @@ export const handleAuthError = (error: AuthError, toastFn = toast) => {
   }
 };
 
-export type SignUpError = {
-  message: string;
-  status?: number;
-}
+export const handleSignUpError = async (error: SignUpError) => {
+  console.error('SignUp error:', error);
+  
+  switch (error.message) {
+    case 'User already registered':
+      toast({
+        variant: "destructive",
+        title: "Erreur d'inscription",
+        description: "Un compte existe déjà avec cet email",
+      });
+      break;
+    case 'Password too short':
+      toast({
+        variant: "destructive",
+        title: "Erreur d'inscription",
+        description: "Le mot de passe doit contenir au moins 6 caractères",
+      });
+      break;
+    case 'Invalid email':
+      toast({
+        variant: "destructive",
+        title: "Erreur d'inscription",
+        description: "L'adresse email n'est pas valide",
+      });
+      break;
+    default:
+      toast({
+        variant: "destructive",
+        title: "Erreur d'inscription",
+        description: "Une erreur est survenue lors de l'inscription",
+      });
+  }
+};
