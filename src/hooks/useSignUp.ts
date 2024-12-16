@@ -33,9 +33,6 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
         options: {
           captchaToken,
           emailRedirectTo: 'https://gip-members.lovable.app/auth/callback',
-          data: {
-            email_confirmed: false,
-          },
         },
       });
 

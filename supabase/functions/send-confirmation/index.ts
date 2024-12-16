@@ -33,12 +33,13 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         from: 'G.I.P. <website@support.gip-france.org>',
-        to: email,
+        to: [email],
         subject: 'Confirmez votre inscription',
         html: `
           <h2>Bienvenue sur G.I.P.</h2>
           <p>Cliquez sur le lien ci-dessous pour confirmer votre adresse email :</p>
           <p><a href="${confirmationUrl}">Confirmer mon email</a></p>
+          <p>Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet email.</p>
         `,
       }),
     })
