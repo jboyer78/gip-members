@@ -4,6 +4,7 @@ import { UseFormReturn } from "react-hook-form";
 import { ProfileFormValues } from "./types";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface EmailCardProps {
   form: UseFormReturn<ProfileFormValues>;
@@ -11,6 +12,7 @@ interface EmailCardProps {
 
 export const EmailCard = ({ form }: EmailCardProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleUpdateEmail = async () => {
     const { error } = await supabase.auth.updateUser({
@@ -33,24 +35,47 @@ export const EmailCard = ({ form }: EmailCardProps) => {
   };
 
   const handleUpdatePassword = async () => {
-    const { error } = await supabase.auth.resetPasswordForEmail(
-      form.getValues("email"),
-      {
-        redirectTo: `${window.location.origin}/change-password`,
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        // Si pas de session, on redirige vers la page de login
+        toast({
+          variant: "destructive",
+          title: "Session expirée",
+          description: "Veuillez vous reconnecter pour modifier votre mot de passe",
+        });
+        navigate("/login");
+        return;
       }
-    );
-    
-    if (error) {
-      console.error('Error resetting password:', error.message);
+
+      // Si session valide, on envoie l'email de réinitialisation
+      const { error } = await supabase.auth.resetPasswordForEmail(
+        form.getValues("email"),
+        {
+          redirectTo: `${window.location.origin}/change-password`,
+        }
+      );
+      
+      if (error) {
+        console.error('Error resetting password:', error.message);
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Impossible d'initier la réinitialisation du mot de passe",
+        });
+      } else {
+        toast({
+          title: "Succès",
+          description: "Un email de réinitialisation vous a été envoyé",
+        });
+      }
+    } catch (error) {
+      console.error('Error:', error);
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Impossible d'initier la réinitialisation du mot de passe",
-      });
-    } else {
-      toast({
-        title: "Succès",
-        description: "Un email de réinitialisation vous a été envoyé",
+        description: "Une erreur est survenue lors de la réinitialisation du mot de passe",
       });
     }
   };
