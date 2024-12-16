@@ -28,7 +28,41 @@ export const useAuth = () => {
         return false;
       }
 
-      // Try to sign in
+      // Check if user exists and is verified
+      const { data: userResponse, error: userError } = await supabase
+        .from('profiles')
+        .select('email_verified')
+        .eq('email', email)
+        .single();
+
+      if (userError) {
+        console.error('Error checking user:', userError);
+        toast({
+          variant: "destructive",
+          title: "Erreur de connexion",
+          description: "Une erreur est survenue lors de la vérification de l'utilisateur",
+        });
+        return false;
+      }
+
+      if (!userResponse) {
+        toast({
+          variant: "destructive",
+          title: "Erreur de connexion",
+          description: "Aucun compte n'existe avec cet email",
+        });
+        return false;
+      }
+
+      if (!userResponse.email_verified) {
+        toast({
+          variant: "destructive",
+          title: "Email non vérifié",
+          description: "Veuillez vérifier votre email avant de vous connecter. Vérifiez vos spams si nécessaire.",
+        });
+        return false;
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -41,7 +75,7 @@ export const useAuth = () => {
           toast({
             variant: "destructive",
             title: "Erreur de connexion",
-            description: "Email ou mot de passe incorrect",
+            description: "Mot de passe incorrect",
           });
         } else {
           handleAuthError(error as AuthError, toast);
@@ -50,26 +84,7 @@ export const useAuth = () => {
         return false;
       }
 
-      // After successful sign in, check if email is verified
       if (data?.user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('email_verified')
-          .eq('id', data.user.id)
-          .single();
-
-        if (!profile?.email_verified) {
-          // Sign out the user if email is not verified
-          await supabase.auth.signOut();
-          
-          toast({
-            variant: "destructive",
-            title: "Email non vérifié",
-            description: "Veuillez vérifier votre email avant de vous connecter. Vérifiez vos spams si nécessaire.",
-          });
-          return false;
-        }
-
         console.log("Utilisateur connecté:", data.user);
         toast({
           title: "Connexion réussie",
