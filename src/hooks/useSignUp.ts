@@ -30,7 +30,7 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       if (!attemptRecorded) return false;
 
       console.log("Attempting signup with Supabase...");
-      const { data, error } = await supabase.auth.signUp({
+      const { data: { session }, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -72,8 +72,8 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
         return false;
       }
 
-      if (data?.user) {
-        console.log("Signup successful, user created:", data.user.id);
+      if (session?.user) {
+        console.log("Signup successful, user created:", session.user.id);
         toast({
           title: "Inscription réussie",
           description: "Veuillez vérifier votre email pour confirmer votre compte",
