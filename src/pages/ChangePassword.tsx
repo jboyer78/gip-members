@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import PasswordField from "@/components/auth/PasswordField";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { validatePasswords } from "@/utils/validation";
+import { validatePassword, validatePasswords } from "@/utils/validation";
 
 const ChangePassword = () => {
   const [password, setPassword] = useState("");
@@ -20,7 +20,22 @@ const ChangePassword = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validatePasswords(password, confirmPassword)) {
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: passwordValidation.message,
+      });
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Les mots de passe ne correspondent pas",
+      });
       return;
     }
 

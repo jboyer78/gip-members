@@ -42,3 +42,17 @@ export const validatePassword = (password: string): { isValid: boolean; message:
 
   return { isValid: true, message: "" };
 };
+
+export const validatePasswords = (password: string, confirmPassword: string): boolean => {
+  const passwordValidation = validatePassword(password);
+  
+  if (!passwordValidation.isValid) {
+    return false;
+  }
+
+  if (password !== confirmPassword) {
+    return false;
+  }
+
+  return true;
+};
