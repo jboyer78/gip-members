@@ -28,25 +28,27 @@ export const useAuth = () => {
         return false;
       }
 
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data: { user }, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
         console.error('Auth error:', error);
-        handleAuthError(error as AuthError, toast);
+        toast({
+          variant: "destructive",
+          title: "Erreur de connexion",
+          description: "Email ou mot de passe incorrect",
+        });
         return false;
       }
 
-      if (data?.user) {
-        console.log("Utilisateur connecté:", data.user);
-
+      if (user) {
+        console.log("Utilisateur connecté:", user);
         toast({
           title: "Connexion réussie",
           description: "Vous êtes maintenant connecté",
         });
-
         navigate("/");
         return true;
       }
