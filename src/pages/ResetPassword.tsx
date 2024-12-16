@@ -105,22 +105,29 @@ const ResetPassword = () => {
         }
       }
 
-      // Mettre à jour ou créer une nouvelle tentative
+      // Use upsert instead of insert to handle existing records
       const { error: upsertError } = await supabase
         .from('password_reset_attempts')
-        .upsert({ 
-          email, 
-          last_attempt: new Date().toISOString() 
-        });
+        .upsert(
+          { 
+            email, 
+            last_attempt: new Date().toISOString() 
+          },
+          { 
+            onConflict: 'email',
+            ignoreDuplicates: false 
+          }
+        );
 
       if (upsertError) {
+        console.error("Upsert error:", upsertError);
         throw new Error("Erreur lors de l'enregistrement de la tentative");
       }
 
-      // Générer le lien de réinitialisation
+      // Generate reset link with proper URL encoding
       const resetLink = `${window.location.origin}/change-password?email=${encodeURIComponent(email)}`;
       
-      // Envoyer l'email
+      // Send email
       const { error: functionError } = await supabase.functions.invoke('send-reset-password', {
         body: {
           to: [email],
@@ -129,6 +136,7 @@ const ResetPassword = () => {
       });
 
       if (functionError) {
+        console.error("Function error:", functionError);
         throw functionError;
       }
 
