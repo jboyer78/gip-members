@@ -28,15 +28,15 @@ export const useAuth = () => {
         return false;
       }
 
-      // First check if the user exists and is verified
-      const { data: { users }, error: getUserError } = await supabase.auth.admin.listUsers({
-        filter: {
-          email: email
-        }
-      });
+      // Check if user exists and is verified
+      const { data: userResponse, error: userError } = await supabase
+        .from('profiles')
+        .select('email_verified')
+        .eq('email', email)
+        .single();
 
-      if (getUserError) {
-        console.error('Error checking user:', getUserError);
+      if (userError) {
+        console.error('Error checking user:', userError);
         toast({
           variant: "destructive",
           title: "Erreur de connexion",
@@ -45,8 +45,7 @@ export const useAuth = () => {
         return false;
       }
 
-      const user = users?.[0];
-      if (!user) {
+      if (!userResponse) {
         toast({
           variant: "destructive",
           title: "Erreur de connexion",
@@ -55,7 +54,7 @@ export const useAuth = () => {
         return false;
       }
 
-      if (!user.email_confirmed_at) {
+      if (!userResponse.email_verified) {
         toast({
           variant: "destructive",
           title: "Email non vérifié",
