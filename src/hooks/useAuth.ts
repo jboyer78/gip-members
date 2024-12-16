@@ -28,15 +28,38 @@ export const useAuth = () => {
         return false;
       }
 
-      // First check if the user exists
-      const { data: { users }, error: getUserError } = await supabase.auth.admin.listUsers();
-      const userExists = users?.some(user => user.email === email);
+      // First check if the user exists and is verified
+      const { data: { users }, error: getUserError } = await supabase.auth.admin.listUsers({
+        filter: {
+          email: email
+        }
+      });
 
-      if (!userExists) {
+      if (getUserError) {
+        console.error('Error checking user:', getUserError);
+        toast({
+          variant: "destructive",
+          title: "Erreur de connexion",
+          description: "Une erreur est survenue lors de la vérification de l'utilisateur",
+        });
+        return false;
+      }
+
+      const user = users?.[0];
+      if (!user) {
         toast({
           variant: "destructive",
           title: "Erreur de connexion",
           description: "Aucun compte n'existe avec cet email",
+        });
+        return false;
+      }
+
+      if (!user.email_confirmed_at) {
+        toast({
+          variant: "destructive",
+          title: "Email non vérifié",
+          description: "Veuillez vérifier votre email avant de vous connecter. Vérifiez vos spams si nécessaire.",
         });
         return false;
       }
