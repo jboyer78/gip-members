@@ -15,11 +15,7 @@ export const useAuth = () => {
         email,
         password,
         options: {
-          session: {
-            // Si "Se souvenir de moi" est coché, la session expire après 30 jours
-            // Sinon, elle expire après 1 heure
-            persistSession: rememberMe
-          }
+          captchaToken: undefined,
         }
       });
 
@@ -89,6 +85,13 @@ export const useAuth = () => {
           // Sign out the banned user
           await supabase.auth.signOut();
           return false;
+        }
+
+        // If rememberMe is true, set session expiry to 30 days
+        if (rememberMe) {
+          await supabase.auth.updateSession({
+            expires_in: 30 * 24 * 60 * 60 // 30 days in seconds
+          });
         }
 
         toast({
