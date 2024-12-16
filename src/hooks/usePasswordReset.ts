@@ -35,7 +35,7 @@ export const usePasswordReset = () => {
         }
       }
 
-      // Update or create attempt record
+      // Update or create attempt record using upsert
       const { error: upsertError } = await supabase
         .from('password_reset_attempts')
         .upsert(
@@ -44,8 +44,7 @@ export const usePasswordReset = () => {
             last_attempt: new Date().toISOString() 
           },
           { 
-            onConflict: 'email',
-            ignoreDuplicates: false 
+            onConflict: 'email' 
           }
         );
 
