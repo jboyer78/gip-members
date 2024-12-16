@@ -14,14 +14,17 @@ Deno.serve(async (req) => {
   try {
     const { email, confirmationUrl } = await req.json()
     console.log('Sending confirmation email to:', email)
+    console.log('Confirmation URL:', confirmationUrl)
 
-    // Use Resend to send the email
+    // Vérifier la clé API Resend
     const resendApiKey = Deno.env.get('RESEND_API_KEY')
     if (!resendApiKey) {
       console.error('RESEND_API_KEY is not set')
       throw new Error('RESEND_API_KEY is not set')
     }
+    console.log('RESEND_API_KEY is configured')
 
+    // Tentative d'envoi de l'email via Resend
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -29,7 +32,7 @@ Deno.serve(async (req) => {
         'Authorization': `Bearer ${resendApiKey}`,
       },
       body: JSON.stringify({
-        from: 'G.I.P. <no-reply@gip.fr>',
+        from: 'G.I.P. <onboarding@resend.dev>',
         to: email,
         subject: 'Confirmez votre inscription',
         html: `
@@ -40,23 +43,28 @@ Deno.serve(async (req) => {
       }),
     })
 
-    if (!res.ok) {
-      const error = await res.text()
-      console.error('Error sending email:', error)
-      throw new Error('Failed to send email')
-    }
+    // Log de la réponse de Resend pour le debugging
+    const resText = await res.text()
+    console.log('Resend API response:', res.status, resText)
 
-    const data = await res.json()
-    console.log('Email sent successfully:', data)
+    if (!res.ok) {
+      console.error('Error from Resend API:', resText)
+      throw new Error(`Resend API error: ${resText}`)
+    }
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   } catch (error) {
-    console.error('Error:', error)
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+    console.error('Detailed error:', error)
+    return new Response(
+      JSON.stringify({ 
+        error: error.message,
+        details: error.toString()
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    )
   }
 })
