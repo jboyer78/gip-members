@@ -36,7 +36,7 @@ export const EmailCard = ({ form }: EmailCardProps) => {
     const { error } = await supabase.auth.resetPasswordForEmail(
       form.getValues("email"),
       {
-        redirectTo: `${window.location.origin}/reset-password`,
+        redirectTo: `${window.location.origin}/change-password`,
       }
     );
     
