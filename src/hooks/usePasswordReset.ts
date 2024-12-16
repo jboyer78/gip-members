@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { User } from "@supabase/supabase-js";
 
 const RESET_COOLDOWN = 300000; // 5 minutes cooldown
 
@@ -39,7 +40,7 @@ export const usePasswordReset = () => {
       const { data: { users }, error: userError } = await supabase.auth.admin.listUsers();
       if (userError) throw userError;
 
-      const user = users.find(u => u.email === email);
+      const user = (users as User[]).find(u => u.email === email);
       if (!user) {
         throw new Error("Aucun compte trouvé avec cette adresse email");
       }
