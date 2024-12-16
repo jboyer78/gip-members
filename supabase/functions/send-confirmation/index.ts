@@ -74,14 +74,22 @@ const handler = async (req: Request): Promise<Response> => {
       }),
     });
 
-    // Log the Resend API response for debugging
-    const resText = await res.text();
-    console.log("Resend API response:", res.status, resText);
+    const resData = await res.json().catch(async () => {
+      // If JSON parsing fails, try to get the text response
+      const text = await res.text();
+      console.error("Failed to parse JSON response:", text);
+      return { error: text };
+    });
+
+    console.log("Resend API response:", {
+      status: res.status,
+      data: resData
+    });
 
     if (!res.ok) {
-      console.error("Error from Resend API:", resText);
+      console.error("Error from Resend API:", resData);
       return new Response(
-        JSON.stringify({ error: "Failed to send confirmation email" }),
+        JSON.stringify({ error: "Failed to send confirmation email", details: resData }),
         {
           status: 500,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
