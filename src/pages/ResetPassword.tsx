@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
-const RESET_COOLDOWN = 60000; // 1 minute cooldown
+const RESET_COOLDOWN = 300000; // 5 minutes cooldown
+const STORAGE_KEY = "lastPasswordResetAttempt";
 
 const ResetPassword = () => {
   const [email, setEmail] = useState("");
@@ -15,23 +16,42 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Load last attempt from localStorage on component mount
+  useEffect(() => {
+    const storedLastAttempt = localStorage.getItem(STORAGE_KEY);
+    if (storedLastAttempt) {
+      setLastAttempt(parseInt(storedLastAttempt, 10));
+    }
+  }, []);
+
+  const updateLastAttempt = (timestamp: number) => {
+    setLastAttempt(timestamp);
+    localStorage.setItem(STORAGE_KEY, timestamp.toString());
+  };
+
+  const getRemainingCooldown = () => {
+    const now = Date.now();
+    const remaining = RESET_COOLDOWN - (now - lastAttempt);
+    return Math.max(0, remaining);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Check if we're still in cooldown
-    const now = Date.now();
-    if (now - lastAttempt < RESET_COOLDOWN) {
-      const remainingSeconds = Math.ceil((RESET_COOLDOWN - (now - lastAttempt)) / 1000);
+    const remainingCooldown = getRemainingCooldown();
+    if (remainingCooldown > 0) {
+      const remainingMinutes = Math.ceil(remainingCooldown / 60000);
       toast({
         variant: "destructive",
         title: "Trop de tentatives",
-        description: `Veuillez attendre ${remainingSeconds} secondes avant de réessayer`,
+        description: `Veuillez attendre ${remainingMinutes} minute${remainingMinutes > 1 ? 's' : ''} avant de réessayer`,
       });
       return;
     }
 
     setIsLoading(true);
-    setLastAttempt(now);
+    updateLastAttempt(Date.now());
 
     try {
       // First, request password reset from Supabase
@@ -47,7 +67,7 @@ const ResetPassword = () => {
           toast({
             variant: "destructive",
             title: "Limite atteinte",
-            description: "Trop de tentatives de réinitialisation. Veuillez réessayer dans quelques minutes.",
+            description: "Trop de tentatives de réinitialisation. Veuillez réessayer dans 5 minutes.",
           });
           return;
         }
@@ -113,12 +133,16 @@ const ResetPassword = () => {
               placeholder="exemple@email.com"
               required
               className="mt-1"
-              disabled={isLoading}
+              disabled={isLoading || getRemainingCooldown() > 0}
             />
           </div>
 
           <div className="space-y-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              className="w-full" 
+              disabled={isLoading || getRemainingCooldown() > 0}
+            >
               {isLoading ? "Envoi en cours..." : "Envoyer le lien"}
             </Button>
             <Button
