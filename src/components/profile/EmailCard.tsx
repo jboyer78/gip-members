@@ -4,7 +4,6 @@ import { UseFormReturn } from "react-hook-form";
 import { ProfileFormValues } from "./types";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
 
 interface EmailCardProps {
   form: UseFormReturn<ProfileFormValues>;
@@ -12,7 +11,6 @@ interface EmailCardProps {
 
 export const EmailCard = ({ form }: EmailCardProps) => {
   const { toast } = useToast();
-  const navigate = useNavigate();
 
   const handleUpdateEmail = async () => {
     const { error } = await supabase.auth.updateUser({
@@ -36,20 +34,6 @@ export const EmailCard = ({ form }: EmailCardProps) => {
 
   const handleUpdatePassword = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        // Si pas de session, on redirige vers la page de login
-        toast({
-          variant: "destructive",
-          title: "Session expirée",
-          description: "Veuillez vous reconnecter pour modifier votre mot de passe",
-        });
-        navigate("/login");
-        return;
-      }
-
-      // Si session valide, on envoie l'email de réinitialisation
       const { error } = await supabase.auth.resetPasswordForEmail(
         form.getValues("email"),
         {

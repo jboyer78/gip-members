@@ -1,28 +1,11 @@
-import { useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
 import { usePasswordChange } from "@/hooks/usePasswordChange";
 import PasswordChangeHeader from "@/components/auth/change-password/PasswordChangeHeader";
 import PasswordChangeForm from "@/components/auth/change-password/PasswordChangeForm";
+import { useNavigate } from "react-router-dom";
 
 const ChangePassword = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const [searchParams] = useSearchParams();
-  const email = searchParams.get("email");
-  
-  const { isLoading, handlePasswordChange } = usePasswordChange(email);
-
-  useEffect(() => {
-    if (!email) {
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Email manquant dans l'URL",
-      });
-      navigate("/login");
-    }
-  }, [email, navigate, toast]);
+  const { isLoading, handlePasswordChange } = usePasswordChange();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
