@@ -25,7 +25,7 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
         password,
         options: {
           captchaToken,
-          emailRedirectTo: `${window.location.origin}/login`,
+          emailRedirectTo: `${window.location.origin}/login?verified=true`,
         },
       });
 
@@ -44,7 +44,7 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
         const { error: confirmationError } = await supabase.functions.invoke('send-confirmation', {
           body: {
             email: email,
-            confirmationUrl: `${window.location.origin}/login`,
+            confirmationUrl: `${window.location.origin}/login?verified=true`,
           },
         });
 

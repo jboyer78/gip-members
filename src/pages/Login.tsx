@@ -1,10 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LoginForm from "@/components/auth/LoginForm";
 import SignUpForm from "@/components/auth/SignUpForm";
+import { useToast } from "@/hooks/use-toast";
+import { useSearchParams } from "react-router-dom";
 
 const Login = () => {
   const [activeTab, setActiveTab] = useState("login");
+  const [searchParams] = useSearchParams();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const verified = searchParams.get("verified");
+    if (verified === "true") {
+      toast({
+        title: "Email vérifié",
+        description: "Votre email a été vérifié avec succès. Vous pouvez maintenant vous connecter.",
+      });
+    }
+  }, [searchParams, toast]);
 
   const handleSwitchToLogin = () => {
     setActiveTab("login");
