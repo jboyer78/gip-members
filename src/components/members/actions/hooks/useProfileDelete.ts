@@ -30,14 +30,14 @@ export const useProfileDelete = () => {
         throw new Error('Profile not found');
       }
 
-      // Delete the user from auth.users (this will trigger the cascade delete for the profile)
-      const { error: deleteAuthError } = await supabase.auth.admin.deleteUser(
-        profileId
-      );
+      // Delete the user from auth using the Edge Function
+      const { error: deleteError } = await supabase.functions.invoke('delete-user', {
+        body: { userId: profileId }
+      });
 
-      if (deleteAuthError) {
-        console.error('Error deleting auth user:', deleteAuthError);
-        throw deleteAuthError;
+      if (deleteError) {
+        console.error('Error deleting auth user:', deleteError);
+        throw deleteError;
       }
 
       // Invalidate both queries to ensure all data is refreshed
