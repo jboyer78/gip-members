@@ -30,7 +30,7 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
       if (!attemptRecorded) return false;
 
       console.log("Attempting signup with Supabase...");
-      const { data: { session }, error } = await supabase.auth.signUp({
+      const { data: { session, user }, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -50,7 +50,26 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
           code: error?.code
         });
         
-        if (error.message.includes("Email rate limit exceeded")) {
+        // Parse error body if it exists
+        let errorBody;
+        try {
+          if (typeof error.message === 'string' && error.message.includes('body')) {
+            const match = error.message.match(/{.*}/);
+            if (match) {
+              errorBody = JSON.parse(match[0]);
+            }
+          }
+        } catch (e) {
+          console.error('Error parsing error body:', e);
+        }
+
+        if (errorBody?.message === "Error sending confirmation email") {
+          toast({
+            variant: "destructive",
+            title: "Erreur lors de l'envoi de l'email",
+            description: "Une erreur est survenue lors de l'envoi de l'email de confirmation. Veuillez réessayer.",
+          });
+        } else if (error.message.includes("Email rate limit exceeded")) {
           toast({
             variant: "destructive",
             title: "Limite atteinte",
@@ -72,8 +91,8 @@ export const useSignUp = ({ onSwitchToLogin }: UseSignUpProps = {}) => {
         return false;
       }
 
-      if (session?.user) {
-        console.log("Signup successful, user created:", session.user.id);
+      if (user) {
+        console.log("Signup successful, user created:", user.id);
         toast({
           title: "Inscription réussie",
           description: "Veuillez vérifier votre email pour confirmer votre compte",
