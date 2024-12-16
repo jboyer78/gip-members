@@ -1,6 +1,9 @@
 export interface SignUpError {
   message: string;
   status?: number;
+  body?: string;
+  error_type?: string;
+  url?: string;
 }
 
 export interface SignUpResult {
