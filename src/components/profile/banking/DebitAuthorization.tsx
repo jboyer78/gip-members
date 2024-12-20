@@ -11,7 +11,7 @@ interface DebitAuthorizationProps {
 }
 
 export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
-  const [membershipFee, setMembershipFee] = useState<number>(42);
+  const [membershipFee, setMembershipFee] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -23,7 +23,7 @@ export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
           .from("profiles")
           .select("professional_status")
           .eq("id", user.id)
-          .single();
+          .maybeSingle();
 
         if (profile?.professional_status?.[0]) {
           const fee = getBaseMembershipFee(profile.professional_status[0]);
@@ -36,6 +36,10 @@ export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
 
     fetchUserData();
   }, []);
+
+  if (membershipFee === null) {
+    return null; // Ne rien afficher pendant le chargement
+  }
 
   return (
     <FormField
@@ -50,8 +54,8 @@ export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
             />
           </FormControl>
           <div className="space-y-1 leading-none">
-            <FormLabel>
-              J'autorise GROUPE INTERNATIONAL POLICE à prélever sur mon compte bancaire le montant de la cotisation annuelle de : {membershipFee}€
+            <FormLabel className="text-sm">
+              J'autorise GROUPE INTERNATIONAL POLICE à prélever sur mon compte bancaire le montant de la cotisation annuelle de {membershipFee}€
             </FormLabel>
           </div>
         </FormItem>
