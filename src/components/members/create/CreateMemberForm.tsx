@@ -8,6 +8,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { generateSecurePassword } from "@/utils/passwordGenerator";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Copy } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export interface CreateMemberFormValues {
   email: string;
@@ -22,6 +25,7 @@ interface CreateMemberFormProps {
 
 export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
   const [loading, setLoading] = useState(false);
+  const [generatedPassword, setGeneratedPassword] = useState<string>("");
   const queryClient = useQueryClient();
 
   const form = useForm<CreateMemberFormValues>({
@@ -32,6 +36,15 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
       birthDate: "",
     },
   });
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(generatedPassword);
+      toast.success("Mot de passe copié dans le presse-papier");
+    } catch (err) {
+      toast.error("Erreur lors de la copie du mot de passe");
+    }
+  };
 
   const onSubmit = async (values: CreateMemberFormValues) => {
     try {
@@ -45,13 +58,14 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
       }
 
       // Generate a secure password
-      const generatedPassword = generateSecurePassword();
+      const password = generateSecurePassword();
+      setGeneratedPassword(password);
 
       // Call the Edge Function using Supabase client
       const { error } = await supabase.functions.invoke('create-member', {
         body: {
           ...values,
-          password: generatedPassword
+          password
         }
       });
 
@@ -60,8 +74,6 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
       }
 
       toast.success("Membre créé avec succès");
-      form.reset();
-      onSuccess();
       
       // Invalider le cache pour forcer le rechargement du tableau
       await queryClient.invalidateQueries({ queryKey: ['profiles'] });
@@ -69,6 +81,7 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
     } catch (error) {
       console.error("Error in member creation:", error);
       toast.error("Une erreur est survenue lors de la création du membre");
+      setGeneratedPassword("");
     } finally {
       setLoading(false);
     }
@@ -77,6 +90,22 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        {generatedPassword && (
+          <Alert className="bg-green-50 dark:bg-green-900/20">
+            <AlertDescription className="flex items-center justify-between">
+              <span>Mot de passe généré : <strong>{generatedPassword}</strong></span>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={copyToClipboard}
+                className="h-8 w-8"
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
         <CreateMemberFormFields form={form} />
         <CreateMemberFormActions loading={loading} />
       </form>
