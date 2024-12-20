@@ -26,20 +26,6 @@ export const CreateMemberFormFields = ({ form }: CreateMemberFormFieldsProps) =>
 
       <FormField
         control={form.control}
-        name="password"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Mot de passe</FormLabel>
-            <FormControl>
-              <Input {...field} type="password" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
         name="firstName"
         render={({ field }) => (
           <FormItem>

@@ -2,15 +2,15 @@ import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { CreateMemberFormFields } from "./CreateMemberFormFields";
 import { CreateMemberFormActions } from "./CreateMemberFormActions";
-import { validateEmail, validatePassword } from "@/utils/validation";
+import { validateEmail } from "@/utils/validation";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { generateSecurePassword } from "@/utils/passwordGenerator";
 
 export interface CreateMemberFormValues {
   email: string;
-  password: string;
   firstName: string;
   lastName: string;
   birthDate: string;
@@ -27,7 +27,6 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
   const form = useForm<CreateMemberFormValues>({
     defaultValues: {
       email: "",
-      password: "",
       firstName: "",
       lastName: "",
       birthDate: "",
@@ -45,16 +44,15 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
         return;
       }
 
-      // Validate password
-      const passwordValidation = validatePassword(values.password);
-      if (!passwordValidation.isValid) {
-        toast.error(passwordValidation.message);
-        return;
-      }
+      // Generate a secure password
+      const generatedPassword = generateSecurePassword();
 
       // Call the Edge Function using Supabase client
       const { error } = await supabase.functions.invoke('create-member', {
-        body: values
+        body: {
+          ...values,
+          password: generatedPassword
+        }
       });
 
       if (error) {
