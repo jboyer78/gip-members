@@ -138,6 +138,7 @@ export type Database = {
           city: string | null
           country: string | null
           created_at: string
+          donation_amount: number | null
           email: string | null
           email_verified: boolean | null
           first_name: string | null
@@ -172,6 +173,7 @@ export type Database = {
           city?: string | null
           country?: string | null
           created_at?: string
+          donation_amount?: number | null
           email?: string | null
           email_verified?: boolean | null
           first_name?: string | null
@@ -206,6 +208,7 @@ export type Database = {
           city?: string | null
           country?: string | null
           created_at?: string
+          donation_amount?: number | null
           email?: string | null
           email_verified?: boolean | null
           first_name?: string | null

@@ -20,19 +20,26 @@ export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
-        const { data: profile } = await supabase
+        const { data: profile, error } = await supabase
           .from("profiles")
           .select("professional_status, donation_amount")
           .eq("id", user.id)
           .maybeSingle();
 
-        if (profile?.professional_status?.[0]) {
-          const status = profile.professional_status[0];
-          const fee = getBaseMembershipFee(status);
-          setMembershipFee(fee);
-          
-          if (status === "Membre d'honneur" && profile.donation_amount) {
-            setDonationAmount(profile.donation_amount);
+        if (error) {
+          console.error("Error fetching profile:", error);
+          return;
+        }
+
+        if (profile) {
+          const status = profile.professional_status?.[0];
+          if (status) {
+            const fee = getBaseMembershipFee(status);
+            setMembershipFee(fee);
+            
+            if (status === "Membre d'honneur" && profile.donation_amount) {
+              setDonationAmount(profile.donation_amount);
+            }
           }
         }
       } catch (error) {
