@@ -5,6 +5,8 @@ import { UseFormReturn } from "react-hook-form";
 import { supabase } from "@/integrations/supabase/client";
 import { BankingInfoFormValues } from "./types";
 import { getBaseMembershipFee } from "@/utils/membershipFees";
+import { Profile } from "@/integrations/supabase/types/profile";
+import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 
 interface DebitAuthorizationProps {
   form: UseFormReturn<BankingInfoFormValues>;
@@ -48,7 +50,7 @@ export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
           schema: 'public',
           table: 'profiles'
         },
-        async (payload) => {
+        async (payload: RealtimePostgresChangesPayload<Profile>) => {
           const { data: { user } } = await supabase.auth.getUser();
           if (user && payload.new && payload.new.id === user.id) {
             setCurrentStatus(payload.new.professional_status?.[0] || null);
