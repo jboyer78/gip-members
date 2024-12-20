@@ -22,7 +22,7 @@ const bloodTypeOptions = [
   "AB-",
   "O+",
   "O-",
-  "Inconnu"
+  "Unknown"
 ];
 
 const maritalStatusOptions = [
@@ -39,7 +39,7 @@ export const PersonalForm = ({ user, onCancel, onSuccess }: PersonalFormProps) =
     birth_date: user.birth_date || "",
     birth_city: user.birth_city || "",
     birth_department: user.birth_department || "",
-    blood_type: user.blood_type || "",
+    blood_type: user.blood_type || "Unknown",
     marital_status: user.marital_status || "",
     children_count: user.children_count || 0,
   });
