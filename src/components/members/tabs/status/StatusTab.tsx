@@ -1,6 +1,4 @@
 import { Profile } from "@/integrations/supabase/types/profile";
-import { StatusDisplay } from "./StatusDisplay";
-import { StatusUpdateForm } from "./StatusUpdateForm";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -71,7 +69,14 @@ export const StatusTab = ({ user }: StatusTabProps) => {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
-        <StatusDisplay currentStatus={user.status?.[0]} />
+        <div className="space-y-2">
+          <Label>Statut actuel</Label>
+          <p className="text-lg font-semibold">
+            {!user.status?.[0] || user.status[0] === "Sympathisant" 
+              ? "En attente de validation" 
+              : user.status[0]}
+          </p>
+        </div>
         
         <div className="space-y-2">
           <Label>Numéro d'adhérent</Label>
@@ -108,8 +113,6 @@ export const StatusTab = ({ user }: StatusTabProps) => {
         </div>
       </div>
       
-      <StatusUpdateForm user={user} />
-
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">Historique des statuts</h3>
         {isLoading ? (
