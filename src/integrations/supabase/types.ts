@@ -12,6 +12,7 @@ export type Database = {
       banking_info: {
         Row: {
           authorize_debit: boolean | null
+          bic: string | null
           created_at: string
           iban: string | null
           id: string
@@ -20,6 +21,7 @@ export type Database = {
         }
         Insert: {
           authorize_debit?: boolean | null
+          bic?: string | null
           created_at?: string
           iban?: string | null
           id?: string
@@ -28,6 +30,7 @@ export type Database = {
         }
         Update: {
           authorize_debit?: boolean | null
+          bic?: string | null
           created_at?: string
           iban?: string | null
           id?: string

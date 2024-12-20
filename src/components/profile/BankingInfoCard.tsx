@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface BankingInfoFormValues {
   iban: string;
+  bic: string;
   authorize_debit: boolean;
 }
 
@@ -39,6 +40,7 @@ export const BankingInfoCard = () => {
           .from("banking_info")
           .update({ 
             iban: values.iban,
+            bic: values.bic,
             authorize_debit: values.authorize_debit,
             updated_at: new Date().toISOString()
           })
@@ -52,6 +54,7 @@ export const BankingInfoCard = () => {
           .insert({ 
             profile_id: user.id,
             iban: values.iban,
+            bic: values.bic,
             authorize_debit: values.authorize_debit,
             updated_at: new Date().toISOString()
           });
@@ -88,7 +91,7 @@ export const BankingInfoCard = () => {
 
         const { data, error } = await supabase
           .from("banking_info")
-          .select("iban, authorize_debit")
+          .select("iban, bic, authorize_debit")
           .eq("profile_id", user.id)
           .maybeSingle();
 
@@ -100,6 +103,7 @@ export const BankingInfoCard = () => {
         if (data) {
           form.reset({ 
             iban: data.iban,
+            bic: data.bic,
             authorize_debit: data.authorize_debit || false
           });
         }
@@ -122,6 +126,19 @@ export const BankingInfoCard = () => {
               <FormLabel>IBAN</FormLabel>
               <FormControl>
                 <Input {...field} placeholder="FR76 XXXX XXXX XXXX XXXX XXXX XXX" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="bic"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>BIC</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="BNPAFRPPXXX" />
               </FormControl>
               <FormMessage />
             </FormItem>
