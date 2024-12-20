@@ -26,4 +26,5 @@ export interface ProfessionalFormValues {
   assignment_direction?: string;
   assignment_service?: string;
   professional_document_url?: string;
+  donation_amount?: number;
 }
