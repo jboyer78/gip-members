@@ -13,6 +13,7 @@ interface DebitAuthorizationProps {
 export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
   const [membershipFee, setMembershipFee] = useState<number | null>(null);
   const [donationAmount, setDonationAmount] = useState<number | null>(null);
+  const [currentStatus, setCurrentStatus] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -33,6 +34,8 @@ export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
 
         if (profile) {
           const status = profile.professional_status?.[0];
+          setCurrentStatus(status || null);
+          
           if (status) {
             const fee = getBaseMembershipFee(status);
             setMembershipFee(fee);
@@ -51,9 +54,12 @@ export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
   }, []);
 
   const getFeeDisplay = () => {
-    if (membershipFee === 0 && donationAmount) {
-      return `${donationAmount} €`;
+    if (!currentStatus) return "...";
+    
+    if (currentStatus === "Membre d'honneur") {
+      return donationAmount ? `${donationAmount} €` : "...";
     }
+    
     return membershipFee ? `${membershipFee} €` : "...";
   };
 
