@@ -28,7 +28,7 @@ export const useLoginSubmit = () => {
         .eq('username', username)
         .maybeSingle();
 
-      console.log("User lookup response:", userResponse);
+      console.log("Full user lookup response:", userResponse);
 
       if (userError) {
         console.error('Error checking user:', userError);
@@ -42,12 +42,26 @@ export const useLoginSubmit = () => {
 
       if (!userResponse || !userResponse.email) {
         console.log("No user found with username:", username);
-        toast({
-          variant: "destructive",
-          title: "Erreur de connexion",
-          description: "Identifiant incorrect",
-        });
-        return;
+        // Try looking up by email in case username is actually an email
+        const { data: emailResponse, error: emailError } = await supabase
+          .from('profiles')
+          .select('email, username')
+          .eq('email', username)
+          .maybeSingle();
+
+        console.log("Email lookup response:", emailResponse);
+
+        if (emailError || !emailResponse) {
+          console.log("No user found with email either:", username);
+          toast({
+            variant: "destructive",
+            title: "Erreur de connexion",
+            description: "Identifiant incorrect",
+          });
+          return;
+        }
+
+        userResponse = emailResponse;
       }
 
       console.log("Attempting to sign in with email:", userResponse.email);
