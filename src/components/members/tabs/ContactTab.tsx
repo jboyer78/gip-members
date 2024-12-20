@@ -30,21 +30,34 @@ export const ContactTab = ({ user }: ContactTabProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log("Submitting form with data:", formData);
+    console.log("User ID:", user.id);
+    
     try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          street: formData.street,
-          postal_code: formData.postal_code,
-          city: formData.city,
-          country: formData.country,
-          phone_home: formData.phone_home,
-          phone_mobile: formData.phone_mobile,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", user.id);
+      const updateData = {
+        street: formData.street,
+        postal_code: formData.postal_code,
+        city: formData.city,
+        country: formData.country,
+        phone_home: formData.phone_home,
+        phone_mobile: formData.phone_mobile,
+        updated_at: new Date().toISOString(),
+      };
 
-      if (error) throw error;
+      console.log("Sending update to Supabase:", updateData);
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .update(updateData)
+        .eq("id", user.id)
+        .select();
+
+      if (error) {
+        console.error("Error updating contact info:", error);
+        throw error;
+      }
+
+      console.log("Update successful, response:", data);
 
       toast({
         title: "Succès",
