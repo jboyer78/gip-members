@@ -30,8 +30,9 @@ export const ContactTab = ({ user }: ContactTabProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log("Submitting form with data:", formData);
-    console.log("User ID:", user.id);
+    console.log("Starting form submission...");
+    console.log("Current user:", user);
+    console.log("Form data to submit:", formData);
     
     try {
       const updateData = {
@@ -44,7 +45,8 @@ export const ContactTab = ({ user }: ContactTabProps) => {
         updated_at: new Date().toISOString(),
       };
 
-      console.log("Sending update to Supabase:", updateData);
+      console.log("Preparing Supabase update with data:", updateData);
+      console.log("User ID for update:", user.id);
 
       const { data, error } = await supabase
         .from("profiles")
@@ -53,11 +55,28 @@ export const ContactTab = ({ user }: ContactTabProps) => {
         .select();
 
       if (error) {
-        console.error("Error updating contact info:", error);
-        throw error;
+        console.error("Supabase update error:", error);
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Une erreur est survenue lors de la mise à jour des coordonnées",
+        });
+        return;
       }
 
-      console.log("Update successful, response:", data);
+      console.log("Supabase update successful. Response data:", data);
+
+      // Verify if data was actually updated
+      const { data: verifyData, error: verifyError } = await supabase
+        .from("profiles")
+        .select()
+        .eq("id", user.id)
+        .single();
+
+      console.log("Verification query result:", verifyData);
+      if (verifyError) {
+        console.error("Verification query error:", verifyError);
+      }
 
       toast({
         title: "Succès",
@@ -66,11 +85,11 @@ export const ContactTab = ({ user }: ContactTabProps) => {
       
       setIsEditing(false);
     } catch (error) {
-      console.error("Error updating contact info:", error);
+      console.error("Unexpected error during update:", error);
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue lors de la mise à jour des coordonnées",
+        description: "Une erreur inattendue est survenue lors de la mise à jour des coordonnées",
       });
     }
   };
