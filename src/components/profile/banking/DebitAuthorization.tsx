@@ -48,14 +48,17 @@ export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
     fetchUserData();
   }, []);
 
-  const getFeeDisplay = () => {
+  const getAuthorizationText = () => {
     if (!currentStatus) return "...";
     
+    let amount = "...";
     if (currentStatus === "Membre d'honneur") {
-      return donationAmount ? `${donationAmount} €` : "...";
+      amount = donationAmount ? `${donationAmount} €` : "...";
+    } else {
+      amount = membershipFee ? `${membershipFee} €` : "...";
     }
     
-    return membershipFee ? `${membershipFee} €` : "...";
+    return `J'autorise GROUPE INTERNATIONAL POLICE à prélever sur mon compte bancaire le montant de la cotisation annuelle de ${amount}`;
   };
 
   return (
@@ -72,7 +75,7 @@ export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
           </FormControl>
           <div className="space-y-1 leading-none">
             <FormLabel>
-              J'autorise GROUPE INTERNATIONAL POLICE à effectuer sur mon compte bancaire le montant de la cotisation annuelle de {getFeeDisplay()}
+              {getAuthorizationText()}
             </FormLabel>
           </div>
         </FormItem>
