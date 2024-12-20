@@ -17,6 +17,7 @@ export const StatusSelector = ({ value, onChange }: StatusSelectorProps) => {
           <SelectItem value="En attente">En attente</SelectItem>
           <SelectItem value="Validée">Validée</SelectItem>
           <SelectItem value="Refusée">Refusée</SelectItem>
+          <SelectItem value="Suspendue">Suspendue</SelectItem>
         </SelectContent>
       </Select>
     </div>

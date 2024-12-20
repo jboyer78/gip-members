@@ -8,13 +8,14 @@ import { useToast } from "@/hooks/use-toast";
 
 interface StatusUpdateFormProps {
   user: Profile;
+  onUpdate: () => void;
 }
 
-export const StatusUpdateForm = ({ user }: StatusUpdateFormProps) => {
+export const StatusUpdateForm = ({ user, onUpdate }: StatusUpdateFormProps) => {
   const [newStatus, setNewStatus] = useState<string>("");
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { updateStatus } = useStatusUpdate(user);
+  const { updateStatus } = useStatusUpdate(user, onUpdate);
   const { toast } = useToast();
 
   const handleStatusUpdate = async () => {
@@ -27,16 +28,6 @@ export const StatusUpdateForm = ({ user }: StatusUpdateFormProps) => {
       return;
     }
 
-    if (!user.country) {
-      toast({
-        title: "Erreur",
-        description: "Veuillez renseigner le pays dans l'onglet Coordonnées avant de mettre à jour le statut",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    console.log("Updating status with:", { newStatus, comment });
     setIsSubmitting(true);
     try {
       await updateStatus({ newStatus, comment });
@@ -48,16 +39,19 @@ export const StatusUpdateForm = ({ user }: StatusUpdateFormProps) => {
   };
 
   return (
-    <div className="space-y-4">
-      <StatusSelector value={newStatus} onChange={setNewStatus} />
-      <CommentInput value={comment} onChange={setComment} />
-      <Button
-        className="w-full"
-        onClick={handleStatusUpdate}
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? "Mise à jour..." : "Mettre à jour le statut"}
-      </Button>
+    <div className="space-y-4 p-4 border rounded-lg bg-muted/50">
+      <h3 className="text-lg font-semibold mb-4">Mettre à jour le statut</h3>
+      <div className="space-y-4">
+        <StatusSelector value={newStatus} onChange={setNewStatus} />
+        <CommentInput value={comment} onChange={setComment} />
+        <Button
+          className="w-full"
+          onClick={handleStatusUpdate}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Mise à jour..." : "Mettre à jour le statut"}
+        </Button>
+      </div>
     </div>
   );
 };

@@ -8,66 +8,33 @@ interface StatusUpdateParams {
   comment: string;
 }
 
-export const useStatusUpdate = (user: Profile) => {
+export const useStatusUpdate = (user: Profile, onUpdate?: () => void) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const { mutateAsync: updateStatus } = useMutation({
     mutationFn: async ({ newStatus, comment }: StatusUpdateParams) => {
-      console.log("Starting status update with:", { newStatus, userId: user.id });
-      
-      const { data: { user: currentUser }, error: userError } = await supabase.auth.getUser();
-      
-      if (userError) {
-        console.error("User error:", userError);
-        throw userError;
-      }
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
       
       if (!currentUser) {
-        throw new Error("No user found");
+        throw new Error("Utilisateur non connecté");
       }
 
-      // Get country code for member number generation
-      const countryCode = getCountryCode(user.country || '');
-
-      // Generate member number if not already present
-      let memberNumber = user.member_number;
-      if (!memberNumber) {
-        const { data: memberNumberData, error: memberNumberError } = await supabase
-          .rpc('generate_unique_member_number', { country_code: countryCode });
-
-        if (memberNumberError) {
-          console.error("Member number generation error:", memberNumberError);
-          throw memberNumberError;
-        }
-        memberNumber = memberNumberData;
-      }
-
-      // Ensure status is a single-element array to comply with the check constraint
-      const statusArray = [newStatus];
-      console.log("Updating profile with status array:", statusArray);
-
-      const { data: updateData, error: profileError } = await supabase
-        .from("profiles")
+      // Update profile status
+      const { error: profileError } = await supabase
+        .from('profiles')
         .update({ 
-          status: statusArray,
-          member_number: memberNumber,
+          status: [newStatus],
           updated_at: new Date().toISOString()
         })
-        .eq("id", user.id)
-        .select();
+        .eq('id', user.id);
 
-      console.log("Profile update response:", { data: updateData, error: profileError });
+      if (profileError) throw profileError;
 
-      if (profileError) {
-        console.error("Profile update error:", profileError);
-        throw profileError;
-      }
-
+      // Add status comment if provided
       if (comment.trim()) {
-        console.log("Adding comment:", comment);
         const { error: commentError } = await supabase
-          .from("status_comments")
+          .from('status_comments')
           .insert({
             profile_id: user.id,
             status: newStatus,
@@ -75,10 +42,7 @@ export const useStatusUpdate = (user: Profile) => {
             created_by: currentUser.id
           });
 
-        if (commentError) {
-          console.error("Comment error:", commentError);
-          throw commentError;
-        }
+        if (commentError) throw commentError;
       }
 
       return true;
@@ -90,6 +54,7 @@ export const useStatusUpdate = (user: Profile) => {
       });
       queryClient.invalidateQueries({ queryKey: ['statusComments', user.id] });
       queryClient.invalidateQueries({ queryKey: ['profiles'] });
+      if (onUpdate) onUpdate();
     },
     onError: (error) => {
       console.error("Error updating status:", error);
@@ -103,17 +68,3 @@ export const useStatusUpdate = (user: Profile) => {
 
   return { updateStatus };
 };
-
-// Helper function to get country code
-function getCountryCode(country: string): string {
-  const countryMap: { [key: string]: string } = {
-    'France': 'FR',
-    'United Kingdom': 'UK',
-    'United States': 'US',
-    'Royaume-Uni': 'UK',
-    'États-Unis': 'US',
-  };
-
-  // Default to FR if country not found in map
-  return countryMap[country] || 'FR';
-}
