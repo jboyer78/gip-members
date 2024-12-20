@@ -6,12 +6,16 @@ import { ProfessionalFormValues } from "../types";
 import { format } from "date-fns";
 
 const administrations = [
-  "Police Nationale",
-  "Police Municipale",
-  "Gendarmerie Nationale",
-  "Police des transports",
+  "Agent du Ministère de la Justice",
+  "Armée",
+  "Disney",
   "Douane",
+  "Gendarmerie Nationale",
   "Police de l'environnement",
+  "Police des transports",
+  "Police Municipale",
+  "Police Nationale",
+  "Sureté",
   "autres"
 ];
 
