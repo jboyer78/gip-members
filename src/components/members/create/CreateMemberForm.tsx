@@ -148,11 +148,10 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
                 </Button>
               </div>
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-center">
               <Button
                 type="button"
                 onClick={handleClose}
-                variant="outline"
               >
                 Fermer
               </Button>
