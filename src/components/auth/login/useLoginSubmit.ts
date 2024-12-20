@@ -19,13 +19,16 @@ export const useLoginSubmit = () => {
 
     try {
       setLoading(true);
+      console.log("Attempting to login with username:", username);
 
       // First check if the user exists
       const { data: userResponse, error: userError } = await supabase
         .from('profiles')
-        .select('email')
+        .select('email, username')
         .eq('username', username)
         .maybeSingle();
+
+      console.log("User lookup response:", userResponse);
 
       if (userError) {
         console.error('Error checking user:', userError);
@@ -37,7 +40,8 @@ export const useLoginSubmit = () => {
         return;
       }
 
-      if (!userResponse) {
+      if (!userResponse || !userResponse.email) {
+        console.log("No user found with username:", username);
         toast({
           variant: "destructive",
           title: "Erreur de connexion",
@@ -45,6 +49,8 @@ export const useLoginSubmit = () => {
         });
         return;
       }
+
+      console.log("Attempting to sign in with email:", userResponse.email);
 
       // Attempt to sign in with email
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -72,7 +78,7 @@ export const useLoginSubmit = () => {
       }
 
       if (data?.user) {
-        console.log("Utilisateur connecté:", data.user);
+        console.log("User successfully logged in:", data.user);
         toast({
           title: "Connexion réussie",
           description: "Vous êtes maintenant connecté",
