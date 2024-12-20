@@ -5,6 +5,7 @@ import { AppSidebar } from "@/components/shared/AppSidebar";
 import { useToast } from "@/hooks/use-toast";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
 
 const Accommodations = () => {
   const navigate = useNavigate();
@@ -13,26 +14,46 @@ const Accommodations = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        navigate("/login");
-        return;
-      }
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+          navigate("/login");
+          return;
+        }
 
-      if (!isLoadingAdmin && !isVerified && !isAdmin) {
-        toast({
-          variant: "destructive",
-          title: "Accès refusé",
-          description: "Votre compte doit être vérifié pour accéder à cette page",
-        });
+        // Wait for admin/verification status to load
+        if (!isLoadingAdmin) {
+          if (!isVerified && !isAdmin) {
+            toast({
+              variant: "destructive",
+              title: "Accès refusé",
+              description: "Votre compte doit être validé pour accéder à cette page",
+            });
+            navigate("/profile");
+            return;
+          }
+        }
+      } catch (error) {
+        console.error('Error checking auth:', error);
         navigate("/profile");
-        return;
       }
     };
 
     checkAuth();
   }, [navigate, toast, isAdmin, isVerified, isLoadingAdmin]);
+
+  // Show loading state while checking permissions
+  if (isLoadingAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Vérification des permissions...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <SidebarProvider defaultOpen={true}>
