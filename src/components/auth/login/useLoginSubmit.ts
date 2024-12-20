@@ -21,8 +21,36 @@ export const useLoginSubmit = () => {
       setLoading(true);
       console.log("Starting login process for username:", username);
 
+      // First, try to find user by username
+      const { data: userResponse, error: userError } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('username', username)
+        .maybeSingle();
+
+      if (userError) {
+        console.error('Error looking up user:', userError);
+        toast({
+          variant: "destructive",
+          title: "Erreur de connexion",
+          description: "Une erreur est survenue lors de la vérification de l'utilisateur",
+        });
+        return;
+      }
+
+      if (!userResponse?.email) {
+        console.log("No user found with username:", username);
+        toast({
+          variant: "destructive",
+          title: "Erreur de connexion",
+          description: "Identifiant incorrect",
+        });
+        return;
+      }
+
+      console.log("Found user email, attempting login with email:", userResponse.email);
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: `${username}@placeholder.com`,
+        email: userResponse.email,
         password
       });
 
@@ -31,7 +59,7 @@ export const useLoginSubmit = () => {
         toast({
           variant: "destructive",
           title: "Erreur de connexion",
-          description: "Identifiant ou mot de passe incorrect",
+          description: "Mot de passe incorrect",
         });
         return;
       }
