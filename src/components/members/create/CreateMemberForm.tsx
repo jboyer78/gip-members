@@ -8,9 +8,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { generateSecurePassword } from "@/utils/passwordGenerator";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Copy } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 export interface CreateMemberFormValues {
   email: string;
@@ -105,23 +106,31 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <CreateMemberFormFields form={form} />
+        
         {generatedPassword && (
-          <Alert className="bg-green-50 dark:bg-green-900/20">
-            <AlertDescription className="flex items-center justify-between">
-              <span>Mot de passe généré : <strong>{generatedPassword}</strong></span>
+          <div className="space-y-2">
+            <Label htmlFor="generatedPassword">Mot de passe généré</Label>
+            <div className="flex gap-2">
+              <Input
+                id="generatedPassword"
+                value={generatedPassword}
+                readOnly
+                className="bg-green-50 dark:bg-green-900/20"
+              />
               <Button
                 type="button"
                 variant="outline"
                 size="icon"
                 onClick={copyToClipboard}
-                className="h-8 w-8"
+                className="shrink-0"
               >
                 <Copy className="h-4 w-4" />
               </Button>
-            </AlertDescription>
-          </Alert>
+            </div>
+          </div>
         )}
-        <CreateMemberFormFields form={form} />
+
         <div className="flex justify-between">
           <CreateMemberFormActions loading={loading} />
           {generatedPassword && (
