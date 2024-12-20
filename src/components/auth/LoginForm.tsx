@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { EmailInput } from "./login/EmailInput";
+import { UsernameInput } from "./login/EmailInput";
 import { PasswordInput } from "./login/PasswordInput";
 import { RememberMeCheckbox } from "./login/RememberMeCheckbox";
 import { ForgotPasswordLink } from "./login/ForgotPasswordLink";
@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 const LoginForm = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
@@ -33,11 +33,11 @@ const LoginForm = () => {
     }
 
     try {
-      // First check if the user exists and is verified
+      // First check if the user exists
       const { data: userResponse, error: userError } = await supabase
         .from('profiles')
-        .select('email_verified')
-        .eq('email', email)
+        .select('email')
+        .eq('username', username)
         .single();
 
       if (userError) {
@@ -54,14 +54,14 @@ const LoginForm = () => {
         toast({
           variant: "destructive",
           title: "Erreur de connexion",
-          description: "Aucun compte n'existe avec cet email",
+          description: "Identifiant incorrect",
         });
         return;
       }
 
-      // Attempt to sign in
+      // Attempt to sign in with email
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
+        email: userResponse.email,
         password,
         options: {
           captchaToken
@@ -75,7 +75,7 @@ const LoginForm = () => {
           toast({
             variant: "destructive",
             title: "Erreur de connexion",
-            description: "Email ou mot de passe incorrect",
+            description: "Mot de passe incorrect",
           });
         } else {
           toast({
@@ -108,7 +108,7 @@ const LoginForm = () => {
   return (
     <form onSubmit={handleSubmit} className="mt-8 space-y-6">
       <div className="space-y-4">
-        <EmailInput email={email} setEmail={setEmail} />
+        <UsernameInput username={username} setUsername={setUsername} />
         <PasswordInput password={password} setPassword={setPassword} />
 
         <div className="flex items-center justify-between">

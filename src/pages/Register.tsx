@@ -1,6 +1,6 @@
-import LoginForm from "@/components/auth/LoginForm";
+import RegistrationForm from "@/components/auth/RegistrationForm";
 
-const Login = () => {
+const Register = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8 md:px-0">
       <div className="w-full max-w-md space-y-6 md:space-y-8 p-6 md:p-8 bg-white rounded-xl shadow">
@@ -11,18 +11,18 @@ const Login = () => {
             className="w-44 h-44 mx-auto mb-4"
           />
           <h2 className="text-lg text-gray-700">
-            Connexion
+            Demande d'inscription
           </h2>
         </div>
 
-        <LoginForm />
+        <RegistrationForm />
 
         <div className="text-center">
           <a 
-            href="/register" 
+            href="/login" 
             className="text-sm text-blue-600 hover:text-blue-800"
           >
-            Pas encore inscrit ? Faire une demande d'inscription
+            Déjà inscrit ? Se connecter
           </a>
         </div>
       </div>
@@ -30,4 +30,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

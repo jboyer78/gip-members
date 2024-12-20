@@ -1,20 +1,19 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-interface EmailInputProps {
-  email: string;
-  setEmail: (email: string) => void;
+interface UsernameInputProps {
+  username: string;
+  setUsername: (username: string) => void;
 }
 
-export const EmailInput = ({ email, setEmail }: EmailInputProps) => (
+export const UsernameInput = ({ username, setUsername }: UsernameInputProps) => (
   <div>
-    <Label htmlFor="email">Adresse email</Label>
+    <Label htmlFor="username">Identifiant</Label>
     <Input
-      id="email"
-      type="email"
-      value={email}
-      onChange={(e) => setEmail(e.target.value)}
-      placeholder="exemple@email.com"
+      id="username"
+      type="text"
+      value={username}
+      onChange={(e) => setUsername(e.target.value)}
       required
       className="mt-1"
     />

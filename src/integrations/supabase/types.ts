@@ -152,6 +152,7 @@ export type Database = {
           street: string | null
           training_site: string | null
           updated_at: string
+          username: string | null
         }
         Insert: {
           administration?: string | null
@@ -185,6 +186,7 @@ export type Database = {
           street?: string | null
           training_site?: string | null
           updated_at?: string
+          username?: string | null
         }
         Update: {
           administration?: string | null
@@ -218,6 +220,7 @@ export type Database = {
           street?: string | null
           training_site?: string | null
           updated_at?: string
+          username?: string | null
         }
         Relationships: []
       }
@@ -254,6 +257,39 @@ export type Database = {
           reading_time?: number | null
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      registration_requests: {
+        Row: {
+          birth_date: string
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          processed_at: string | null
+          status: string | null
+        }
+        Insert: {
+          birth_date: string
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          processed_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          birth_date?: string
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          processed_at?: string | null
+          status?: string | null
         }
         Relationships: []
       }
