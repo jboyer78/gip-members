@@ -27,6 +27,7 @@ const Accommodations = () => {
           description: "Votre compte doit être vérifié pour accéder à cette page",
         });
         navigate("/profile");
+        return;
       }
     };
 

@@ -28,6 +28,7 @@ const Dashboard = () => {
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { user } } = await supabase.auth.getUser();
+      
       if (!user) {
         navigate("/login");
         return;
@@ -40,6 +41,7 @@ const Dashboard = () => {
           description: "Votre compte doit être vérifié pour accéder à cette page",
         });
         navigate("/profile");
+        return;
       }
     };
 
