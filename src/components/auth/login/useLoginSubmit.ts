@@ -25,7 +25,7 @@ export const useLoginSubmit = () => {
         .from('profiles')
         .select('email')
         .eq('username', username)
-        .single();
+        .maybeSingle();
 
       if (userError) {
         console.error('Error checking user:', userError);
