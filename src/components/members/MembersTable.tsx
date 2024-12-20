@@ -30,9 +30,10 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
   const [serviceFilter, setServiceFilter] = useState<string>("");
   const [directionFilter, setDirectionFilter] = useState<string>("");
 
-  const { data: profilesWithBankingInfo } = useQuery({
+  const { data: profilesWithBankingInfo, refetch } = useQuery({
     queryKey: ['profiles-with-banking'],
     queryFn: async () => {
+      console.log("Fetching profiles with banking info...");
       const { data: profiles, error } = await supabase
         .from('profiles')
         .select(`
@@ -59,6 +60,11 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
   const handleRowClick = (profile: Profile) => {
     setSelectedUser(profile);
     setModalOpen(true);
+  };
+
+  const handleProfileUpdate = async () => {
+    console.log("Refetching profiles data after update...");
+    await refetch();
   };
 
   if (isLoading) {
@@ -121,6 +127,7 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
         user={selectedUser}
         open={modalOpen}
         onOpenChange={setModalOpen}
+        onUpdate={handleProfileUpdate}
       />
     </div>
   );

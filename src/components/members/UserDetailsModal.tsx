@@ -17,15 +17,24 @@ interface UserDetailsModalProps {
   user: Profile | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onUpdate?: () => void;
 }
 
-export const UserDetailsModal = ({ user: initialUser, open, onOpenChange }: UserDetailsModalProps) => {
+export const UserDetailsModal = ({ 
+  user: initialUser, 
+  open, 
+  onOpenChange,
+  onUpdate 
+}: UserDetailsModalProps) => {
   const [user, setUser] = useState<Profile | null>(initialUser);
 
   if (!user) return null;
 
-  const handleProfileUpdate = (updatedProfile: Profile) => {
+  const handleProfileUpdate = async (updatedProfile: Profile) => {
     setUser(updatedProfile);
+    if (onUpdate) {
+      await onUpdate();
+    }
   };
 
   return (
