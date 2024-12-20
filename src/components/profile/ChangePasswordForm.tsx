@@ -88,7 +88,7 @@ export const ChangePasswordForm = ({ onSuccess }: ChangePasswordFormProps) => {
           required
         />
         <p className="text-sm text-gray-500">
-          Le mot de passe doit contenir au moins 12 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial (!@#$%^&*(),.?"{"}|&lt;&gt;)
+          Le mot de passe doit contenir au moins 12 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial (!@#$%^&*(),.?&quot;{}|&lt;&gt;)
         </p>
       </div>
 
