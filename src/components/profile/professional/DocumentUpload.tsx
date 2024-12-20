@@ -126,6 +126,10 @@ export const DocumentUpload = ({ form }: DocumentUploadProps) => {
                 ? "la carte professionnelle ou un arrêté" 
                 : "CNI ou passeport"}
             </p>
+
+            <p className="text-sm text-gray-500 italic">
+              Les données sont conservées pendant la durée de la validation de l'inscription, vous pourrez supprimer le document par la suite.
+            </p>
           </div>
           <FormMessage />
         </FormItem>
