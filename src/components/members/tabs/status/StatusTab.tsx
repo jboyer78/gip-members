@@ -1,6 +1,6 @@
 import { Profile } from "@/integrations/supabase/types/profile";
-import { StatusDisplay } from "./status/StatusDisplay";
-import { StatusUpdateForm } from "./status/StatusUpdateForm";
+import { StatusDisplay } from "./StatusDisplay";
+import { StatusUpdateForm } from "./StatusUpdateForm";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
