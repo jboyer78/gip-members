@@ -18,7 +18,7 @@ export interface ProfileFormValues {
 }
 
 export interface ProfessionalFormValues {
-  status?: string[];
+  professional_status?: string[];
   administration?: string;
   administration_entry_date?: Date;
   training_site?: string;
