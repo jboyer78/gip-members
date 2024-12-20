@@ -16,6 +16,7 @@ export const StatusTab = ({ user }: StatusTabProps) => {
   const [isEditingMemberNumber, setIsEditingMemberNumber] = useState(false);
   const [memberNumber, setMemberNumber] = useState(user.member_number || '');
   const { toast } = useToast();
+  const [currentStatus, setCurrentStatus] = useState(user.status?.[0] || "Sympathisant");
 
   const { data: statusComments, isLoading, refetch } = useQuery({
     queryKey: ['statusComments', user.id],
@@ -67,15 +68,20 @@ export const StatusTab = ({ user }: StatusTabProps) => {
     }
   };
 
+  const handleStatusUpdate = (newStatus: string) => {
+    setCurrentStatus(newStatus);
+    refetch();
+  };
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>Statut actuel</Label>
           <p className="text-lg font-semibold">
-            {!user.status?.[0] || user.status[0] === "Sympathisant" 
+            {!currentStatus || currentStatus === "Sympathisant" 
               ? "En attente de validation" 
-              : user.status[0]}
+              : currentStatus}
           </p>
         </div>
         
@@ -114,7 +120,7 @@ export const StatusTab = ({ user }: StatusTabProps) => {
         </div>
       </div>
 
-      <StatusUpdateForm user={user} onUpdate={refetch} />
+      <StatusUpdateForm user={user} onUpdate={handleStatusUpdate} />
       
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">Historique des statuts</h3>

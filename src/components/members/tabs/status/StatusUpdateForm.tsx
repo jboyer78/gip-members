@@ -8,14 +8,14 @@ import { useToast } from "@/hooks/use-toast";
 
 interface StatusUpdateFormProps {
   user: Profile;
-  onUpdate: () => void;
+  onUpdate: (newStatus: string) => void;
 }
 
 export const StatusUpdateForm = ({ user, onUpdate }: StatusUpdateFormProps) => {
   const [newStatus, setNewStatus] = useState<string>("");
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { updateStatus } = useStatusUpdate(user, onUpdate);
+  const { updateStatus } = useStatusUpdate(user);
   const { toast } = useToast();
 
   const handleStatusUpdate = async () => {
@@ -31,6 +31,7 @@ export const StatusUpdateForm = ({ user, onUpdate }: StatusUpdateFormProps) => {
     setIsSubmitting(true);
     try {
       await updateStatus({ newStatus, comment });
+      onUpdate(newStatus);
       setNewStatus("");
       setComment("");
     } finally {
