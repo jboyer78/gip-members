@@ -65,10 +65,9 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
 
       // Generate a secure password
       const password = generateSecurePassword();
-      setGeneratedPassword(password);
 
       // Call the Edge Function using Supabase client
-      const { error } = await supabase.functions.invoke('create-member', {
+      const { data, error } = await supabase.functions.invoke('create-member', {
         body: {
           ...values,
           password
@@ -76,9 +75,19 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
       });
 
       if (error) {
-        throw error;
+        console.error("Error in member creation:", error);
+        toast.error(error.message || "Une erreur est survenue lors de la création du membre");
+        return;
       }
 
+      // Si la réponse contient une erreur spécifique
+      if (data?.error) {
+        console.error("Error from create-member function:", data.error);
+        toast.error(data.error);
+        return;
+      }
+
+      setGeneratedPassword(password);
       toast.success("Membre créé avec succès");
       
       // Invalider le cache pour forcer le rechargement du tableau
@@ -88,7 +97,6 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
     } catch (error) {
       console.error("Error in member creation:", error);
       toast.error("Une erreur est survenue lors de la création du membre");
-      setGeneratedPassword("");
     } finally {
       setLoading(false);
     }

@@ -23,17 +23,13 @@ Deno.serve(async (req) => {
     // Get the request body
     const payload: CreateMemberPayload = await req.json()
 
-    // Check if email already exists in profiles
-    const { data: existingProfiles, error: searchError } = await supabaseClient
-      .from('profiles')
-      .select('email')
-      .eq('email', payload.email)
-      .maybeSingle()
-
-    if (searchError) {
-      console.error('Error checking existing profiles:', searchError)
+    // Check if email already exists in auth.users
+    const { data: existingUser, error: authSearchError } = await supabaseClient.auth.admin.listUsers()
+    
+    if (authSearchError) {
+      console.error('Error checking existing users:', authSearchError)
       return new Response(
-        JSON.stringify({ error: 'Error checking existing profiles' }),
+        JSON.stringify({ error: 'Error checking existing users' }),
         { 
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -41,9 +37,11 @@ Deno.serve(async (req) => {
       )
     }
 
-    if (existingProfiles) {
+    const userExists = existingUser.users.some(user => user.email === payload.email)
+    
+    if (userExists) {
       return new Response(
-        JSON.stringify({ error: 'Un membre existe déjà avec cette adresse email' }),
+        JSON.stringify({ error: 'Un utilisateur existe déjà avec cette adresse email' }),
         { 
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -61,7 +59,7 @@ Deno.serve(async (req) => {
     if (authError) {
       console.error('Error creating auth user:', authError)
       return new Response(
-        JSON.stringify({ error: 'Error creating auth user' }),
+        JSON.stringify({ error: authError.message }),
         { 
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
