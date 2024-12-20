@@ -5,7 +5,8 @@ import { ProfessionalFormValues } from "../types";
 
 const statusOptions = [
   "Actif",
-  "Retraité(e)",
+  "Retraité(e) depuis moins de 6 ans",
+  "Retraité(e) depuis 6 ans et plus",
   "Élève",
   "Membre fondateur",
   "Membre d'honneur"
