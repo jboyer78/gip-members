@@ -76,8 +76,18 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
       });
 
       if (error) {
-        console.error("Error in member creation:", error);
-        toast.error(error.message || "Une erreur est survenue lors de la création du membre");
+        // Parse the error message from the response body if it exists
+        let errorMessage = "Une erreur est survenue lors de la création du membre";
+        try {
+          const errorBody = JSON.parse(error.message);
+          if (errorBody?.error) {
+            errorMessage = errorBody.error;
+          }
+        } catch {
+          // If parsing fails, use the original error message
+          errorMessage = error.message;
+        }
+        toast.error(errorMessage);
         return;
       }
 
