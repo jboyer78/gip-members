@@ -46,6 +46,12 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
     }
   };
 
+  const handleClose = () => {
+    setGeneratedPassword("");
+    form.reset();
+    onSuccess();
+  };
+
   const onSubmit = async (values: CreateMemberFormValues) => {
     try {
       setLoading(true);
@@ -78,6 +84,7 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
       // Invalider le cache pour forcer le rechargement du tableau
       await queryClient.invalidateQueries({ queryKey: ['profiles'] });
       await queryClient.invalidateQueries({ queryKey: ['profiles-with-banking'] });
+
     } catch (error) {
       console.error("Error in member creation:", error);
       toast.error("Une erreur est survenue lors de la création du membre");
@@ -107,7 +114,18 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
           </Alert>
         )}
         <CreateMemberFormFields form={form} />
-        <CreateMemberFormActions loading={loading} />
+        <div className="flex justify-between">
+          <CreateMemberFormActions loading={loading} />
+          {generatedPassword && (
+            <Button
+              type="button"
+              onClick={handleClose}
+              variant="outline"
+            >
+              Fermer
+            </Button>
+          )}
+        </div>
       </form>
     </Form>
   );
