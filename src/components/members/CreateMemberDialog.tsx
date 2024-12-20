@@ -5,7 +5,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { validateEmail, validatePassword } from "@/utils/validation";
 import { UserPlus } from "lucide-react";
 
@@ -16,6 +15,9 @@ interface CreateMemberFormValues {
   lastName: string;
   birthDate: string;
 }
+
+// Get the Supabase URL from environment variables
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://fzxkiwrungrwptlueoqt.supabase.co";
 
 export const CreateMemberDialog = () => {
   const [open, setOpen] = useState(false);
@@ -50,10 +52,10 @@ export const CreateMemberDialog = () => {
       }
 
       // Call the Edge Function to create the member
-      const response = await fetch(`${supabase.supabaseUrl}/functions/v1/create-member`, {
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/create-member`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${supabase.supabaseKey}`,
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(values),
