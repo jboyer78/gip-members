@@ -24,14 +24,23 @@ serve(async (req) => {
       throw new Error('User ID is required')
     }
 
-    // First check if the user exists
-    const { data: user, error: getUserError } = await supabaseClient.auth.admin.getUserById(userId)
+    // First check if the profile exists
+    const { data: profile, error: profileError } = await supabaseClient
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single()
     
-    console.log('User lookup result:', { user, error: getUserError })
+    console.log('Profile lookup result:', { profile, error: profileError })
 
-    if (getUserError || !user) {
+    if (profileError) {
+      console.error('Error fetching profile:', profileError)
+      throw new Error('Error fetching profile')
+    }
+
+    if (!profile) {
       return new Response(
-        JSON.stringify({ error: 'User not found in auth.users' }),
+        JSON.stringify({ error: 'Profile not found' }),
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           status: 404,
@@ -39,7 +48,34 @@ serve(async (req) => {
       )
     }
 
-    // If user exists, proceed with deletion
+    // Then check if the auth user exists
+    const { data: user, error: getUserError } = await supabaseClient.auth.admin.getUserById(userId)
+    
+    console.log('User lookup result:', { user, error: getUserError })
+
+    // If the auth user doesn't exist but profile does, we should delete the profile
+    if (getUserError || !user) {
+      console.log('Auth user not found, deleting only profile')
+      const { error: deleteProfileError } = await supabaseClient
+        .from('profiles')
+        .delete()
+        .eq('id', userId)
+
+      if (deleteProfileError) {
+        console.error('Error deleting profile:', deleteProfileError)
+        throw deleteProfileError
+      }
+
+      return new Response(
+        JSON.stringify({ message: 'Profile deleted successfully' }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      )
+    }
+
+    // If both profile and auth user exist, delete the auth user (which will trigger the profile deletion via trigger)
     const { error: deleteError } = await supabaseClient.auth.admin.deleteUser(userId)
 
     if (deleteError) {
