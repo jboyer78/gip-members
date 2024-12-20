@@ -71,7 +71,7 @@ export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
           </FormControl>
           <div className="space-y-1 leading-none">
             <FormLabel>
-              J'autorise GROUPE INTERNATIONAL POLICE à effectuer sur mon compte bancaire le montant de la cotisation annuelle de {getFeeDisplay()}
+              J'autorise GROUPE INTERNATIONAL POLICE à effectuer sur mon compte bancaire le montant de la cotisation annuelle : {getFeeDisplay()}
             </FormLabel>
           </div>
         </FormItem>
