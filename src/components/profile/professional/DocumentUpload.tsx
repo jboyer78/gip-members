@@ -30,7 +30,6 @@ export const DocumentUpload = ({ form }: DocumentUploadProps) => {
       const documentUrl = form.getValues('professional_document_url');
       if (!documentUrl) return;
 
-      // Get the file path by splitting the URL and taking the last part
       const urlParts = documentUrl.split('/');
       const fileName = urlParts[urlParts.length - 1];
       
@@ -62,6 +61,9 @@ export const DocumentUpload = ({ form }: DocumentUploadProps) => {
   };
 
   const documentUrl = form.watch('professional_document_url');
+  const professionalStatus = form.watch('professional_status')?.[0];
+
+  const isActiveOrFounder = professionalStatus === "Actif" || professionalStatus === "Membre fondateur";
 
   return (
     <FormField
@@ -120,7 +122,9 @@ export const DocumentUpload = ({ form }: DocumentUploadProps) => {
             </p>
             
             <p className="text-sm text-gray-500">
-              Justificatifs acceptés : la carte professionnelle ou un arrêté.
+              Justificatifs acceptés : {isActiveOrFounder 
+                ? "la carte professionnelle ou un arrêté" 
+                : "CNI ou passeport"}
             </p>
           </div>
           <FormMessage />
