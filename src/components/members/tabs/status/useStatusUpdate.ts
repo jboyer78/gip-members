@@ -31,19 +31,17 @@ export const useStatusUpdate = (user: Profile, onUpdate?: () => void) => {
 
       if (profileError) throw profileError;
 
-      // Add status comment if provided
-      if (comment.trim()) {
-        const { error: commentError } = await supabase
-          .from('status_comments')
-          .insert({
-            profile_id: user.id,
-            status: newStatus,
-            comment: comment.trim(),
-            created_by: currentUser.id
-          });
+      // Always create a status comment entry
+      const { error: commentError } = await supabase
+        .from('status_comments')
+        .insert({
+          profile_id: user.id,
+          status: newStatus,
+          comment: comment.trim() || null, // If comment is empty, store null
+          created_by: currentUser.id
+        });
 
-        if (commentError) throw commentError;
-      }
+      if (commentError) throw commentError;
 
       return true;
     },
