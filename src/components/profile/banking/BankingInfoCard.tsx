@@ -20,7 +20,6 @@ export const BankingInfoCard = () => {
       
       if (!user) return;
 
-      // First check if a record exists
       const { data: existingRecord } = await supabase
         .from("banking_info")
         .select("id")
@@ -30,7 +29,6 @@ export const BankingInfoCard = () => {
       let error;
       
       if (existingRecord) {
-        // Update existing record
         const { error: updateError } = await supabase
           .from("banking_info")
           .update({ 
@@ -43,7 +41,6 @@ export const BankingInfoCard = () => {
           
         error = updateError;
       } else {
-        // Insert new record
         const { error: insertError } = await supabase
           .from("banking_info")
           .insert({ 
@@ -77,7 +74,6 @@ export const BankingInfoCard = () => {
     }
   };
 
-  // Fetch existing banking info
   useEffect(() => {
     const fetchBankingInfo = async () => {
       try {
