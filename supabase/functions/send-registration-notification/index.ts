@@ -42,7 +42,7 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "GIP Members <onboarding@resend.dev>",
+        from: "G.I.P. <website@support.gip-france.org>",
         to: ["boyer.jeanf@gmail.com"],
         subject: "Nouvelle demande d'inscription - GIP Members",
         html: `
