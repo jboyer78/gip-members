@@ -5,15 +5,13 @@ import { UseFormReturn } from "react-hook-form";
 import { supabase } from "@/integrations/supabase/client";
 import { BankingInfoFormValues } from "./types";
 import { getBaseMembershipFee } from "@/utils/membershipFees";
-import { Profile } from "@/integrations/supabase/types/profile";
-import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 
 interface DebitAuthorizationProps {
   form: UseFormReturn<BankingInfoFormValues>;
 }
 
 export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
-  const [currentStatus, setCurrentStatus] = useState<string | null>(null);
+  const [membershipFee, setMembershipFee] = useState<number | null>(null);
   const [donationAmount, setDonationAmount] = useState<number | null>(null);
 
   useEffect(() => {
@@ -22,16 +20,27 @@ export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
-        const { data: profile } = await supabase
+        const { data: profile, error } = await supabase
           .from("profiles")
           .select("professional_status, donation_amount")
           .eq("id", user.id)
           .maybeSingle();
 
+        if (error) {
+          console.error("Error fetching profile:", error);
+          return;
+        }
+
         if (profile) {
           const status = profile.professional_status?.[0];
-          setCurrentStatus(status || null);
-          setDonationAmount(profile.donation_amount || null);
+          if (status) {
+            const fee = getBaseMembershipFee(status);
+            setMembershipFee(fee);
+            
+            if (status === "Membre d'honneur" && profile.donation_amount) {
+              setDonationAmount(profile.donation_amount);
+            }
+          }
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -39,44 +48,13 @@ export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
     };
 
     fetchUserData();
-
-    // Subscribe to profile changes
-    const channel = supabase
-      .channel('profile-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'profiles'
-        },
-        async (payload: RealtimePostgresChangesPayload<Profile>) => {
-          const { data: { user } } = await supabase.auth.getUser();
-          if (user && payload.new && 'id' in payload.new && payload.new.id === user.id) {
-            setCurrentStatus(payload.new.professional_status?.[0] || null);
-            setDonationAmount(payload.new.donation_amount || null);
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
   }, []);
 
-  const getAuthorizationText = () => {
-    if (!currentStatus) return "J'autorise GROUPE INTERNATIONAL POLICE à prélever sur mon compte bancaire le montant de la cotisation annuelle de ...";
-    
-    let amount = "...";
-    if (currentStatus === "Membre d'honneur") {
-      amount = donationAmount ? `${donationAmount} €` : "...";
-    } else {
-      const fee = getBaseMembershipFee(currentStatus);
-      amount = `${fee} €`;
+  const getFeeDisplay = () => {
+    if (membershipFee === 0 && donationAmount) {
+      return `${donationAmount} €`;
     }
-    
-    return `J'autorise GROUPE INTERNATIONAL POLICE à prélever sur mon compte bancaire le montant de la cotisation annuelle de ${amount}`;
+    return membershipFee ? `${membershipFee} €` : "...";
   };
 
   return (
@@ -93,7 +71,7 @@ export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
           </FormControl>
           <div className="space-y-1 leading-none">
             <FormLabel>
-              {getAuthorizationText()}
+              J'autorise GROUPE INTERNATIONAL POLICE à effectuer sur mon compte bancaire le montant de la cotisation annuelle de {getFeeDisplay()}
             </FormLabel>
           </div>
         </FormItem>
