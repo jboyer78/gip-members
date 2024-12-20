@@ -1,5 +1,6 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { TopNavigation } from "@/components/shared/TopNavigation";
+import { CreateMemberDialog } from "./CreateMemberDialog";
 
 export const MembersHeader = () => (
   <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg p-4 rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
@@ -10,6 +11,9 @@ export const MembersHeader = () => (
         <p className="text-sm text-gray-600 dark:text-gray-400">Liste des membres de l'organisation</p>
       </div>
     </div>
-    <TopNavigation />
+    <div className="flex items-center gap-4">
+      <CreateMemberDialog />
+      <TopNavigation />
+    </div>
   </div>
 );
