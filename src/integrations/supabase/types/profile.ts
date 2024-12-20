@@ -33,6 +33,7 @@ export type Profile = {
   created_at: string;
   banned_at: string | null;
   banking_info?: BankingInfo | null;
+  member_number: string | null;
 };
 
 export type ProfileInsert = {
