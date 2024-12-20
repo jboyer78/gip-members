@@ -19,25 +19,41 @@ export const useLoginSubmit = () => {
 
     try {
       setLoading(true);
-      console.log("Attempting to login with:", username);
+      console.log("Starting login process for:", username);
 
-      // Try direct sign in first (if username is an email)
-      const { data: directSignIn, error: directError } = await supabase.auth.signInWithPassword({
-        email: username,
-        password
-      });
+      // First, check if the input is an email
+      const isEmail = username.includes('@');
 
-      if (!directError && directSignIn?.user) {
-        console.log("User successfully logged in:", directSignIn.user);
-        toast({
-          title: "Connexion réussie",
-          description: "Vous êtes maintenant connecté",
+      if (isEmail) {
+        console.log("Attempting direct email login for:", username);
+        const { data: directSignIn, error: directError } = await supabase.auth.signInWithPassword({
+          email: username,
+          password
         });
-        navigate("/profile");
-        return;
+
+        if (!directError && directSignIn?.user) {
+          console.log("Successfully logged in with email:", directSignIn.user.email);
+          toast({
+            title: "Connexion réussie",
+            description: "Vous êtes maintenant connecté",
+          });
+          navigate("/profile");
+          return;
+        }
+
+        if (directError) {
+          console.error("Direct login error:", directError);
+          toast({
+            variant: "destructive",
+            title: "Erreur de connexion",
+            description: "Email ou mot de passe incorrect",
+          });
+          return;
+        }
       }
 
-      // If direct sign in fails, try to find the user by username
+      // If not an email or direct login failed, try to find user by username
+      console.log("Looking up user by username:", username);
       const { data: userResponse, error: userError } = await supabase
         .from('profiles')
         .select('email')
@@ -45,7 +61,7 @@ export const useLoginSubmit = () => {
         .maybeSingle();
 
       if (userError) {
-        console.error('Error checking user:', userError);
+        console.error('Error looking up user:', userError);
         toast({
           variant: "destructive",
           title: "Erreur de connexion",
@@ -55,7 +71,7 @@ export const useLoginSubmit = () => {
       }
 
       if (!userResponse?.email) {
-        console.log("No user found with username or email:", username);
+        console.log("No user found with username:", username);
         toast({
           variant: "destructive",
           title: "Erreur de connexion",
@@ -64,14 +80,14 @@ export const useLoginSubmit = () => {
         return;
       }
 
-      // Try to sign in with the found email
+      console.log("Found user email, attempting login with email");
       const { data, error } = await supabase.auth.signInWithPassword({
         email: userResponse.email,
         password
       });
 
       if (error) {
-        console.error('Auth error:', error);
+        console.error('Login error:', error);
         toast({
           variant: "destructive",
           title: "Erreur de connexion",
@@ -81,7 +97,7 @@ export const useLoginSubmit = () => {
       }
 
       if (data?.user) {
-        console.log("User successfully logged in:", data.user);
+        console.log("Successfully logged in user:", data.user.email);
         toast({
           title: "Connexion réussie",
           description: "Vous êtes maintenant connecté",
@@ -89,7 +105,7 @@ export const useLoginSubmit = () => {
         navigate("/profile");
       }
     } catch (error) {
-      console.error("Erreur lors de la connexion:", error);
+      console.error("Unexpected error during login:", error);
       toast({
         variant: "destructive",
         title: "Erreur",
