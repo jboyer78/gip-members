@@ -19,16 +19,30 @@ export const useLoginSubmit = () => {
 
     try {
       setLoading(true);
-      console.log("Attempting to login with username:", username);
+      console.log("Attempting to login with:", username);
 
-      // First check if the user exists
-      let { data: userResponse, error: userError } = await supabase
+      // Try direct sign in first (if username is an email)
+      const { data: directSignIn, error: directError } = await supabase.auth.signInWithPassword({
+        email: username,
+        password
+      });
+
+      if (!directError && directSignIn?.user) {
+        console.log("User successfully logged in:", directSignIn.user);
+        toast({
+          title: "Connexion réussie",
+          description: "Vous êtes maintenant connecté",
+        });
+        navigate("/profile");
+        return;
+      }
+
+      // If direct sign in fails, try to find the user by username
+      const { data: userResponse, error: userError } = await supabase
         .from('profiles')
-        .select('email, username')
+        .select('email')
         .eq('username', username)
         .maybeSingle();
-
-      console.log("Full user lookup response:", userResponse);
 
       if (userError) {
         console.error('Error checking user:', userError);
@@ -40,33 +54,17 @@ export const useLoginSubmit = () => {
         return;
       }
 
-      if (!userResponse || !userResponse.email) {
-        console.log("No user found with username:", username);
-        // Try looking up by email in case username is actually an email
-        const { data: emailResponse, error: emailError } = await supabase
-          .from('profiles')
-          .select('email, username')
-          .eq('email', username)
-          .maybeSingle();
-
-        console.log("Email lookup response:", emailResponse);
-
-        if (emailError || !emailResponse) {
-          console.log("No user found with email either:", username);
-          toast({
-            variant: "destructive",
-            title: "Erreur de connexion",
-            description: "Identifiant incorrect",
-          });
-          return;
-        }
-
-        userResponse = emailResponse;
+      if (!userResponse?.email) {
+        console.log("No user found with username or email:", username);
+        toast({
+          variant: "destructive",
+          title: "Erreur de connexion",
+          description: "Identifiant incorrect",
+        });
+        return;
       }
 
-      console.log("Attempting to sign in with email:", userResponse.email);
-
-      // Attempt to sign in with email
+      // Try to sign in with the found email
       const { data, error } = await supabase.auth.signInWithPassword({
         email: userResponse.email,
         password
@@ -74,20 +72,11 @@ export const useLoginSubmit = () => {
 
       if (error) {
         console.error('Auth error:', error);
-        
-        if (error.message.includes("Invalid login credentials")) {
-          toast({
-            variant: "destructive",
-            title: "Erreur de connexion",
-            description: "Mot de passe incorrect",
-          });
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Erreur de connexion",
-            description: "Une erreur est survenue lors de la connexion",
-          });
-        }
+        toast({
+          variant: "destructive",
+          title: "Erreur de connexion",
+          description: "Mot de passe incorrect",
+        });
         return;
       }
 
