@@ -6,7 +6,6 @@ import { supabase } from "@/integrations/supabase/client";
 interface LoginFormData {
   username: string;
   password: string;
-  captchaToken: string | null;
 }
 
 export const useLoginSubmit = () => {
@@ -16,16 +15,7 @@ export const useLoginSubmit = () => {
 
   const handleSubmit = async (e: React.FormEvent, formData: LoginFormData) => {
     e.preventDefault();
-    const { username, password, captchaToken } = formData;
-    
-    if (!captchaToken) {
-      toast({
-        variant: "destructive",
-        title: "Erreur de validation",
-        description: "Veuillez compléter le CAPTCHA",
-      });
-      return;
-    }
+    const { username, password } = formData;
 
     try {
       setLoading(true);
@@ -59,10 +49,7 @@ export const useLoginSubmit = () => {
       // Attempt to sign in with email
       const { data, error } = await supabase.auth.signInWithPassword({
         email: userResponse.email,
-        password,
-        options: {
-          captchaToken
-        }
+        password
       });
 
       if (error) {
