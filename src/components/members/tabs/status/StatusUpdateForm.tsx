@@ -27,6 +27,15 @@ export const StatusUpdateForm = ({ user }: StatusUpdateFormProps) => {
       return;
     }
 
+    if (!user.country) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez renseigner le pays dans l'onglet Coordonnées avant de mettre à jour le statut",
+        variant: "destructive",
+      });
+      return;
+    }
+
     console.log("Updating status with:", { newStatus, comment });
     setIsSubmitting(true);
     try {

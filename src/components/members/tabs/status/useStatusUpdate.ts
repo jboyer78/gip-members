@@ -27,6 +27,22 @@ export const useStatusUpdate = (user: Profile) => {
         throw new Error("No user found");
       }
 
+      // Get country code for member number generation
+      const countryCode = getCountryCode(user.country || '');
+
+      // Generate member number if not already present
+      let memberNumber = user.member_number;
+      if (!memberNumber) {
+        const { data: memberNumberData, error: memberNumberError } = await supabase
+          .rpc('generate_unique_member_number', { country_code: countryCode });
+
+        if (memberNumberError) {
+          console.error("Member number generation error:", memberNumberError);
+          throw memberNumberError;
+        }
+        memberNumber = memberNumberData;
+      }
+
       // Ensure status is a single-element array to comply with the check constraint
       const statusArray = [newStatus];
       console.log("Updating profile with status array:", statusArray);
@@ -35,6 +51,7 @@ export const useStatusUpdate = (user: Profile) => {
         .from("profiles")
         .update({ 
           status: statusArray,
+          member_number: memberNumber,
           updated_at: new Date().toISOString()
         })
         .eq("id", user.id)
@@ -86,3 +103,17 @@ export const useStatusUpdate = (user: Profile) => {
 
   return { updateStatus };
 };
+
+// Helper function to get country code
+function getCountryCode(country: string): string {
+  const countryMap: { [key: string]: string } = {
+    'France': 'FR',
+    'United Kingdom': 'UK',
+    'United States': 'US',
+    'Royaume-Uni': 'UK',
+    'États-Unis': 'US',
+  };
+
+  // Default to FR if country not found in map
+  return countryMap[country] || 'FR';
+}
