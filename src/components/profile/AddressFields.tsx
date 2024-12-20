@@ -1,7 +1,9 @@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
 import { ProfileFormValues } from "./types";
+import { COUNTRIES } from "@/components/members/tabs/contact/constants/countries";
 
 interface AddressFieldsProps {
   form: UseFormReturn<ProfileFormValues>;
@@ -58,9 +60,20 @@ export const AddressFields = ({ form }: AddressFieldsProps) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Pays</FormLabel>
-            <FormControl>
-              <Input {...field} />
-            </FormControl>
+            <Select onValueChange={field.onChange} value={field.value || ""}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Sélectionnez un pays" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {COUNTRIES.map((country) => (
+                  <SelectItem key={country.code} value={country.name}>
+                    {country.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}
