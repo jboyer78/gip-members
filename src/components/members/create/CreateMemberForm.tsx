@@ -126,41 +126,41 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <CreateMemberFormFields form={form} />
         
-        {generatedPassword && (
-          <div className="space-y-2">
-            <Label htmlFor="generatedPassword">Mot de passe généré</Label>
-            <div className="flex gap-2">
-              <Input
-                id="generatedPassword"
-                value={generatedPassword}
-                readOnly
-                className="bg-green-50 dark:bg-green-900/20"
-              />
+        {generatedPassword ? (
+          <>
+            <div className="space-y-2">
+              <Label htmlFor="generatedPassword">Mot de passe généré</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="generatedPassword"
+                  value={generatedPassword}
+                  readOnly
+                  className="bg-green-50 dark:bg-green-900/20"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={copyToClipboard}
+                  className="shrink-0"
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            <div className="flex justify-end">
               <Button
                 type="button"
+                onClick={handleClose}
                 variant="outline"
-                size="icon"
-                onClick={copyToClipboard}
-                className="shrink-0"
               >
-                <Copy className="h-4 w-4" />
+                Fermer
               </Button>
             </div>
-          </div>
-        )}
-
-        <div className="flex justify-between">
+          </>
+        ) : (
           <CreateMemberFormActions loading={loading} />
-          {generatedPassword && (
-            <Button
-              type="button"
-              onClick={handleClose}
-              variant="outline"
-            >
-              Fermer
-            </Button>
-          )}
-        </div>
+        )}
       </form>
     </Form>
   );
