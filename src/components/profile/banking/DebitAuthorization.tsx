@@ -1,9 +1,9 @@
+import { useEffect, useState } from "react";
 import { FormField, FormItem, FormControl, FormLabel } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { UseFormReturn } from "react-hook-form";
-import { BankingInfoFormValues } from "./types";
-import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { BankingInfoFormValues } from "./types";
 import { getBaseMembershipFee } from "@/utils/membershipFees";
 
 interface DebitAuthorizationProps {
@@ -11,7 +11,7 @@ interface DebitAuthorizationProps {
 }
 
 export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
-  const [membershipFee, setMembershipFee] = useState<number | null>(42);
+  const [membershipFee, setMembershipFee] = useState<number | null>(null);
   const [donationAmount, setDonationAmount] = useState<number | null>(null);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
           .from("profiles")
           .select("professional_status, donation_amount")
           .eq("id", user.id)
-          .single();
+          .maybeSingle();
 
         if (profile?.professional_status?.[0]) {
           const status = profile.professional_status[0];
