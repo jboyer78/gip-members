@@ -16,17 +16,25 @@ interface RegistrationRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
-  console.log("Processing registration notification request");
+  console.log("Starting registration notification request handler");
 
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
+    console.log("Handling CORS preflight request");
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { firstName, lastName, birthDate, email }: RegistrationRequest = await req.json();
-    console.log("Registration details:", { firstName, lastName, birthDate, email });
+    if (!RESEND_API_KEY) {
+      console.error("RESEND_API_KEY is not configured");
+      throw new Error("RESEND_API_KEY is not configured");
+    }
 
+    console.log("Parsing request body");
+    const { firstName, lastName, birthDate, email }: RegistrationRequest = await req.json();
+    console.log("Request data:", { firstName, lastName, birthDate, email });
+
+    console.log("Sending email via Resend API");
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -39,6 +47,9 @@ const handler = async (req: Request): Promise<Response> => {
         subject: "Nouvelle demande d'inscription - GIP Members",
         html: `
           <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <img src="https://gip-members.lovable.app/lovable-uploads/ac77944b-d66c-46a5-820f-1a60225b7102.png" 
+                 alt="GIP Logo" 
+                 style="width: 100px; margin: 20px auto; display: block;">
             <h1>Nouvelle demande d'inscription</h1>
             <p>Une nouvelle demande d'inscription a été reçue avec les informations suivantes :</p>
             <ul>
@@ -52,30 +63,41 @@ const handler = async (req: Request): Promise<Response> => {
       }),
     });
 
+    console.log("Resend API response status:", res.status);
+    
+    let responseData;
+    try {
+      responseData = await res.json();
+      console.log("Resend API response data:", responseData);
+    } catch (e) {
+      const text = await res.text();
+      console.error("Failed to parse Resend API response as JSON:", text);
+      responseData = { error: text };
+    }
+
     if (!res.ok) {
-      const errorText = await res.text();
-      console.error("Error sending email:", errorText);
-      throw new Error("Failed to send email");
+      console.error("Error from Resend API:", responseData);
+      throw new Error(`Failed to send email: ${JSON.stringify(responseData)}`);
     }
 
     console.log("Email sent successfully");
     return new Response(
-      JSON.stringify({ success: true }),
+      JSON.stringify({ success: true, data: responseData }),
       {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       }
     );
-
   } catch (error) {
-    console.error("Error in registration notification:", error);
+    console.error("Error in send-registration-notification function:", error);
     return new Response(
       JSON.stringify({ 
-        error: error instanceof Error ? error.message : "An error occurred" 
+        error: "Failed to send email",
+        details: error instanceof Error ? error.message : String(error)
       }),
       {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       }
     );
   }
