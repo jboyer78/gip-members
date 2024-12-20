@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { validateEmail, validatePassword } from "@/utils/validation";
 import { UserPlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface CreateMemberFormValues {
   email: string;
@@ -20,6 +21,7 @@ interface CreateMemberFormValues {
 export const CreateMemberDialog = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   const form = useForm<CreateMemberFormValues>({
     defaultValues: {
@@ -61,6 +63,10 @@ export const CreateMemberDialog = () => {
       toast.success("Membre créé avec succès");
       setOpen(false);
       form.reset();
+      
+      // Invalider le cache pour forcer le rechargement du tableau
+      await queryClient.invalidateQueries({ queryKey: ['profiles'] });
+      await queryClient.invalidateQueries({ queryKey: ['profiles-with-banking'] });
     } catch (error) {
       console.error("Error in member creation:", error);
       toast.error("Une erreur est survenue lors de la création du membre");
