@@ -61,44 +61,42 @@ export const StatusCard = () => {
     }
   };
 
+  if (!userStatus) return null;
+
   return (
     <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-gray-200/50 dark:border-gray-700/50 shadow-lg">
       <CardContent className="p-6">
         <h2 className="text-xl font-semibold mb-4">Statut de votre inscription</h2>
         <div className="flex flex-col items-center justify-center space-y-4">
-          {userStatus && (
-            <>
-              {getStatusIcon(userStatus.status)}
-              <span className={`font-medium ${
-                userStatus.status === 'Validée' ? 'text-green-600' :
-                userStatus.status === 'Refusée' ? 'text-red-600' :
-                'text-yellow-600'
-              }`}>
-                {getStatusText(userStatus.status)}
-              </span>
-              {userStatus.status === 'Validée' && userStatus.memberNumber && (
-                <div className="text-center">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Numéro d'adhérent
-                  </p>
-                  <p className="text-lg font-semibold">
-                    {userStatus.memberNumber}
-                  </p>
-                </div>
+          {getStatusIcon(userStatus.status)}
+          <span className={`font-medium ${
+            userStatus.status === 'Validée' ? 'text-green-600' :
+            userStatus.status === 'Refusée' ? 'text-red-600' :
+            'text-yellow-600'
+          }`}>
+            {getStatusText(userStatus.status)}
+          </span>
+          {userStatus.status === 'Validée' && userStatus.memberNumber && (
+            <div className="text-center mt-2 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                Numéro d'adhérent
+              </p>
+              <p className="text-lg font-semibold text-primary">
+                {userStatus.memberNumber}
+              </p>
+            </div>
+          )}
+          {userStatus.lastComment && (
+            <div className="space-y-2 text-center mt-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400 max-w-md">
+                {userStatus.lastComment}
+              </p>
+              {userStatus.commentDate && (
+                <p className="text-xs text-gray-500 dark:text-gray-500">
+                  {format(new Date(userStatus.commentDate), "d MMMM yyyy 'à' HH:mm", { locale: fr })}
+                </p>
               )}
-              {userStatus.lastComment && (
-                <div className="space-y-2 text-center">
-                  <p className="text-sm text-gray-600 dark:text-gray-400 max-w-md">
-                    {userStatus.lastComment}
-                  </p>
-                  {userStatus.commentDate && (
-                    <p className="text-xs text-gray-500 dark:text-gray-500">
-                      {format(new Date(userStatus.commentDate), "d MMMM yyyy 'à' HH:mm", { locale: fr })}
-                    </p>
-                  )}
-                </div>
-              )}
-            </>
+            </div>
           )}
         </div>
       </CardContent>
