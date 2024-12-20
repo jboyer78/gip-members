@@ -64,6 +64,24 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
         return;
       }
 
+      // Check if email already exists in profiles table
+      const { data: existingProfiles, error: searchError } = await supabase
+        .from('profiles')
+        .select('id, email')
+        .eq('email', values.email)
+        .single();
+
+      if (searchError && searchError.code !== 'PGRST116') {
+        console.error("Error checking existing profile:", searchError);
+        toast.error("Erreur lors de la vérification de l'email");
+        return;
+      }
+
+      if (existingProfiles) {
+        toast.error("Un utilisateur existe déjà avec cette adresse email");
+        return;
+      }
+
       // Generate a secure password
       const password = generateSecurePassword();
 
@@ -76,22 +94,8 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
       });
 
       if (error) {
-        let errorMessage = "Une erreur est survenue lors de la création du membre";
-        
-        // Try to parse the error message from the response body
-        try {
-          if (typeof error.message === 'string') {
-            const parsedError = JSON.parse(error.message);
-            if (parsedError?.error) {
-              errorMessage = parsedError.error;
-            }
-          }
-        } catch {
-          // If parsing fails, use the original error message
-          errorMessage = error.message;
-        }
-        
-        toast.error(errorMessage);
+        console.error("Error from create-member function:", error);
+        toast.error("Une erreur est survenue lors de la création du membre");
         return;
       }
 
