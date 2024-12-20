@@ -21,16 +21,11 @@ export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
-        const { data: profile, error } = await supabase
+        const { data: profile } = await supabase
           .from("profiles")
           .select("professional_status, donation_amount")
           .eq("id", user.id)
           .maybeSingle();
-
-        if (error) {
-          console.error("Error fetching profile:", error);
-          return;
-        }
 
         if (profile) {
           const status = profile.professional_status?.[0];
