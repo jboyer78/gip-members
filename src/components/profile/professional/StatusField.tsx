@@ -1,61 +1,46 @@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
 import { ProfessionalFormValues } from "../types";
 
 const statusOptions = [
-  { id: "actif", label: "Actif" },
-  { id: "retraite", label: "Retraité(e)" },
-  { id: "sympathisant", label: "Sympathisant" },
-  { id: "eleve", label: "Élève" }
-];
+  "Actif",
+  "Retraité(e)",
+  "Sympathisant",
+  "Élève",
+  "Membre fondateur",
+  "Membre d'honneur"
+].sort();
 
 interface StatusFieldProps {
   form: UseFormReturn<ProfessionalFormValues>;
 }
 
 export const StatusField = ({ form }: StatusFieldProps) => {
-  const currentStatus = form.watch("status") || [];
-
   return (
     <FormField
       control={form.control}
-      name="status"
-      render={() => (
+      name="professional_status"
+      render={({ field }) => (
         <FormItem>
           <FormLabel>Situation professionnelle</FormLabel>
-          <div className="grid grid-cols-2 gap-4">
-            {statusOptions.map((option) => (
-              <FormField
-                key={option.id}
-                control={form.control}
-                name="status"
-                render={({ field }) => {
-                  return (
-                    <FormItem
-                      key={option.id}
-                      className="flex flex-row items-start space-x-3 space-y-0"
-                    >
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value?.includes(option.label)}
-                          onCheckedChange={(checked) => {
-                            const updatedStatus = checked
-                              ? [...currentStatus, option.label]
-                              : currentStatus.filter((value) => value !== option.label);
-                            field.onChange(updatedStatus);
-                          }}
-                        />
-                      </FormControl>
-                      <FormLabel className="font-normal">
-                        {option.label}
-                      </FormLabel>
-                    </FormItem>
-                  );
-                }}
-              />
-            ))}
-          </div>
+          <Select 
+            onValueChange={(value) => field.onChange([value])} 
+            value={field.value?.[0] || ""}
+          >
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue placeholder="Sélectionnez votre situation" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              {statusOptions.map((status) => (
+                <SelectItem key={status} value={status}>
+                  {status}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <FormMessage />
         </FormItem>
       )}
