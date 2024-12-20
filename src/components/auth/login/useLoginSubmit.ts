@@ -56,9 +56,11 @@ export const useLoginSubmit = () => {
       console.log("Looking up user by username:", username);
       const { data: userResponse, error: userError } = await supabase
         .from('profiles')
-        .select('email')
+        .select('email, email_verified')
         .eq('username', username)
         .maybeSingle();
+
+      console.log("User lookup response:", userResponse);
 
       if (userError) {
         console.error('Error looking up user:', userError);
@@ -80,7 +82,17 @@ export const useLoginSubmit = () => {
         return;
       }
 
-      console.log("Found user email, attempting login with email");
+      if (!userResponse.email_verified) {
+        console.log("User email not verified:", userResponse.email);
+        toast({
+          variant: "destructive",
+          title: "Email non vérifié",
+          description: "Veuillez vérifier votre email avant de vous connecter",
+        });
+        return;
+      }
+
+      console.log("Found user email, attempting login with email:", userResponse.email);
       const { data, error } = await supabase.auth.signInWithPassword({
         email: userResponse.email,
         password
