@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { validateEmail, validatePassword } from "@/utils/validation";
 import { UserPlus } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CreateMemberFormValues {
   email: string;
@@ -15,10 +16,6 @@ interface CreateMemberFormValues {
   lastName: string;
   birthDate: string;
 }
-
-// Get the Supabase URL and anon key from environment variables
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://fzxkiwrungrwptlueoqt.supabase.co";
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export const CreateMemberDialog = () => {
   const [open, setOpen] = useState(false);
@@ -52,19 +49,13 @@ export const CreateMemberDialog = () => {
         return;
       }
 
-      // Call the Edge Function to create the member
-      const response = await fetch(`${SUPABASE_URL}/functions/v1/create-member`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
+      // Call the Edge Function using Supabase client
+      const { error } = await supabase.functions.invoke('create-member', {
+        body: values
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Error creating member');
+      if (error) {
+        throw error;
       }
 
       toast.success("Membre créé avec succès");
