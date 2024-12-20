@@ -11,6 +11,7 @@ import { ContactTab } from "./tabs/ContactTab";
 import { ProfessionalTab } from "./tabs/ProfessionalTab";
 import { StatusTab } from "./tabs/StatusTab";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useState } from "react";
 
 interface UserDetailsModalProps {
   user: Profile | null;
@@ -18,10 +19,14 @@ interface UserDetailsModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export const UserDetailsModal = ({ user, open, onOpenChange }: UserDetailsModalProps) => {
+export const UserDetailsModal = ({ user: initialUser, open, onOpenChange }: UserDetailsModalProps) => {
+  const [user, setUser] = useState<Profile | null>(initialUser);
+
   if (!user) return null;
 
-  const currentStatus = user.status && user.status.length > 0 ? user.status[0] : undefined;
+  const handleProfileUpdate = (updatedProfile: Profile) => {
+    setUser(updatedProfile);
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -53,7 +58,7 @@ export const UserDetailsModal = ({ user, open, onOpenChange }: UserDetailsModalP
           </TabsContent>
 
           <TabsContent value="contact" className="space-y-4">
-            <ContactTab user={user} />
+            <ContactTab user={user} onUpdate={handleProfileUpdate} />
           </TabsContent>
 
           <TabsContent value="professional" className="space-y-4">
