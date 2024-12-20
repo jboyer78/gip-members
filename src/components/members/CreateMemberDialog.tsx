@@ -16,8 +16,9 @@ interface CreateMemberFormValues {
   birthDate: string;
 }
 
-// Get the Supabase URL from environment variables
+// Get the Supabase URL and anon key from environment variables
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://fzxkiwrungrwptlueoqt.supabase.co";
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export const CreateMemberDialog = () => {
   const [open, setOpen] = useState(false);
@@ -55,7 +56,7 @@ export const CreateMemberDialog = () => {
       const response = await fetch(`${SUPABASE_URL}/functions/v1/create-member`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(values),
