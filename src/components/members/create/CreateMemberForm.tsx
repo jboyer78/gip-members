@@ -65,19 +65,19 @@ export const CreateMemberForm = ({ onSuccess }: CreateMemberFormProps) => {
       }
 
       // Check if email already exists in profiles table
-      const { data: existingProfiles, error: searchError } = await supabase
+      const { data: existingProfile, error: searchError } = await supabase
         .from('profiles')
         .select('id, email')
         .eq('email', values.email)
-        .single();
+        .maybeSingle();
 
-      if (searchError && searchError.code !== 'PGRST116') {
+      if (searchError) {
         console.error("Error checking existing profile:", searchError);
         toast.error("Erreur lors de la vérification de l'email");
         return;
       }
 
-      if (existingProfiles) {
+      if (existingProfile) {
         toast.error("Un utilisateur existe déjà avec cette adresse email");
         return;
       }
