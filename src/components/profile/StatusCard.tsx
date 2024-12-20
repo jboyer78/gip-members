@@ -12,10 +12,10 @@ export const StatusCard = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
 
-      // Fetch profile status
+      // Fetch profile status and member number
       const { data: profile } = await supabase
         .from('profiles')
-        .select('status')
+        .select('status, member_number')
         .eq('id', user.id)
         .single();
 
@@ -30,6 +30,7 @@ export const StatusCard = () => {
       return {
         email: user.email,
         status: profile?.status?.[0] || 'En attente',
+        memberNumber: profile?.member_number,
         lastComment: comments?.[0]?.comment || null,
         commentDate: comments?.[0]?.created_at || null
       };
@@ -75,6 +76,16 @@ export const StatusCard = () => {
               }`}>
                 {getStatusText(userStatus.status)}
               </span>
+              {userStatus.status === 'Validée' && userStatus.memberNumber && (
+                <div className="text-center">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Numéro d'adhérent
+                  </p>
+                  <p className="text-lg font-semibold">
+                    {userStatus.memberNumber}
+                  </p>
+                </div>
+              )}
               {userStatus.lastComment && (
                 <div className="space-y-2 text-center">
                   <p className="text-sm text-gray-600 dark:text-gray-400 max-w-md">
