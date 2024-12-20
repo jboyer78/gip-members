@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
 interface StatusTabProps {
   user: Profile;
@@ -14,9 +16,11 @@ interface StatusTabProps {
 export const StatusTab = ({ user }: StatusTabProps) => {
   const [isEditingMemberNumber, setIsEditingMemberNumber] = useState(false);
   const [memberNumber, setMemberNumber] = useState(user.member_number || '');
+  const [newStatus, setNewStatus] = useState<string>("");
+  const [comment, setComment] = useState("");
   const { toast } = useToast();
 
-  const { data: statusComments, isLoading } = useQuery({
+  const { data: statusComments, isLoading, refetch } = useQuery({
     queryKey: ['statusComments', user.id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -66,6 +70,67 @@ export const StatusTab = ({ user }: StatusTabProps) => {
     }
   };
 
+  const handleStatusUpdate = async () => {
+    if (!newStatus) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez sélectionner un statut",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      
+      if (!currentUser) {
+        throw new Error("Utilisateur non connecté");
+      }
+
+      // Update profile status
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({ 
+          status: [newStatus],
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', user.id);
+
+      if (profileError) throw profileError;
+
+      // Add status comment if provided
+      if (comment.trim()) {
+        const { error: commentError } = await supabase
+          .from('status_comments')
+          .insert({
+            profile_id: user.id,
+            status: newStatus,
+            comment: comment.trim(),
+            created_by: currentUser.id
+          });
+
+        if (commentError) throw commentError;
+      }
+
+      await refetch();
+      
+      toast({
+        title: "Succès",
+        description: "Le statut a été mis à jour avec succès",
+      });
+      
+      setNewStatus("");
+      setComment("");
+    } catch (error) {
+      console.error('Error updating status:', error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la mise à jour du statut",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
@@ -110,6 +175,39 @@ export const StatusTab = ({ user }: StatusTabProps) => {
               </Button>
             </div>
           )}
+        </div>
+      </div>
+
+      <div className="space-y-4 p-4 border rounded-lg bg-muted/50">
+        <h3 className="text-lg font-semibold mb-4">Mettre à jour le statut</h3>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>Nouveau statut</Label>
+            <Select value={newStatus} onValueChange={setNewStatus}>
+              <SelectTrigger>
+                <SelectValue placeholder="Sélectionner un statut" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="En attente">En attente</SelectItem>
+                <SelectItem value="Validée">Validée</SelectItem>
+                <SelectItem value="Refusée">Refusée</SelectItem>
+                <SelectItem value="Suspendue">Suspendue</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Commentaire</Label>
+            <Textarea
+              placeholder="Ajouter un commentaire concernant le changement de statut..."
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+            />
+          </div>
+
+          <Button onClick={handleStatusUpdate} className="w-full">
+            Mettre à jour le statut
+          </Button>
         </div>
       </div>
 
