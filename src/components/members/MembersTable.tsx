@@ -63,9 +63,12 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
     setModalOpen(true);
   };
 
-  const handleProfileUpdate = async () => {
-    console.log("Refetching profiles data after update...");
-    await refetch();
+  const handleModalOpenChange = async (open: boolean) => {
+    setModalOpen(open);
+    if (!open) {
+      console.log("Modal closed, refreshing data...");
+      await refetch();
+    }
   };
 
   if (isLoading) {
@@ -127,8 +130,8 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
       <UserDetailsModal 
         user={selectedUser}
         open={modalOpen}
-        onOpenChange={setModalOpen}
-        onUpdate={handleProfileUpdate}
+        onOpenChange={handleModalOpenChange}
+        onUpdate={refetch}
       />
     </div>
   );
