@@ -52,7 +52,7 @@ export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
         },
         async (payload: RealtimePostgresChangesPayload<Profile>) => {
           const { data: { user } } = await supabase.auth.getUser();
-          if (user && payload.new && payload.new.id === user.id) {
+          if (user && payload.new && 'id' in payload.new && payload.new.id === user.id) {
             setCurrentStatus(payload.new.professional_status?.[0] || null);
             setDonationAmount(payload.new.donation_amount || null);
           }
