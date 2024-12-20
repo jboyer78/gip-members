@@ -22,7 +22,7 @@ export const useLoginSubmit = () => {
       console.log("Attempting to login with username:", username);
 
       // First check if the user exists
-      const { data: userResponse, error: userError } = await supabase
+      let { data: userResponse, error: userError } = await supabase
         .from('profiles')
         .select('email, username')
         .eq('username', username)
