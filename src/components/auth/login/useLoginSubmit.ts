@@ -21,46 +21,13 @@ export const useLoginSubmit = () => {
       setLoading(true);
       console.log("Starting login process for:", username);
 
-      // First, check if the input is an email
-      const isEmail = username.includes('@');
-
-      if (isEmail) {
-        console.log("Attempting direct email login for:", username);
-        const { data: directSignIn, error: directError } = await supabase.auth.signInWithPassword({
-          email: username,
-          password
-        });
-
-        if (!directError && directSignIn?.user) {
-          console.log("Successfully logged in with email:", directSignIn.user.email);
-          toast({
-            title: "Connexion réussie",
-            description: "Vous êtes maintenant connecté",
-          });
-          navigate("/profile");
-          return;
-        }
-
-        if (directError) {
-          console.error("Direct login error:", directError);
-          toast({
-            variant: "destructive",
-            title: "Erreur de connexion",
-            description: "Email ou mot de passe incorrect",
-          });
-          return;
-        }
-      }
-
-      // If not an email or direct login failed, try to find user by username
+      // First, try to find user by username
       console.log("Looking up user by username:", username);
       const { data: userResponse, error: userError } = await supabase
         .from('profiles')
-        .select('email, email_verified')
+        .select('email')
         .eq('username', username)
         .maybeSingle();
-
-      console.log("User lookup response:", userResponse);
 
       if (userError) {
         console.error('Error looking up user:', userError);
@@ -78,16 +45,6 @@ export const useLoginSubmit = () => {
           variant: "destructive",
           title: "Erreur de connexion",
           description: "Identifiant incorrect",
-        });
-        return;
-      }
-
-      if (!userResponse.email_verified) {
-        console.log("User email not verified:", userResponse.email);
-        toast({
-          variant: "destructive",
-          title: "Email non vérifié",
-          description: "Veuillez vérifier votre email avant de vous connecter",
         });
         return;
       }
