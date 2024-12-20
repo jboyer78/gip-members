@@ -5,6 +5,7 @@ export const MemberTableHeader = () => {
     <TableHeader>
       <TableRow>
         <TableHead>Photo</TableHead>
+        <TableHead>N° Adhérent</TableHead>
         <TableHead>Prénom</TableHead>
         <TableHead>Nom</TableHead>
         <TableHead>Email</TableHead>

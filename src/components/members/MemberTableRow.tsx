@@ -39,6 +39,7 @@ export const MemberTableRow = ({ profile, onRowClick }: MemberTableRowProps) => 
           </AvatarFallback>
         </Avatar>
       </TableCell>
+      <TableCell>{profile.member_number || '-'}</TableCell>
       <TableCell>{profile.first_name || '-'}</TableCell>
       <TableCell>{profile.last_name || '-'}</TableCell>
       <TableCell className="flex items-center gap-2">

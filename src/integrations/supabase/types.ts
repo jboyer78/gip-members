@@ -147,6 +147,7 @@ export type Database = {
           is_admin: boolean | null
           last_name: string | null
           marital_status: string | null
+          member_number: string | null
           phone_home: string | null
           phone_mobile: string | null
           postal_code: string | null
@@ -182,6 +183,7 @@ export type Database = {
           is_admin?: boolean | null
           last_name?: string | null
           marital_status?: string | null
+          member_number?: string | null
           phone_home?: string | null
           phone_mobile?: string | null
           postal_code?: string | null
@@ -217,6 +219,7 @@ export type Database = {
           is_admin?: boolean | null
           last_name?: string | null
           marital_status?: string | null
+          member_number?: string | null
           phone_home?: string | null
           phone_mobile?: string | null
           postal_code?: string | null
@@ -360,7 +363,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_random_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      generate_unique_member_number: {
+        Args: {
+          country_code: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
