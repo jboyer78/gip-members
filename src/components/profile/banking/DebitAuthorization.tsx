@@ -1,62 +1,13 @@
-import { useEffect, useState } from "react";
 import { FormField, FormItem, FormControl, FormLabel } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { UseFormReturn } from "react-hook-form";
-import { supabase } from "@/integrations/supabase/client";
 import { BankingInfoFormValues } from "./types";
-import { getBaseMembershipFee } from "@/utils/membershipFees";
 
 interface DebitAuthorizationProps {
   form: UseFormReturn<BankingInfoFormValues>;
 }
 
 export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
-  const [membershipFee, setMembershipFee] = useState<number | null>(null);
-  const [donationAmount, setDonationAmount] = useState<number | null>(null);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
-
-        const { data: profile, error } = await supabase
-          .from("profiles")
-          .select("professional_status, donation_amount")
-          .eq("id", user.id)
-          .maybeSingle();
-
-        if (error) {
-          console.error("Error fetching profile:", error);
-          return;
-        }
-
-        if (profile) {
-          const status = profile.professional_status?.[0];
-          if (status) {
-            const fee = getBaseMembershipFee(status);
-            setMembershipFee(fee);
-            
-            if (status === "Membre d'honneur" && profile.donation_amount) {
-              setDonationAmount(profile.donation_amount);
-            }
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-  const getFeeDisplay = () => {
-    if (membershipFee === 0 && donationAmount) {
-      return `${donationAmount} €`;
-    }
-    return membershipFee ? `${membershipFee} €` : "...";
-  };
-
   return (
     <FormField
       control={form.control}
