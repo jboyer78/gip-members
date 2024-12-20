@@ -1,33 +1,40 @@
+import { useState } from "react";
 import { Profile } from "@/integrations/supabase/types/profile";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { Button } from "@/components/ui/button";
+import { PersonalForm } from "./personal/PersonalForm";
+import { PersonalDisplay } from "./personal/PersonalDisplay";
 
 interface PersonalTabProps {
   user: Profile;
+  onUpdate?: (updatedProfile: Profile) => void;
 }
 
-export const PersonalTab = ({ user }: PersonalTabProps) => {
-  const formatDate = (date: string | null) => {
-    if (!date) return "-";
-    return format(new Date(date), "dd MMMM yyyy", { locale: fr });
+export const PersonalTab = ({ user, onUpdate }: PersonalTabProps) => {
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleSuccess = (updatedProfile: Profile) => {
+    setIsEditing(false);
+    if (onUpdate) {
+      onUpdate(updatedProfile);
+    }
   };
 
+  if (!isEditing) {
+    return (
+      <div className="space-y-4">
+        <PersonalDisplay user={user} />
+        <Button onClick={() => setIsEditing(true)} className="w-full">
+          Modifier les informations personnelles
+        </Button>
+      </div>
+    );
+  }
+
   return (
-    <div className="grid grid-cols-2 gap-2">
-      <p className="text-muted-foreground">Email</p>
-      <p>{user.email || "-"}</p>
-      <p className="text-muted-foreground">Date de naissance</p>
-      <p>{formatDate(user.birth_date)}</p>
-      <p className="text-muted-foreground">Ville de naissance</p>
-      <p>{user.birth_city || "-"}</p>
-      <p className="text-muted-foreground">Département</p>
-      <p>{user.birth_department || "-"}</p>
-      <p className="text-muted-foreground">Groupe sanguin</p>
-      <p>{user.blood_type || "-"}</p>
-      <p className="text-muted-foreground">Situation familiale</p>
-      <p>{user.marital_status || "-"}</p>
-      <p className="text-muted-foreground">Nombre d'enfants</p>
-      <p>{user.children_count !== null ? user.children_count : "-"}</p>
-    </div>
+    <PersonalForm 
+      user={user} 
+      onCancel={() => setIsEditing(false)}
+      onSuccess={handleSuccess}
+    />
   );
 };

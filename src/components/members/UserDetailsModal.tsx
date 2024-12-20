@@ -67,7 +67,7 @@ export const UserDetailsModal = ({
           </TabsList>
 
           <TabsContent value="personal" className="space-y-4">
-            <PersonalTab user={user} />
+            <PersonalTab user={user} onUpdate={handleProfileUpdate} />
           </TabsContent>
 
           <TabsContent value="contact" className="space-y-4">
