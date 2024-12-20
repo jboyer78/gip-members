@@ -99,6 +99,25 @@ Deno.serve(async (req) => {
       )
     }
 
+    // Send welcome email
+    const { error: emailError } = await supabaseClient.functions.invoke(
+      'send-welcome-email',
+      {
+        body: {
+          email: payload.email,
+          password: payload.password,
+          firstName: payload.firstName,
+          lastName: payload.lastName,
+        },
+      }
+    )
+
+    if (emailError) {
+      console.error('Error sending welcome email:', emailError)
+      // We don't return an error here as the user was created successfully
+      // The email sending failure shouldn't prevent the user creation
+    }
+
     return new Response(
       JSON.stringify({ user: authData.user }),
       { 
