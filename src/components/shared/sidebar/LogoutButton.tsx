@@ -9,12 +9,42 @@ export const LogoutButton = () => {
 
   const handleLogout = async () => {
     try {
-      await supabase.auth.signOut();
+      console.log("Starting logout process...");
+      
+      // First check if we have a session
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        console.log("No active session found, redirecting to login...");
+        navigate("/login");
+        return;
+      }
+
+      // Attempt to sign out
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error("Logout error:", error);
+        
+        // If session not found, we should still redirect to login
+        if (error.message.includes("session_not_found")) {
+          navigate("/login");
+          return;
+        }
+        
+        toast.error("Erreur lors de la déconnexion");
+        return;
+      }
+
+      console.log("Successfully logged out");
       toast.success("Déconnexion réussie");
       navigate("/login");
+      
     } catch (error) {
+      console.error("Unexpected error during logout:", error);
       toast.error("Erreur lors de la déconnexion");
-      console.error("Logout error:", error);
+      // In case of any error, we should still redirect to login
+      navigate("/login");
     }
   };
 
