@@ -23,6 +23,34 @@ Deno.serve(async (req) => {
     // Get the request body
     const payload: CreateMemberPayload = await req.json()
 
+    // Check if email already exists in profiles
+    const { data: existingProfiles, error: searchError } = await supabaseClient
+      .from('profiles')
+      .select('email')
+      .eq('email', payload.email)
+      .maybeSingle()
+
+    if (searchError) {
+      console.error('Error checking existing profiles:', searchError)
+      return new Response(
+        JSON.stringify({ error: 'Error checking existing profiles' }),
+        { 
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      )
+    }
+
+    if (existingProfiles) {
+      return new Response(
+        JSON.stringify({ error: 'Un membre existe déjà avec cette adresse email' }),
+        { 
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      )
+    }
+
     // Create the auth user with email confirmation disabled
     const { data: authData, error: authError } = await supabaseClient.auth.admin.createUser({
       email: payload.email,
