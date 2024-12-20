@@ -58,6 +58,7 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
   console.log("Raw profiles data:", profilesWithBankingInfo);
 
   const handleRowClick = (profile: Profile) => {
+    console.log("Row clicked, profile:", profile);
     setSelectedUser(profile);
     setModalOpen(true);
   };

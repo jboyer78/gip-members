@@ -11,7 +11,7 @@ import { ContactTab } from "./tabs/ContactTab";
 import { ProfessionalTab } from "./tabs/ProfessionalTab";
 import { StatusTab } from "./tabs/StatusTab";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface UserDetailsModalProps {
   user: Profile | null;
@@ -27,6 +27,10 @@ export const UserDetailsModal = ({
   onUpdate 
 }: UserDetailsModalProps) => {
   const [user, setUser] = useState<Profile | null>(initialUser);
+
+  useEffect(() => {
+    setUser(initialUser);
+  }, [initialUser]);
 
   if (!user) return null;
 
