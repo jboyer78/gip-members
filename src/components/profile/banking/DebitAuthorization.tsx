@@ -11,9 +11,8 @@ interface DebitAuthorizationProps {
 }
 
 export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
-  const [membershipFee, setMembershipFee] = useState<number | null>(null);
-  const [donationAmount, setDonationAmount] = useState<number | null>(null);
   const [currentStatus, setCurrentStatus] = useState<string | null>(null);
+  const [donationAmount, setDonationAmount] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -30,15 +29,7 @@ export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
         if (profile) {
           const status = profile.professional_status?.[0];
           setCurrentStatus(status || null);
-          
-          if (status) {
-            const fee = getBaseMembershipFee(status);
-            setMembershipFee(fee);
-            
-            if (status === "Membre d'honneur" && profile.donation_amount) {
-              setDonationAmount(profile.donation_amount);
-            }
-          }
+          setDonationAmount(profile.donation_amount || null);
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -46,16 +37,41 @@ export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
     };
 
     fetchUserData();
+
+    // Subscribe to profile changes
+    const channel = supabase
+      .channel('profile-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'profiles'
+        },
+        async (payload) => {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user && payload.new && payload.new.id === user.id) {
+            setCurrentStatus(payload.new.professional_status?.[0] || null);
+            setDonationAmount(payload.new.donation_amount || null);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const getAuthorizationText = () => {
-    if (!currentStatus) return "...";
+    if (!currentStatus) return "J'autorise GROUPE INTERNATIONAL POLICE à prélever sur mon compte bancaire le montant de la cotisation annuelle de ...";
     
     let amount = "...";
     if (currentStatus === "Membre d'honneur") {
       amount = donationAmount ? `${donationAmount} €` : "...";
     } else {
-      amount = membershipFee ? `${membershipFee} €` : "...";
+      const fee = getBaseMembershipFee(currentStatus);
+      amount = `${fee} €`;
     }
     
     return `J'autorise GROUPE INTERNATIONAL POLICE à prélever sur mon compte bancaire le montant de la cotisation annuelle de ${amount}`;
