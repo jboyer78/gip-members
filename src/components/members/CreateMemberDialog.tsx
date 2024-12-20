@@ -49,39 +49,19 @@ export const CreateMemberDialog = () => {
         return;
       }
 
-      // Create auth user
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-        email: values.email,
-        password: values.password,
-        email_confirm: true,
+      // Call the Edge Function to create the member
+      const response = await fetch(`${supabase.supabaseUrl}/functions/v1/create-member`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${supabase.supabaseKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
       });
 
-      if (authError) {
-        console.error("Error creating auth user:", authError);
-        toast.error("Erreur lors de la création du compte");
-        return;
-      }
-
-      if (!authData.user) {
-        toast.error("Erreur lors de la création du compte");
-        return;
-      }
-
-      // Update profile with additional information
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .update({
-          first_name: values.firstName,
-          last_name: values.lastName,
-          birth_date: values.birthDate,
-          email_verified: true,
-        })
-        .eq("id", authData.user.id);
-
-      if (profileError) {
-        console.error("Error updating profile:", profileError);
-        toast.error("Erreur lors de la mise à jour du profil");
-        return;
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Error creating member');
       }
 
       toast.success("Membre créé avec succès");
@@ -89,7 +69,7 @@ export const CreateMemberDialog = () => {
       form.reset();
     } catch (error) {
       console.error("Error in member creation:", error);
-      toast.error("Une erreur est survenue");
+      toast.error("Une erreur est survenue lors de la création du membre");
     } finally {
       setLoading(false);
     }
