@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { getBaseMembershipFee } from "@/utils/membershipFees";
 
 interface BankingInfoFormValues {
   iban: string;
@@ -16,7 +17,32 @@ interface BankingInfoFormValues {
 export const BankingInfoCard = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [membershipFee, setMembershipFee] = useState<number>(42);
   const form = useForm<BankingInfoFormValues>();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("professional_status")
+          .eq("id", user.id)
+          .single();
+
+        if (profile?.professional_status?.[0]) {
+          const fee = getBaseMembershipFee(profile.professional_status[0]);
+          setMembershipFee(fee);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const onSubmit = async (values: BankingInfoFormValues) => {
     try {
@@ -157,7 +183,7 @@ export const BankingInfoCard = () => {
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel>
-                  J'autorise GROUPE INTERNATIONAL POLICE à effectuer sur mon compte bancaire le montant de la cotisation annuelle de 40 €
+                  J'autorise GROUPE INTERNATIONAL POLICE à effectuer sur mon compte bancaire le montant de la cotisation annuelle de {membershipFee} €
                 </FormLabel>
               </div>
             </FormItem>
