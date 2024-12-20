@@ -10,7 +10,7 @@ import { Loader2 } from "lucide-react";
 const Accommodations = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { isAdmin, isVerified, isLoading: isLoadingAdmin } = useIsAdmin();
+  const { isAdmin, isValidated, isLoading: isLoadingAdmin } = useIsAdmin();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -22,9 +22,9 @@ const Accommodations = () => {
           return;
         }
 
-        // Wait for admin/verification status to load
+        // Wait for admin/validation status to load
         if (!isLoadingAdmin) {
-          if (!isVerified && !isAdmin) {
+          if (!isValidated && !isAdmin) {
             toast({
               variant: "destructive",
               title: "Accès refusé",
@@ -41,7 +41,7 @@ const Accommodations = () => {
     };
 
     checkAuth();
-  }, [navigate, toast, isAdmin, isVerified, isLoadingAdmin]);
+  }, [navigate, toast, isAdmin, isValidated, isLoadingAdmin]);
 
   // Show loading state while checking permissions
   if (isLoadingAdmin) {

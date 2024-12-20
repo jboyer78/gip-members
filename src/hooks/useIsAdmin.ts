@@ -2,32 +2,31 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 export const useIsAdmin = () => {
-  const { data: profile, isLoading } = useQuery({
-    queryKey: ['currentUserProfile'],
+  const { data, isLoading } = useQuery({
+    queryKey: ['userAdminStatus'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      console.log("Current user:", user);
-      
-      if (!user) return null;
-      
-      const { data } = await supabase
+      if (!user) return { isAdmin: false, isVerified: false, status: null };
+
+      const { data: profile } = await supabase
         .from('profiles')
-        .select('is_admin, email_verified')
+        .select('is_admin, email_verified, status')
         .eq('id', user.id)
         .single();
-      
-      console.log("Profile data:", data);
-      
-      return data;
+
+      return {
+        isAdmin: profile?.is_admin || false,
+        isVerified: profile?.email_verified || false,
+        status: profile?.status?.[0] || null
+      };
     },
   });
 
-  console.log("isAdmin value:", profile?.is_admin);
-  console.log("isVerified value:", profile?.email_verified);
-
   return {
-    isAdmin: profile?.is_admin || false,
-    isVerified: profile?.email_verified || false,
+    isAdmin: data?.isAdmin || false,
+    isVerified: data?.isVerified || false,
+    status: data?.status,
+    isValidated: data?.status === 'Validée',
     isLoading,
   };
 };

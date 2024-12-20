@@ -11,10 +11,10 @@ import { LogoutButton } from "./sidebar/LogoutButton";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 export function AppSidebar() {
-  const { isAdmin, isVerified, isLoading } = useIsAdmin();
+  const { isAdmin, isValidated, isLoading } = useIsAdmin();
   
   console.log("AppSidebar - isAdmin:", isAdmin);
-  console.log("AppSidebar - isVerified:", isVerified);
+  console.log("AppSidebar - isValidated:", isValidated);
   console.log("AppSidebar - isLoading:", isLoading);
 
   return (
@@ -52,7 +52,7 @@ export function AppSidebar() {
                 />
               </>
             )}
-            {!isLoading && (isVerified || isAdmin) && (
+            {!isLoading && (isValidated || isAdmin) && (
               <>
                 <SidebarMenuItem
                   to="/dashboard"

@@ -23,7 +23,7 @@ interface Publication {
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { isAdmin, isVerified, isLoading: isLoadingAdmin } = useIsAdmin();
+  const { isAdmin, isValidated, isLoading: isLoadingAdmin } = useIsAdmin();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -36,9 +36,9 @@ const Dashboard = () => {
           return;
         }
 
-        // Wait for admin/verification status to load
+        // Wait for admin/validation status to load
         if (!isLoadingAdmin) {
-          if (!isVerified && !isAdmin) {
+          if (!isValidated && !isAdmin) {
             toast({
               variant: "destructive",
               title: "Accès refusé",
@@ -55,7 +55,7 @@ const Dashboard = () => {
     };
 
     checkAuth();
-  }, [navigate, toast, isAdmin, isVerified, isLoadingAdmin]);
+  }, [navigate, toast, isAdmin, isValidated, isLoadingAdmin]);
 
   const { data: publications, isLoading } = useQuery({
     queryKey: ["published-publications"],
