@@ -118,6 +118,10 @@ export const DocumentUpload = ({ form }: DocumentUploadProps) => {
             <p className="text-sm text-gray-500">
               Formats acceptés : JPEG, PNG, WEBP, PDF. Taille max : 1MB
             </p>
+            
+            <p className="text-sm text-gray-500">
+              Justificatifs acceptés : la carte professionnelle ou un arrêté.
+            </p>
           </div>
           <FormMessage />
         </FormItem>
