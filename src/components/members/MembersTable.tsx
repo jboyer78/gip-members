@@ -19,12 +19,11 @@ interface MembersTableProps {
   isLoading: boolean;
 }
 
-const ITEMS_PER_PAGE = 10;
-
 export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
   const [selectedUser, setSelectedUser] = useState<Profile | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [gradeFilter, setGradeFilter] = useState<string>("");
   const [serviceFilter, setServiceFilter] = useState<string>("");
@@ -85,9 +84,9 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
 
   console.log("Filtered profiles:", filteredProfiles);
 
-  const totalPages = Math.ceil(filteredProfiles.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const displayedProfiles = filteredProfiles.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(filteredProfiles.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const displayedProfiles = filteredProfiles.slice(startIndex, startIndex + itemsPerPage);
 
   console.log("Displayed profiles:", displayedProfiles);
 
@@ -125,6 +124,9 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
         currentPage={currentPage}
         totalPages={totalPages}
         setCurrentPage={setCurrentPage}
+        itemsPerPage={itemsPerPage}
+        setItemsPerPage={setItemsPerPage}
+        totalItems={filteredProfiles.length}
       />
 
       <UserDetailsModal 
