@@ -1,8 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const MemberCard = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   const { data: profile, isLoading } = useQuery({
     queryKey: ['profile'],
     queryFn: async () => {
@@ -20,6 +26,17 @@ const MemberCard = () => {
     },
   });
 
+  useEffect(() => {
+    if (!isLoading && (!profile || !profile.member_number)) {
+      toast({
+        title: "Accès refusé",
+        description: "Vous devez avoir un numéro d'adhérent pour accéder à votre carte de membre.",
+        variant: "destructive",
+      });
+      navigate('/profile');
+    }
+  }, [profile, isLoading, navigate, toast]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -32,17 +49,7 @@ const MemberCard = () => {
   }
 
   if (!profile?.member_number) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-        <div className="text-center max-w-md mx-auto p-6">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Carte non disponible</h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Votre numéro de membre n'a pas encore été attribué. 
-            Veuillez patienter jusqu'à la validation de votre inscription.
-          </p>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   return (
