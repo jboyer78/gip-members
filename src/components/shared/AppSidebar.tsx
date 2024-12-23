@@ -36,12 +36,27 @@ export function AppSidebar() {
               label="Profil"
               className="mb-4"
             />
-            <SidebarMenuItem
-              to="/card"
-              icon={CreditCard}
-              label="Carte"
-              className="mb-4"
-            />
+            {!isLoading && (isValidated || isAdmin) && (
+              <>
+                <SidebarMenuItem
+                  to="/card"
+                  icon={CreditCard}
+                  label="Carte"
+                  className="mb-4"
+                />
+                <SidebarMenuItem
+                  to="/dashboard"
+                  icon={Newspaper}
+                  label="Actualités"
+                  className="mb-4"
+                />
+                <SidebarMenuItem
+                  to="/accommodations"
+                  icon={ListPlus}
+                  label="Hébergements"
+                />
+              </>
+            )}
             {!isLoading && isAdmin && (
               <>
                 <SidebarMenuItem
@@ -55,21 +70,6 @@ export function AppSidebar() {
                   icon={BookOpen}
                   label="Publications"
                   className="mb-4"
-                />
-              </>
-            )}
-            {!isLoading && (isValidated || isAdmin) && (
-              <>
-                <SidebarMenuItem
-                  to="/dashboard"
-                  icon={Newspaper}
-                  label="Actualités"
-                  className="mb-4"
-                />
-                <SidebarMenuItem
-                  to="/accommodations"
-                  icon={ListPlus}
-                  label="Hébergements"
                 />
               </>
             )}
