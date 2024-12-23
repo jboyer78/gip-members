@@ -1,0 +1,104 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Profile } from "@/integrations/supabase/types/profile";
+import { supabase } from "@/integrations/supabase/client";
+import { QRCodeSVG } from "qrcode.react";
+import { toast } from "sonner";
+
+const MemberCard = () => {
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const getProfile = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        navigate("/login");
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (!profile?.member_number) {
+        toast.error("Vous devez avoir un numéro d'adhérent pour accéder à votre carte");
+        navigate("/profile");
+        return;
+      }
+
+      setProfile(profile);
+    };
+
+    getProfile();
+  }, [navigate]);
+
+  if (!profile) return null;
+
+  const cardUrl = `${window.location.origin}/card/${profile.member_number}`;
+
+  return (
+    <div className="container mx-auto p-8 space-y-8">
+      <h1 className="text-2xl font-bold mb-8">Ma carte d'adhérent</h1>
+      
+      <div className="grid md:grid-cols-2 gap-8">
+        {/* Recto */}
+        <div className="bg-white rounded-lg shadow-lg p-6 relative">
+          <h2 className="text-xl font-semibold mb-6">Recto</h2>
+          <div className="relative">
+            <img 
+              src="/lovable-uploads/e498810f-56d3-4afd-8bb7-a145b3908426.png" 
+              alt="Carte d'adhérent recto"
+              className="w-full h-auto"
+            />
+            <div className="absolute top-1/2 left-8 right-8 text-black space-y-2">
+              <p className="mt-16">Nom : {profile.last_name}</p>
+              <p>Prénom : {profile.first_name}</p>
+              <p>N°adhérent : {profile.member_number}</p>
+            </div>
+            {profile.avatar_url && (
+              <div className="absolute top-24 right-8 w-32 h-32 rounded-lg overflow-hidden">
+                <img 
+                  src={profile.avatar_url} 
+                  alt="Photo de profil"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Verso */}
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <h2 className="text-xl font-semibold mb-6">Verso</h2>
+          <div className="relative">
+            <img 
+              src="/lovable-uploads/3a5ee214-ea05-4f12-891a-2861624f6d45.png" 
+              alt="Carte d'adhérent verso"
+              className="w-full h-auto"
+            />
+            <div className="absolute top-12 left-8 right-8 text-black space-y-2">
+              <p>Adresse : {profile.street}</p>
+              <p>{profile.postal_code} {profile.city}</p>
+              <p>{profile.country}</p>
+              <p className="mt-4">E-mail : {profile.email}</p>
+              <p>Téléphone : {profile.phone_mobile || profile.phone_home}</p>
+            </div>
+            <div className="absolute top-12 right-8 w-32 h-32">
+              <QRCodeSVG
+                value={cardUrl}
+                size={128}
+                className="w-full h-full"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MemberCard;
