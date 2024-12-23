@@ -40,7 +40,14 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
         .from('profiles')
         .select(`
           *,
-          banking_info (*)
+          banking_info (
+            id,
+            iban,
+            bic,
+            authorize_debit,
+            created_at,
+            updated_at
+          )
         `)
         .order('updated_at', { ascending: false })
         .order('last_name', { ascending: true })
