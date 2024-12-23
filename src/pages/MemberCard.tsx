@@ -55,7 +55,7 @@ const MemberCard = () => {
               className="w-full h-auto"
             />
             <div className="absolute top-[65%] left-48 right-8 text-black text-right">
-              <p className="uppercase mb-2">{profile.last_name}</p>
+              <p className="uppercase mb-0">{profile.last_name}</p>
               <p className="uppercase mt-0">{profile.first_name}</p>
               <p className="mt-0">{profile.member_number}</p>
             </div>
