@@ -41,7 +41,7 @@ const PublicMemberCard = () => {
             />
             <div className="absolute top-[65%] left-28 right-8 text-black">
               <p className="uppercase mb-2">{profile.last_name}</p>
-              <p className="uppercase -mt-1 ml-6">{profile.first_name}</p>
+              <p className="uppercase mt-0 ml-6">{profile.first_name}</p>
               <p className="mt-0">{profile.member_number}</p>
             </div>
             {profile.avatar_url && (
