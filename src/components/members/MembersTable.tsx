@@ -11,6 +11,7 @@ import { useState } from "react";
 import { MembersFilters } from "./filters/MembersFilters";
 import { MembersPagination } from "./pagination/MembersPagination";
 import { filterProfiles } from "./utils/filterProfiles";
+import { sortProfiles } from "./utils/sortProfiles";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -65,61 +66,25 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
     }
   };
 
-  const sortProfiles = (profiles: Profile[]) => {
-    if (!sortColumn || !sortDirection) return profiles;
+  if (isLoading) {
+    return <p className="text-gray-600 dark:text-gray-400">Chargement des membres...</p>;
+  }
 
-    return [...profiles].sort((a, b) => {
-      const aValue = a[sortColumn as keyof Profile];
-      const bValue = b[sortColumn as keyof Profile];
+  const filteredProfiles = filterProfiles(
+    profilesWithBankingInfo || [],
+    searchQuery,
+    gradeFilter,
+    serviceFilter,
+    directionFilter
+  );
 
-      if (aValue === null || aValue === undefined) return sortDirection === 'asc' ? -1 : 1;
-      if (bValue === null || bValue === undefined) return sortDirection === 'asc' ? 1 : -1;
+  const sortedProfiles = sortProfiles(filteredProfiles, sortColumn, sortDirection);
 
-      // Handle date fields specifically
-      if (sortColumn === 'birth_date' || sortColumn === 'created_at' || sortColumn === 'updated_at' || sortColumn === 'banned_at') {
-        const dateA = aValue ? new Date(aValue).getTime() : 0;
-        const dateB = bValue ? new Date(bValue).getTime() : 0;
-        return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
-      }
+  console.log("Filtered and sorted profiles:", sortedProfiles);
 
-      // Handle boolean values
-      if (typeof aValue === 'boolean' && typeof bValue === 'boolean') {
-        return sortDirection === 'asc' 
-          ? (aValue === bValue ? 0 : aValue ? 1 : -1)
-          : (aValue === bValue ? 0 : aValue ? -1 : 1);
-      }
-
-      // Handle arrays (like status)
-      if (Array.isArray(aValue) && Array.isArray(bValue)) {
-        const strA = aValue.join(',');
-        const strB = bValue.join(',');
-        return sortDirection === 'asc' 
-          ? strA.localeCompare(strB, 'fr')
-          : strB.localeCompare(strA, 'fr');
-      }
-
-      // Handle strings
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return sortDirection === 'asc' 
-          ? aValue.localeCompare(bValue, 'fr')
-          : bValue.localeCompare(aValue, 'fr');
-      }
-
-      // Handle numbers
-      if (typeof aValue === 'number' && typeof bValue === 'number') {
-        return sortDirection === 'asc'
-          ? aValue - bValue
-          : bValue - aValue;
-      }
-
-      // Default comparison for other types
-      return sortDirection === 'asc'
-        ? String(aValue).localeCompare(String(bValue), 'fr')
-        : String(bValue).localeCompare(String(aValue), 'fr');
-    });
-  };
-
-  console.log("Raw profiles data:", profilesWithBankingInfo);
+  const totalPages = Math.ceil(sortedProfiles.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const displayedProfiles = sortedProfiles.slice(startIndex, startIndex + itemsPerPage);
 
   const handleRowClick = (profile: Profile) => {
     console.log("Row clicked, profile:", profile);
@@ -134,28 +99,6 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
       await refetch();
     }
   };
-
-  if (isLoading) {
-    return <p className="text-gray-600 dark:text-gray-400">Chargement des membres...</p>;
-  }
-
-  const filteredProfiles = filterProfiles(
-    profilesWithBankingInfo || [],
-    searchQuery,
-    gradeFilter,
-    serviceFilter,
-    directionFilter
-  );
-
-  const sortedProfiles = sortProfiles(filteredProfiles);
-
-  console.log("Filtered and sorted profiles:", sortedProfiles);
-
-  const totalPages = Math.ceil(sortedProfiles.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const displayedProfiles = sortedProfiles.slice(startIndex, startIndex + itemsPerPage);
-
-  console.log("Displayed profiles:", displayedProfiles);
 
   return (
     <div className="space-y-4">
