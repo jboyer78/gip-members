@@ -5,7 +5,7 @@ interface BankingDisplayProps {
 }
 
 export const BankingDisplay = ({ bankingInfo }: BankingDisplayProps) => {
-  if (!bankingInfo) {
+  if (!bankingInfo || !bankingInfo.iban) {
     return (
       <p className="text-muted-foreground">
         Aucune information bancaire disponible
@@ -14,13 +14,21 @@ export const BankingDisplay = ({ bankingInfo }: BankingDisplayProps) => {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-2">
-      <p className="text-muted-foreground">IBAN</p>
-      <p>{bankingInfo.iban || "-"}</p>
-      <p className="text-muted-foreground">BIC</p>
-      <p>{bankingInfo.bic || "-"}</p>
-      <p className="text-muted-foreground">Prélèvement automatique</p>
-      <p>{bankingInfo.authorize_debit ? "Autorisé" : "Non autorisé"}</p>
+    <div className="grid grid-cols-2 gap-4">
+      <div>
+        <p className="text-sm font-medium text-muted-foreground">IBAN</p>
+        <p className="mt-1">{bankingInfo.iban}</p>
+      </div>
+      
+      <div>
+        <p className="text-sm font-medium text-muted-foreground">BIC</p>
+        <p className="mt-1">{bankingInfo.bic || "-"}</p>
+      </div>
+      
+      <div className="col-span-2">
+        <p className="text-sm font-medium text-muted-foreground">Prélèvement automatique</p>
+        <p className="mt-1">{bankingInfo.authorize_debit ? "Autorisé" : "Non autorisé"}</p>
+      </div>
     </div>
   );
 };
