@@ -54,10 +54,10 @@ const MemberCard = () => {
               alt="Carte d'adhérent recto"
               className="w-full h-auto"
             />
-            <div className="absolute top-1/2 left-20 right-8 text-black space-y-2">
-              <p className="mt-15 uppercase">{profile.last_name}</p>
-              <p>Prénom : {profile.first_name}</p>
-              <p>N°adhérent : {profile.member_number}</p>
+            <div className="absolute top-[60%] left-24 right-8 text-black space-y-2">
+              <p className="uppercase">{profile.last_name}</p>
+              <p>{profile.first_name}</p>
+              <p>{profile.member_number}</p>
             </div>
             {profile.avatar_url && (
               <div className="absolute top-[85px] right-[32px] w-[128px] h-[160px] overflow-hidden">
