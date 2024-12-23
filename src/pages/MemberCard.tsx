@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 const MemberCard = () => {
@@ -26,17 +26,6 @@ const MemberCard = () => {
     },
   });
 
-  useEffect(() => {
-    if (!isLoading && (!profile || !profile.member_number)) {
-      toast({
-        title: "Accès refusé",
-        description: "Vous devez avoir un numéro d'adhérent pour accéder à votre carte de membre.",
-        variant: "destructive",
-      });
-      navigate('/profile');
-    }
-  }, [profile, isLoading, navigate, toast]);
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -49,42 +38,78 @@ const MemberCard = () => {
   }
 
   if (!profile?.member_number) {
+    toast({
+      title: "Accès refusé",
+      description: "Vous devez avoir un numéro d'adhérent pour accéder à votre carte de membre.",
+      variant: "destructive",
+    });
+    navigate('/profile');
     return null;
   }
 
+  const publicCardUrl = `${window.location.origin}/public-card/${profile.id}`;
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400">
-            Carte de Membre
-          </h1>
+    <div className="min-h-screen flex flex-col items-center justify-center gap-8 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-4">
+      {/* Front of the card */}
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl p-8 relative overflow-hidden">
+        <img 
+          src="/lovable-uploads/8f64e4d3-cf3b-4b84-8737-cb5ad454a25e.png" 
+          alt="Card background" 
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="relative z-10">
+          <div className="flex justify-between items-start">
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold">CARTE D'ADHÉRENT</h2>
+              <div className="space-y-2">
+                <p><span className="font-semibold">Nom :</span> {profile.last_name}</p>
+                <p><span className="font-semibold">Prénom :</span> {profile.first_name}</p>
+                <p><span className="font-semibold">N°adhérent :</span> {profile.member_number}</p>
+              </div>
+            </div>
+            <div className="w-32 h-32 bg-gray-100 rounded-lg overflow-hidden">
+              {profile.avatar_url ? (
+                <img 
+                  src={profile.avatar_url} 
+                  alt="Photo de profil" 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                  PHOTO
+                </div>
+              )}
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div className="space-y-6">
-          <div className="text-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-              Numéro d'adhérent
-            </p>
-            <p className="text-2xl font-bold text-primary">
-              {profile.member_number}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Nom</p>
-              <p className="font-semibold">{profile.last_name}</p>
+      {/* Back of the card */}
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl p-8 relative overflow-hidden">
+        <img 
+          src="/lovable-uploads/d8b51032-d815-4569-9886-afa10e6e9002.png" 
+          alt="Card background" 
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="relative z-10 flex justify-between">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <p><span className="font-semibold">Adresse :</span></p>
+              <p>{profile.street}</p>
+              <p>{profile.postal_code} {profile.city}</p>
+              <p>{profile.country}</p>
+              <p><span className="font-semibold">E-mail :</span> {profile.email}</p>
+              <p><span className="font-semibold">Téléphone :</span> {profile.phone_mobile || profile.phone_home}</p>
             </div>
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Prénom</p>
-              <p className="font-semibold">{profile.first_name}</p>
-            </div>
           </div>
-
           <div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Statut</p>
-            <p className="font-semibold">{profile.status?.[0] || "En attente"}</p>
+            <QRCodeSVG 
+              value={publicCardUrl}
+              size={128}
+              level="H"
+              includeMargin={true}
+            />
           </div>
         </div>
       </div>
