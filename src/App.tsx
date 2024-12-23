@@ -13,6 +13,7 @@ import Members from "./pages/Members";
 import Publications from "./pages/Publications";
 import Accommodations from "./pages/Accommodations";
 import AuthCallback from "./pages/AuthCallback";
+import MemberCard from "./pages/MemberCard";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/publications" element={<Publications />} />
           <Route path="/accommodations" element={<Accommodations />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/member-card" element={<MemberCard />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
