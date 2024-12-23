@@ -71,7 +71,7 @@ const PublicMemberCard = () => {
             <div className="absolute top-[35px] left-32 right-8 text-black space-y-0">
               <p className="mb-0">{profile.street}</p>
               <p className="mt-0 mb-0">{profile.postal_code} {profile.city}</p>
-              <p className="-mt-1">{profile.country}</p>
+              <p className="-mt-2">{profile.country}</p>
               <p className="mt-4">{profile.email}</p>
               <p>{profile.phone_mobile || profile.phone_home}</p>
             </div>
