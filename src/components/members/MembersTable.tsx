@@ -1,19 +1,17 @@
 import {
   Table,
-  TableBody,
 } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Profile } from "@/integrations/supabase/types/profile";
 import { MemberTableHeader } from "./MemberTableHeader";
-import { MemberTableRow } from "./MemberTableRow";
 import { UserDetailsModal } from "./UserDetailsModal";
 import { useState } from "react";
 import { MembersFilters } from "./filters/MembersFilters";
 import { MembersPagination } from "./pagination/MembersPagination";
 import { filterProfiles } from "./utils/filterProfiles";
 import { sortProfiles } from "./utils/sortProfiles";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useProfilesWithBanking } from "@/hooks/useProfilesWithBanking";
+import { MembersTableContent } from "./MembersTableContent";
 
 interface MembersTableProps {
   profiles: Profile[] | null;
@@ -32,37 +30,7 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null);
 
-  const { data: profilesWithBankingInfo, refetch } = useQuery({
-    queryKey: ['profiles-with-banking'],
-    queryFn: async () => {
-      console.log("Fetching profiles with banking info...");
-      const { data: profiles, error } = await supabase
-        .from('profiles')
-        .select(`
-          *,
-          banking_info (
-            id,
-            iban,
-            bic,
-            authorize_debit,
-            created_at,
-            updated_at
-          )
-        `)
-        .order('updated_at', { ascending: false })
-        .order('last_name', { ascending: true })
-        .order('first_name', { ascending: true });
-
-      if (error) {
-        console.error("Error fetching profiles with banking info:", error);
-        throw error;
-      }
-
-      console.log("Profiles with banking info:", profiles);
-      return profiles;
-    },
-    enabled: !isLoading && !!profiles
-  });
+  const { data: profilesWithBankingInfo, refetch } = useProfilesWithBanking(isLoading, profiles);
 
   const handleSort = (column: string) => {
     if (sortColumn === column) {
@@ -86,8 +54,6 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
   );
 
   const sortedProfiles = sortProfiles(filteredProfiles, sortColumn, sortDirection);
-
-  console.log("Filtered and sorted profiles:", sortedProfiles);
 
   const totalPages = Math.ceil(sortedProfiles.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -129,15 +95,10 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
             sortColumn={sortColumn}
             sortDirection={sortDirection}
           />
-          <TableBody>
-            {displayedProfiles.map((profile) => (
-              <MemberTableRow 
-                key={profile.id} 
-                profile={profile} 
-                onRowClick={handleRowClick}
-              />
-            ))}
-          </TableBody>
+          <MembersTableContent 
+            displayedProfiles={displayedProfiles}
+            onRowClick={handleRowClick}
+          />
         </Table>
       </ScrollArea>
 

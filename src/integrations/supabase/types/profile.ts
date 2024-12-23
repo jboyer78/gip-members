@@ -34,6 +34,7 @@ export type Profile = {
   banned_at: string | null;
   banking_info?: BankingInfo | null;
   member_number: string | null;
+  donation_amount?: number | null;
 };
 
 export type ProfileInsert = {
