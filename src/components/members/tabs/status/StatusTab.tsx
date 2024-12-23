@@ -69,7 +69,7 @@ export const StatusTab = ({ user }: StatusTabProps) => {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
+        <div className="space-y-2 w-[300px]">
           <Label>Statut actuel</Label>
           <p className="text-lg font-semibold">
             {!user.status?.[0] || user.status[0] === "Sympathisant" 
@@ -78,7 +78,7 @@ export const StatusTab = ({ user }: StatusTabProps) => {
           </p>
         </div>
         
-        <div className="space-y-2">
+        <div className="space-y-2 w-[300px]">
           <Label>Numéro d'adhérent</Label>
           {isEditingMemberNumber ? (
             <div className="flex gap-2">
