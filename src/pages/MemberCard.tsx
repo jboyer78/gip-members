@@ -54,8 +54,8 @@ const MemberCard = () => {
               alt="Carte d'adhérent recto"
               className="w-full h-auto"
             />
-            <div className="absolute top-1/2 left-20 right-8 text-black space-y-2">
-              <p className="mt-15">{profile.last_name?.toUpperCase()}</p>
+            <div className="absolute top-1/2 left-12 right-8 text-black space-y-2">
+              <p className="mt-16">{profile.last_name}</p>
               <p>Prénom : {profile.first_name}</p>
               <p>N°adhérent : {profile.member_number}</p>
             </div>
