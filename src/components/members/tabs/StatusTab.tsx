@@ -107,18 +107,7 @@ export const StatusTab = ({ user }: StatusTabProps) => {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              {user.member_number ? (
-                <a 
-                  href="/member-card" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-lg hover:text-primary transition-colors"
-                >
-                  {user.member_number}
-                </a>
-              ) : (
-                <span className="text-lg">Non défini</span>
-              )}
+              <span className="text-lg">{user.member_number || 'Non défini'}</span>
               <Button 
                 variant="outline" 
                 size="sm"
