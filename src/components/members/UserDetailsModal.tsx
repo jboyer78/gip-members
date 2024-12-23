@@ -44,6 +44,7 @@ export const UserDetailsModal = ({
           *,
           banking_info (
             id,
+            profile_id,
             iban,
             bic,
             authorize_debit,
