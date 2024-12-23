@@ -13,6 +13,8 @@ import { StatusTab } from "./tabs/StatusTab";
 import { BankingTab } from "./tabs/BankingTab";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface UserDetailsModalProps {
   user: Profile | null;
@@ -29,9 +31,53 @@ export const UserDetailsModal = ({
 }: UserDetailsModalProps) => {
   const [user, setUser] = useState<Profile | null>(initialUser);
 
+  // Fetch the latest user data including banking info when the modal opens
+  const { data: updatedUser, refetch } = useQuery({
+    queryKey: ['user-with-banking', initialUser?.id],
+    queryFn: async () => {
+      if (!initialUser?.id) return null;
+      
+      console.log("Fetching user data with banking info for:", initialUser.id);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select(`
+          *,
+          banking_info (
+            id,
+            iban,
+            bic,
+            authorize_debit,
+            created_at,
+            updated_at
+          )
+        `)
+        .eq('id', initialUser.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Error fetching user data:", error);
+        throw error;
+      }
+
+      console.log("Fetched user data:", data);
+      return data;
+    },
+    enabled: !!initialUser?.id && open
+  });
+
   useEffect(() => {
-    setUser(initialUser);
-  }, [initialUser]);
+    if (updatedUser) {
+      setUser(updatedUser);
+    } else {
+      setUser(initialUser);
+    }
+  }, [initialUser, updatedUser]);
+
+  useEffect(() => {
+    if (open) {
+      refetch();
+    }
+  }, [open, refetch]);
 
   if (!user) return null;
 
@@ -40,6 +86,7 @@ export const UserDetailsModal = ({
     if (onUpdate) {
       await onUpdate();
     }
+    refetch();
   };
 
   return (
