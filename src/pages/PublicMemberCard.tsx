@@ -39,7 +39,7 @@ const PublicMemberCard = () => {
               alt="Carte d'adhérent recto"
               className="w-full h-auto"
             />
-            <div className="absolute top-[60%] left-24 right-8 text-black space-y-2">
+            <div className="absolute top-[65%] left-28 right-8 text-black space-y-2">
               <p className="uppercase">{profile.last_name}</p>
               <p>{profile.first_name}</p>
               <p>{profile.member_number}</p>
