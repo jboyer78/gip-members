@@ -10,6 +10,7 @@ import { PersonalTab } from "./tabs/PersonalTab";
 import { ContactTab } from "./tabs/ContactTab";
 import { ProfessionalTab } from "./tabs/ProfessionalTab";
 import { StatusTab } from "./tabs/StatusTab";
+import { BankingTab } from "./tabs/BankingTab";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
 
@@ -64,7 +65,7 @@ export const UserDetailsModal = ({
         </DialogHeader>
 
         <Tabs defaultValue="personal" className="w-full p-4 md:p-6">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 gap-1 md:gap-2 mb-4 md:mb-6">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 gap-1 md:gap-2 mb-4 md:mb-6">
             <TabsTrigger value="personal" className="data-[state=active]:bg-primary/10 transition-all duration-200 text-xs md:text-sm px-2 py-1.5 md:px-3 md:py-2 h-auto">
               Informations personnelles
             </TabsTrigger>
@@ -73,6 +74,9 @@ export const UserDetailsModal = ({
             </TabsTrigger>
             <TabsTrigger value="professional" className="data-[state=active]:bg-primary/10 transition-all duration-200 text-xs md:text-sm px-2 py-1.5 md:px-3 md:py-2 h-auto">
               Informations professionnelles
+            </TabsTrigger>
+            <TabsTrigger value="banking" className="data-[state=active]:bg-primary/10 transition-all duration-200 text-xs md:text-sm px-2 py-1.5 md:px-3 md:py-2 h-auto">
+              Informations bancaires
             </TabsTrigger>
             <TabsTrigger value="status" className="data-[state=active]:bg-primary/10 transition-all duration-200 text-xs md:text-sm px-2 py-1.5 md:px-3 md:py-2 h-auto">
               Statut d'inscription
@@ -90,6 +94,10 @@ export const UserDetailsModal = ({
 
             <TabsContent value="professional" className="space-y-4 mt-0">
               <ProfessionalTab user={user} />
+            </TabsContent>
+
+            <TabsContent value="banking" className="space-y-4 mt-0">
+              <BankingTab user={user} />
             </TabsContent>
 
             <TabsContent value="status" className="space-y-4 mt-0">
