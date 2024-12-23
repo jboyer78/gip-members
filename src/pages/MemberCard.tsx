@@ -55,12 +55,12 @@ const MemberCard = () => {
               className="w-full h-auto"
             />
             <div className="absolute top-1/2 left-8 right-8 text-black space-y-2">
-              <p className="mt-16">Nom : {profile.last_name}</p>
+              <p className="mt-14">Nom : {profile.last_name}</p>
               <p>Prénom : {profile.first_name}</p>
               <p>N°adhérent : {profile.member_number}</p>
             </div>
             {profile.avatar_url && (
-              <div className="absolute top-24 right-8 w-32 h-32 rounded-lg overflow-hidden">
+              <div className="absolute top-[85px] right-[32px] w-[128px] h-[160px] overflow-hidden">
                 <img 
                   src={profile.avatar_url} 
                   alt="Photo de profil"
@@ -80,14 +80,14 @@ const MemberCard = () => {
               alt="Carte d'adhérent verso"
               className="w-full h-auto"
             />
-            <div className="absolute top-12 left-8 right-8 text-black space-y-2">
+            <div className="absolute top-[48px] left-8 right-8 text-black space-y-2">
               <p>Adresse : {profile.street}</p>
               <p>{profile.postal_code} {profile.city}</p>
               <p>{profile.country}</p>
               <p className="mt-4">E-mail : {profile.email}</p>
               <p>Téléphone : {profile.phone_mobile || profile.phone_home}</p>
             </div>
-            <div className="absolute top-12 right-8 w-32 h-32">
+            <div className="absolute top-[48px] right-8 w-32 h-32">
               <QRCodeSVG
                 value={cardUrl}
                 size={128}
