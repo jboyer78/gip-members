@@ -63,23 +63,23 @@ export const UserDetailsModal = ({
           </div>
         </DialogHeader>
 
-        <Tabs defaultValue="personal" className="w-full p-6">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 gap-2 mb-6">
-            <TabsTrigger value="personal" className="data-[state=active]:bg-primary/10 transition-all duration-200">
+        <Tabs defaultValue="personal" className="w-full p-4 md:p-6">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 gap-1 md:gap-2 mb-4 md:mb-6">
+            <TabsTrigger value="personal" className="data-[state=active]:bg-primary/10 transition-all duration-200 text-xs md:text-sm px-2 py-1.5 md:px-3 md:py-2 h-auto">
               Informations personnelles
             </TabsTrigger>
-            <TabsTrigger value="contact" className="data-[state=active]:bg-primary/10 transition-all duration-200">
+            <TabsTrigger value="contact" className="data-[state=active]:bg-primary/10 transition-all duration-200 text-xs md:text-sm px-2 py-1.5 md:px-3 md:py-2 h-auto">
               Coordonnées
             </TabsTrigger>
-            <TabsTrigger value="professional" className="data-[state=active]:bg-primary/10 transition-all duration-200">
+            <TabsTrigger value="professional" className="data-[state=active]:bg-primary/10 transition-all duration-200 text-xs md:text-sm px-2 py-1.5 md:px-3 md:py-2 h-auto">
               Informations professionnelles
             </TabsTrigger>
-            <TabsTrigger value="status" className="data-[state=active]:bg-primary/10 transition-all duration-200">
+            <TabsTrigger value="status" className="data-[state=active]:bg-primary/10 transition-all duration-200 text-xs md:text-sm px-2 py-1.5 md:px-3 md:py-2 h-auto">
               Statut d'inscription
             </TabsTrigger>
           </TabsList>
 
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 md:p-6 shadow-sm">
             <TabsContent value="personal" className="space-y-4 mt-0">
               <PersonalTab user={user} onUpdate={handleProfileUpdate} />
             </TabsContent>
