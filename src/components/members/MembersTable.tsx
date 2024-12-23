@@ -1,7 +1,18 @@
-import React, { useState } from "react";
-import { MembersPagination } from "@/components/members/pagination/MembersPagination";
-import { MembersFilters } from "@/components/members/filters/MembersFilters";
+import {
+  Table,
+  TableBody,
+} from "@/components/ui/table";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Profile } from "@/integrations/supabase/types/profile";
+import { MemberTableHeader } from "./MemberTableHeader";
+import { MemberTableRow } from "./MemberTableRow";
+import { UserDetailsModal } from "./UserDetailsModal";
+import { useState } from "react";
+import { MembersFilters } from "./filters/MembersFilters";
+import { MembersPagination } from "./pagination/MembersPagination";
+import { filterProfiles } from "./utils/filterProfiles";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface MembersTableProps {
   profiles: Profile[] | null;
@@ -9,28 +20,78 @@ interface MembersTableProps {
 }
 
 export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
+  const [selectedUser, setSelectedUser] = useState<Profile | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(50); // Changed default value to 50
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
-  const [gradeFilter, setGradeFilter] = useState("");
-  const [serviceFilter, setServiceFilter] = useState("");
-  const [directionFilter, setDirectionFilter] = useState("");
+  const [gradeFilter, setGradeFilter] = useState<string>("");
+  const [serviceFilter, setServiceFilter] = useState<string>("");
+  const [directionFilter, setDirectionFilter] = useState<string>("");
 
-  const filteredProfiles = profiles?.filter(profile => {
-    const matchesSearch = profile.first_name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          profile.last_name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesGrade = gradeFilter ? profile.grade === gradeFilter : true;
-    const matchesService = serviceFilter ? profile.assignment_service === serviceFilter : true;
-    const matchesDirection = directionFilter ? profile.assignment_direction === directionFilter : true;
+  const { data: profilesWithBankingInfo, refetch } = useQuery({
+    queryKey: ['profiles-with-banking'],
+    queryFn: async () => {
+      console.log("Fetching profiles with banking info...");
+      const { data: profiles, error } = await supabase
+        .from('profiles')
+        .select(`
+          *,
+          banking_info (*)
+        `)
+        .order('updated_at', { ascending: false })
+        .order('last_name', { ascending: true })
+        .order('first_name', { ascending: true });
 
-    return matchesSearch && matchesGrade && matchesService && matchesDirection;
+      if (error) {
+        console.error("Error fetching profiles with banking info:", error);
+        throw error;
+      }
+
+      console.log("Profiles with banking info:", profiles);
+      return profiles;
+    },
+    enabled: !isLoading && !!profiles
   });
 
-  const totalPages = Math.ceil((filteredProfiles?.length || 0) / itemsPerPage);
-  const paginatedProfiles = filteredProfiles?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  console.log("Raw profiles data:", profilesWithBankingInfo);
+
+  const handleRowClick = (profile: Profile) => {
+    console.log("Row clicked, profile:", profile);
+    setSelectedUser(profile);
+    setModalOpen(true);
+  };
+
+  const handleModalOpenChange = async (open: boolean) => {
+    setModalOpen(open);
+    if (!open) {
+      console.log("Modal closed, refreshing data...");
+      await refetch();
+    }
+  };
+
+  if (isLoading) {
+    return <p className="text-gray-600 dark:text-gray-400">Chargement des membres...</p>;
+  }
+
+  const filteredProfiles = filterProfiles(
+    profilesWithBankingInfo || [],
+    searchQuery,
+    gradeFilter,
+    serviceFilter,
+    directionFilter
+  );
+
+  console.log("Filtered profiles:", filteredProfiles);
+
+  const totalPages = Math.ceil(filteredProfiles.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const displayedProfiles = filteredProfiles.slice(startIndex, startIndex + itemsPerPage);
+
+  console.log("Displayed profiles:", displayedProfiles);
 
   return (
-    <div>
+    <div className="space-y-4">
       <MembersFilters
         profiles={profiles}
         searchQuery={searchQuery}
@@ -44,32 +105,20 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
         setCurrentPage={setCurrentPage}
       />
 
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Prénom</th>
-              <th>Nom</th>
-              <th>Grade</th>
-              <th>Service</th>
-              <th>Direction</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedProfiles?.map(profile => (
-              <tr key={profile.id}>
-                <td>{profile.first_name}</td>
-                <td>{profile.last_name}</td>
-                <td>{profile.grade}</td>
-                <td>{profile.assignment_service}</td>
-                <td>{profile.assignment_direction}</td>
-              </tr>
+      <ScrollArea className="h-[800px] rounded-md">
+        <Table>
+          <MemberTableHeader />
+          <TableBody>
+            {displayedProfiles.map((profile) => (
+              <MemberTableRow 
+                key={profile.id} 
+                profile={profile} 
+                onRowClick={handleRowClick}
+              />
             ))}
-          </tbody>
-        </table>
-      )}
+          </TableBody>
+        </Table>
+      </ScrollArea>
 
       <MembersPagination
         currentPage={currentPage}
@@ -77,7 +126,14 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
         setCurrentPage={setCurrentPage}
         itemsPerPage={itemsPerPage}
         setItemsPerPage={setItemsPerPage}
-        totalItems={filteredProfiles?.length || 0}
+        totalItems={filteredProfiles.length}
+      />
+
+      <UserDetailsModal 
+        user={selectedUser}
+        open={modalOpen}
+        onOpenChange={handleModalOpenChange}
+        onUpdate={refetch}
       />
     </div>
   );
