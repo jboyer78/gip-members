@@ -105,7 +105,7 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
         setCurrentPage={setCurrentPage}
       />
 
-      <ScrollArea className="h-[600px] rounded-md">
+      <ScrollArea className="h-[800px] rounded-md">
         <Table>
           <MemberTableHeader />
           <TableBody>
