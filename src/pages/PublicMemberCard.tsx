@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Profile } from "@/integrations/supabase/types/profile";
 import { supabase } from "@/integrations/supabase/client";
+import { QRCodeSVG } from "qrcode.react";
 
 const PublicMemberCard = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -24,6 +25,8 @@ const PublicMemberCard = () => {
   }, [memberNumber]);
 
   if (!profile) return <div className="p-8">Carte non trouvée</div>;
+
+  const cardUrl = `${window.location.origin}/card/${profile.member_number}`;
 
   return (
     <div className="container mx-auto p-8 space-y-8">
