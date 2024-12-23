@@ -81,11 +81,11 @@ const MemberCard = () => {
               className="w-full h-auto"
             />
             <div className="absolute top-[48px] left-8 right-8 text-black space-y-2">
-              <p>Adresse : {profile.street}</p>
+              <p>{profile.street}</p>
               <p>{profile.postal_code} {profile.city}</p>
               <p>{profile.country}</p>
-              <p className="mt-4">E-mail : {profile.email}</p>
-              <p>Téléphone : {profile.phone_mobile || profile.phone_home}</p>
+              <p className="mt-4">{profile.email}</p>
+              <p>{profile.phone_mobile || profile.phone_home}</p>
             </div>
             <div className="absolute top-[48px] right-8 w-32 h-32">
               <QRCodeSVG
