@@ -43,44 +43,59 @@ export const UserDetailsModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[90vw] max-h-[90vh] w-[1200px] overflow-y-auto">
-        <DialogHeader className="flex flex-row items-center gap-4">
-          <Avatar className="h-12 w-12">
-            <AvatarImage src={user.avatar_url || ''} />
-            <AvatarFallback>
+      <DialogContent className="max-w-[95vw] md:max-w-[90vw] max-h-[95vh] md:max-h-[90vh] w-full md:w-[1200px] overflow-y-auto bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border border-gray-200/50 dark:border-gray-700/50 shadow-xl transition-all duration-200 ease-in-out">
+        <DialogHeader className="flex flex-col md:flex-row items-start md:items-center gap-4 p-6 border-b border-gray-200/50 dark:border-gray-700/50">
+          <Avatar className="h-16 w-16 md:h-20 md:w-20 ring-2 ring-primary/10 transition-all duration-200">
+            <AvatarImage src={user.avatar_url || ''} className="object-cover" />
+            <AvatarFallback className="text-lg md:text-xl bg-primary/5">
               {user.first_name && user.last_name 
                 ? `${user.first_name[0]}${user.last_name[0]}`
                 : 'U'}
             </AvatarFallback>
           </Avatar>
-          <DialogTitle className="text-2xl">
-            {user.first_name} {user.last_name}
-          </DialogTitle>
+          <div className="space-y-1">
+            <DialogTitle className="text-2xl md:text-3xl font-semibold">
+              {user.first_name} {user.last_name}
+            </DialogTitle>
+            <p className="text-sm text-muted-foreground">
+              N° Adhérent: {user.member_number || 'Non défini'}
+            </p>
+          </div>
         </DialogHeader>
 
-        <Tabs defaultValue="personal" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="personal">Informations personnelles</TabsTrigger>
-            <TabsTrigger value="contact">Coordonnées</TabsTrigger>
-            <TabsTrigger value="professional">Informations professionnelles</TabsTrigger>
-            <TabsTrigger value="status">Statut d'inscription</TabsTrigger>
+        <Tabs defaultValue="personal" className="w-full p-6">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 gap-2 mb-6">
+            <TabsTrigger value="personal" className="data-[state=active]:bg-primary/10 transition-all duration-200">
+              Informations personnelles
+            </TabsTrigger>
+            <TabsTrigger value="contact" className="data-[state=active]:bg-primary/10 transition-all duration-200">
+              Coordonnées
+            </TabsTrigger>
+            <TabsTrigger value="professional" className="data-[state=active]:bg-primary/10 transition-all duration-200">
+              Informations professionnelles
+            </TabsTrigger>
+            <TabsTrigger value="status" className="data-[state=active]:bg-primary/10 transition-all duration-200">
+              Statut d'inscription
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="personal" className="space-y-4">
-            <PersonalTab user={user} onUpdate={handleProfileUpdate} />
-          </TabsContent>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
+            <TabsContent value="personal" className="space-y-4 mt-0">
+              <PersonalTab user={user} onUpdate={handleProfileUpdate} />
+            </TabsContent>
 
-          <TabsContent value="contact" className="space-y-4">
-            <ContactTab user={user} onUpdate={handleProfileUpdate} />
-          </TabsContent>
+            <TabsContent value="contact" className="space-y-4 mt-0">
+              <ContactTab user={user} onUpdate={handleProfileUpdate} />
+            </TabsContent>
 
-          <TabsContent value="professional" className="space-y-4">
-            <ProfessionalTab user={user} />
-          </TabsContent>
+            <TabsContent value="professional" className="space-y-4 mt-0">
+              <ProfessionalTab user={user} />
+            </TabsContent>
 
-          <TabsContent value="status" className="space-y-4">
-            <StatusTab user={user} />
-          </TabsContent>
+            <TabsContent value="status" className="space-y-4 mt-0">
+              <StatusTab user={user} />
+            </TabsContent>
+          </div>
         </Tabs>
       </DialogContent>
     </Dialog>
