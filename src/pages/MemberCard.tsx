@@ -28,11 +28,8 @@ const MemberCard = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-muted-foreground">Chargement de votre carte de membre...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -52,23 +49,23 @@ const MemberCard = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center gap-8 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-4">
       {/* Front of the card */}
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl p-8 relative overflow-hidden">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl p-8 relative">
         <img 
-          src="/lovable-uploads/8f64e4d3-cf3b-4b84-8737-cb5ad454a25e.png" 
+          src="/lovable-uploads/f59dfa7e-42b0-4757-b179-3abfea12bda4.png" 
           alt="Card background" 
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover rounded-xl"
         />
         <div className="relative z-10">
           <div className="flex justify-between items-start">
             <div className="space-y-4">
-              <h2 className="text-2xl font-bold">CARTE D'ADHÉRENT</h2>
-              <div className="space-y-2">
+              <h2 className="text-2xl font-bold text-black">CARTE D'ADHÉRENT</h2>
+              <div className="space-y-2 text-black">
                 <p><span className="font-semibold">Nom :</span> {profile.last_name}</p>
                 <p><span className="font-semibold">Prénom :</span> {profile.first_name}</p>
                 <p><span className="font-semibold">N°adhérent :</span> {profile.member_number}</p>
               </div>
             </div>
-            <div className="w-32 h-32 bg-gray-100 rounded-lg overflow-hidden">
+            <div className="w-32 h-32 bg-gray-100 rounded-lg overflow-hidden border-2 border-white shadow-md">
               {profile.avatar_url ? (
                 <img 
                   src={profile.avatar_url} 
@@ -86,14 +83,14 @@ const MemberCard = () => {
       </div>
 
       {/* Back of the card */}
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl p-8 relative overflow-hidden">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl p-8 relative">
         <img 
           src="/lovable-uploads/d8b51032-d815-4569-9886-afa10e6e9002.png" 
           alt="Card background" 
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover rounded-xl"
         />
         <div className="relative z-10 flex justify-between">
-          <div className="space-y-4">
+          <div className="space-y-4 text-black">
             <div className="space-y-2">
               <p><span className="font-semibold">Adresse :</span></p>
               <p>{profile.street}</p>
@@ -103,7 +100,7 @@ const MemberCard = () => {
               <p><span className="font-semibold">Téléphone :</span> {profile.phone_mobile || profile.phone_home}</p>
             </div>
           </div>
-          <div>
+          <div className="bg-white p-2 rounded-lg shadow-md">
             <QRCodeSVG 
               value={publicCardUrl}
               size={128}
