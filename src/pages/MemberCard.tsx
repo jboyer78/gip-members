@@ -46,7 +46,7 @@ const MemberCard = () => {
       
       <div className="grid md:grid-cols-2 gap-8">
         {/* Recto */}
-        <div className="bg-white rounded-lg shadow-lg p-6 relative">
+        <div className="bg-white rounded-lg shadow-lg p-6">
           <h2 className="text-xl font-semibold mb-6">Recto</h2>
           <div className="relative">
             <img 
@@ -80,14 +80,14 @@ const MemberCard = () => {
               alt="Carte d'adhérent verso"
               className="w-full h-auto"
             />
-            <div className="absolute top-[35px] left-32 right-8 text-black space-y-0">
-              <p className="mb-0">{profile.street}</p>
-              <p className="mt-0 mb-0">{profile.postal_code} {profile.city}</p>
-              <p className="-mt-2">{profile.country}</p>
-              <p className="mt-4">{profile.email}</p>
-              <p>{profile.phone_mobile || profile.phone_home}</p>
+            <div className="absolute top-[35px] left-32 right-40 text-black">
+              <p className="text-[14px] leading-tight mb-0">{profile.street}</p>
+              <p className="text-[14px] leading-tight mb-0">{profile.postal_code} {profile.city}</p>
+              <p className="text-[14px] leading-tight -mt-2">{profile.country}</p>
+              <p className="text-[14px] leading-tight mt-4">{profile.email}</p>
+              <p className="text-[14px] leading-tight">{profile.phone_mobile || profile.phone_home}</p>
             </div>
-            <div className="absolute top-[40px] right-8 w-32 h-32">
+            <div className="absolute top-[35px] right-8 w-32 h-32">
               <QRCodeSVG
                 value={cardUrl}
                 size={128}
