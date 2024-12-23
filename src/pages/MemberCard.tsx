@@ -87,7 +87,7 @@ const MemberCard = () => {
               <p className="mt-4">{profile.email}</p>
               <p>{profile.phone_mobile || profile.phone_home}</p>
             </div>
-            <div className="absolute top-[48px] right-8 w-32 h-32">
+            <div className="absolute top-[40px] right-8 w-32 h-32">
               <QRCodeSVG
                 value={cardUrl}
                 size={128}
