@@ -83,7 +83,7 @@ const MemberCard = () => {
             <div className="absolute top-[35px] left-32 right-40 text-black">
               <p className="text-[14px] leading-tight mb-0">{profile.street}</p>
               <p className="text-[14px] leading-tight mb-0">{profile.postal_code} {profile.city}</p>
-              <p className="text-[14px] leading-tight -mt-2">{profile.country}</p>
+              <p className="text-[14px] leading-tight mt-8">{profile.country}</p>
               <p className="text-[14px] leading-tight mt-4">{profile.email}</p>
               <p className="text-[14px] leading-tight">{profile.phone_mobile || profile.phone_home}</p>
             </div>
