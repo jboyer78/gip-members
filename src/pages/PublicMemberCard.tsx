@@ -48,7 +48,7 @@ const PublicMemberCard = () => {
               <p className="mt-0">{profile.member_number}</p>
             </div>
             {profile.avatar_url && (
-              <div className="absolute top-[120px] right-[55px] w-[148px] h-[180px] overflow-hidden">
+              <div className="absolute top-[130px] right-[55px] w-[148px] h-[180px] overflow-hidden">
                 <img 
                   src={profile.avatar_url} 
                   alt="Photo de profil"
