@@ -28,6 +28,8 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
   const [gradeFilter, setGradeFilter] = useState<string>("");
   const [serviceFilter, setServiceFilter] = useState<string>("");
   const [directionFilter, setDirectionFilter] = useState<string>("");
+  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null);
 
   const { data: profilesWithBankingInfo, refetch } = useQuery({
     queryKey: ['profiles-with-banking'],
@@ -53,6 +55,43 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
     },
     enabled: !isLoading && !!profiles
   });
+
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+  };
+
+  const sortProfiles = (profiles: Profile[]) => {
+    if (!sortColumn || !sortDirection) return profiles;
+
+    return [...profiles].sort((a, b) => {
+      const aValue = a[sortColumn as keyof Profile];
+      const bValue = b[sortColumn as keyof Profile];
+
+      if (aValue === null || aValue === undefined) return sortDirection === 'asc' ? -1 : 1;
+      if (bValue === null || bValue === undefined) return sortDirection === 'asc' ? 1 : -1;
+
+      if (sortColumn === 'birth_date') {
+        const dateA = aValue ? new Date(aValue).getTime() : 0;
+        const dateB = bValue ? new Date(bValue).getTime() : 0;
+        return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+      }
+
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc' 
+          ? aValue.localeCompare(bValue, 'fr')
+          : bValue.localeCompare(aValue, 'fr');
+      }
+
+      return sortDirection === 'asc'
+        ? (aValue < bValue ? -1 : 1)
+        : (bValue < aValue ? -1 : 1);
+    });
+  };
 
   console.log("Raw profiles data:", profilesWithBankingInfo);
 
@@ -82,11 +121,13 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
     directionFilter
   );
 
-  console.log("Filtered profiles:", filteredProfiles);
+  const sortedProfiles = sortProfiles(filteredProfiles);
 
-  const totalPages = Math.ceil(filteredProfiles.length / itemsPerPage);
+  console.log("Filtered and sorted profiles:", sortedProfiles);
+
+  const totalPages = Math.ceil(sortedProfiles.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const displayedProfiles = filteredProfiles.slice(startIndex, startIndex + itemsPerPage);
+  const displayedProfiles = sortedProfiles.slice(startIndex, startIndex + itemsPerPage);
 
   console.log("Displayed profiles:", displayedProfiles);
 
@@ -107,7 +148,11 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
 
       <ScrollArea className="h-[800px] rounded-md">
         <Table>
-          <MemberTableHeader />
+          <MemberTableHeader 
+            onSort={handleSort}
+            sortColumn={sortColumn}
+            sortDirection={sortDirection}
+          />
           <TableBody>
             {displayedProfiles.map((profile) => (
               <MemberTableRow 
@@ -126,7 +171,7 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
         setCurrentPage={setCurrentPage}
         itemsPerPage={itemsPerPage}
         setItemsPerPage={setItemsPerPage}
-        totalItems={filteredProfiles.length}
+        totalItems={sortedProfiles.length}
       />
 
       <UserDetailsModal 
