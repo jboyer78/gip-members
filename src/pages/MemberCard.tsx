@@ -80,7 +80,7 @@ const MemberCard = () => {
               alt="Carte d'adhérent verso"
               className="w-full h-auto"
             />
-            <div className="absolute top-[48px] left-8 right-8 text-black space-y-0">
+            <div className="absolute top-[40px] left-48 right-8 text-black space-y-0">
               <p className="mb-0">{profile.street}</p>
               <p className="mt-0 mb-0">{profile.postal_code} {profile.city}</p>
               <p className="mt-0">{profile.country}</p>
