@@ -35,7 +35,7 @@ const PublicMemberCard = () => {
           <h2 className="text-xl font-semibold mb-6">Recto</h2>
           <div className="relative">
             <img 
-              src="/lovable-uploads/e498810f-56d3-4afd-8bb7-a145b3908426.png" 
+              src="/lovable-uploads/a98bf3ea-1e39-4268-bd9b-6d0f6b19f6fc.png" 
               alt="Carte d'adhérent recto"
               className="w-full h-auto"
             />
@@ -61,7 +61,7 @@ const PublicMemberCard = () => {
           <h2 className="text-xl font-semibold mb-6">Verso</h2>
           <div className="relative">
             <img 
-              src="/lovable-uploads/3a5ee214-ea05-4f12-891a-2861624f6d45.png" 
+              src="/lovable-uploads/11bd045a-89e5-4a4a-8f43-f1047f9c5b9c.png" 
               alt="Carte d'adhérent verso"
               className="w-full h-auto"
             />
