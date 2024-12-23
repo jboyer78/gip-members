@@ -18,11 +18,11 @@ export const useUserDetails = ({ initialUser, open, onUpdate }: UseUserDetailsPr
       if (!initialUser?.id) return null;
       
       console.log("Fetching user data with banking info for:", initialUser.id);
-      const { data, error } = await supabase
+      const { data: profiles, error } = await supabase
         .from('profiles')
         .select(`
           *,
-          banking_info (
+          banking_info!banking_info_profile_id_fkey (
             id,
             profile_id,
             iban,
@@ -33,15 +33,15 @@ export const useUserDetails = ({ initialUser, open, onUpdate }: UseUserDetailsPr
           )
         `)
         .eq('id', initialUser.id)
-        .maybeSingle();
+        .single();
 
       if (error) {
         console.error("Error fetching user data:", error);
         throw error;
       }
 
-      console.log("Fetched user data:", data);
-      return data;
+      console.log("Fetched user data:", profiles);
+      return profiles;
     },
     enabled: !!initialUser?.id && open
   });
