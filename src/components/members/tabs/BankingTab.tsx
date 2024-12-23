@@ -15,13 +15,19 @@ export const BankingTab = ({ user }: BankingTabProps) => {
   const { data: bankingInfo, isLoading, refetch } = useQuery({
     queryKey: ['bankingInfo', user.id],
     queryFn: async () => {
+      console.log("Fetching banking info for user:", user.id);
       const { data, error } = await supabase
         .from('banking_info')
         .select('*')
         .eq('profile_id', user.id)
-        .single();
+        .maybeSingle();
       
-      if (error && error.code !== 'PGRST116') throw error;
+      if (error) {
+        console.error("Error fetching banking info:", error);
+        throw error;
+      }
+      
+      console.log("Fetched banking info:", data);
       return data;
     }
   });
