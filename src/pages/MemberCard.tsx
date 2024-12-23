@@ -1,99 +1,90 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Profile } from "@/integrations/supabase/types/profile";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { QRCodeSVG } from "qrcode.react";
-import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const MemberCard = () => {
-  const [profile, setProfile] = useState<Profile | null>(null);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  useEffect(() => {
-    const getProfile = async () => {
+  const { data: profile, isLoading } = useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        navigate("/login");
-        return;
-      }
+      if (!user) throw new Error("Not authenticated");
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
         .single();
 
-      if (!profile?.member_number) {
-        toast.error("Vous devez avoir un numéro d'adhérent pour accéder à votre carte");
-        navigate("/profile");
-        return;
-      }
+      if (error) throw error;
+      return data;
+    },
+  });
 
-      setProfile(profile);
-    };
+  useEffect(() => {
+    if (!isLoading && (!profile || !profile.member_number)) {
+      toast({
+        title: "Accès refusé",
+        description: "Vous devez avoir un numéro d'adhérent pour accéder à votre carte de membre.",
+        variant: "destructive",
+      });
+      navigate('/profile');
+    }
+  }, [profile, isLoading, navigate, toast]);
 
-    getProfile();
-  }, [navigate]);
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Chargement de votre carte de membre...</p>
+        </div>
+      </div>
+    );
+  }
 
-  if (!profile) return null;
-
-  const cardUrl = `${window.location.origin}/card/${profile.member_number}`;
+  if (!profile?.member_number) {
+    return null;
+  }
 
   return (
-    <div className="container mx-auto p-8 space-y-8">
-      <h1 className="text-2xl font-bold mb-8">Ma carte d'adhérent</h1>
-      
-      <div className="grid md:grid-cols-2 gap-8">
-        {/* Recto */}
-        <div className="bg-white rounded-lg shadow-lg p-6 relative">
-          <h2 className="text-xl font-semibold mb-6">Recto</h2>
-          <div className="relative">
-            <img 
-              src="/lovable-uploads/e498810f-56d3-4afd-8bb7-a145b3908426.png" 
-              alt="Carte d'adhérent recto"
-              className="w-full h-auto"
-            />
-            <div className="absolute top-1/2 left-8 right-8 text-black space-y-2">
-              <p className="mt-16">Nom : {profile.last_name}</p>
-              <p>Prénom : {profile.first_name}</p>
-              <p>N°adhérent : {profile.member_number}</p>
-            </div>
-            {profile.avatar_url && (
-              <div className="absolute top-24 right-8 w-32 h-32 rounded-lg overflow-hidden">
-                <img 
-                  src={profile.avatar_url} 
-                  alt="Photo de profil"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
-          </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full p-8">
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400">
+            Carte de Membre
+          </h1>
         </div>
 
-        {/* Verso */}
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-semibold mb-6">Verso</h2>
-          <div className="relative">
-            <img 
-              src="/lovable-uploads/3a5ee214-ea05-4f12-891a-2861624f6d45.png" 
-              alt="Carte d'adhérent verso"
-              className="w-full h-auto"
-            />
-            <div className="absolute top-12 left-8 right-8 text-black space-y-2">
-              <p>Adresse : {profile.street}</p>
-              <p>{profile.postal_code} {profile.city}</p>
-              <p>{profile.country}</p>
-              <p className="mt-4">E-mail : {profile.email}</p>
-              <p>Téléphone : {profile.phone_mobile || profile.phone_home}</p>
+        <div className="space-y-6">
+          <div className="text-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+              Numéro d'adhérent
+            </p>
+            <p className="text-2xl font-bold text-primary">
+              {profile.member_number}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Nom</p>
+              <p className="font-semibold">{profile.last_name}</p>
             </div>
-            <div className="absolute top-12 right-8 w-32 h-32">
-              <QRCodeSVG
-                value={cardUrl}
-                size={128}
-                className="w-full h-full"
-              />
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Prénom</p>
+              <p className="font-semibold">{profile.first_name}</p>
             </div>
+          </div>
+
+          <div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Statut</p>
+            <p className="font-semibold">{profile.status?.[0] || "En attente"}</p>
           </div>
         </div>
       </div>

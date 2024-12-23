@@ -90,14 +90,19 @@ export const StatusCard = () => {
           </div>
           
           {userStatus.status === 'Validée' && userStatus.memberNumber && (
-            <div className="flex-shrink-0 text-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <a 
+              href="/member-card" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex-shrink-0 text-center p-3 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700/50 dark:hover:bg-gray-600/50 rounded-lg transition-colors cursor-pointer"
+            >
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
                 Numéro d'adhérent
               </p>
               <p className="text-lg font-semibold text-primary">
                 {userStatus.memberNumber}
               </p>
-            </div>
+            </a>
           )}
         </div>
       </CardContent>
