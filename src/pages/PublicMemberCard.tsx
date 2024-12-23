@@ -39,9 +39,9 @@ const PublicMemberCard = () => {
               alt="Carte d'adhérent recto"
               className="w-full h-auto"
             />
-            <div className="absolute top-[55%] left-28 right-8 text-black">
-              <p className="uppercase mb-4">{profile.last_name}</p>
-              <p className="uppercase mb-4 ml-6">{profile.first_name}</p>
+            <div className="absolute top-[65%] left-28 right-8 text-black">
+              <p className="uppercase mb-2">{profile.last_name}</p>
+              <p className="uppercase mt-1 ml-6">{profile.first_name}</p>
               <p className="mt-2">{profile.member_number}</p>
             </div>
             {profile.avatar_url && (
@@ -63,7 +63,7 @@ const PublicMemberCard = () => {
             <img 
               src="/lovable-uploads/11bd045a-89e5-4a4a-8f43-f1047f9c5b9c.png" 
               alt="Carte d'adhérent verso"
-              className="w-full h-full"
+              className="w-full h-auto"
             />
             <div className="absolute top-[48px] left-8 right-8 text-black space-y-2">
               <p>{profile.street}</p>
