@@ -45,7 +45,7 @@ const PublicMemberCard = () => {
               <p className="mt-0">{profile.member_number}</p>
             </div>
             {profile.avatar_url && (
-              <div className="absolute top-[120px] right-[32px] w-[128px] h-[160px] overflow-hidden">
+              <div className="absolute top-[120px] right-[40px] w-[128px] h-[160px] overflow-hidden">
                 <img 
                   src={profile.avatar_url} 
                   alt="Photo de profil"
@@ -71,6 +71,13 @@ const PublicMemberCard = () => {
               <p>{profile.country}</p>
               <p className="mt-4">{profile.email}</p>
               <p>{profile.phone_mobile || profile.phone_home}</p>
+            </div>
+            <div className="absolute top-[48px] right-8 w-32 h-32">
+              <QRCodeSVG
+                value={cardUrl}
+                size={128}
+                className="w-full h-full"
+              />
             </div>
           </div>
         </div>
