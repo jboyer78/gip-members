@@ -56,7 +56,7 @@ const MemberCard = () => {
     );
   }
 
-  const publicCardUrl = `${window.location.origin}/public-card/${profile.id}`;
+  const publicCardUrl = `https://gip-members.lovable.app/public-card/${profile.id}`;
 
   return (
     <SidebarProvider defaultOpen={true}>

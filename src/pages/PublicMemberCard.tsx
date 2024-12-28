@@ -43,7 +43,7 @@ const PublicMemberCard = () => {
     );
   }
 
-  const publicCardUrl = `${window.location.origin}/public-card/${id}`;
+  const publicCardUrl = `https://gip-members.lovable.app/public-card/${id}`;
 
   return (
     <div className="min-h-screen flex w-full flex-col md:flex-row bg-gradient-to-br from-gray-50 to-gray-100">
