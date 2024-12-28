@@ -13,15 +13,18 @@ const PublicMemberCard = () => {
   const { data: profile, isLoading, error } = useQuery({
     queryKey: ['public-profile', id],
     queryFn: async () => {
+      if (!id) throw new Error('No ID provided');
+      
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')  // Select all fields to match the Profile type
+        .select('*')
         .eq('id', id)
         .single();
 
       if (error) throw error;
       return data;
     },
+    enabled: !!id, // Only run query if we have an ID
   });
 
   if (isLoading) {
@@ -56,7 +59,7 @@ const PublicMemberCard = () => {
               </CardSide>
             </ResizablePanel>
 
-            <div className="h-4 block md:hidden" /> {/* Add spacing only on mobile */}
+            <div className="h-4 block md:hidden" />
 
             <ResizablePanel defaultSize={50}>
               <CardSide>
