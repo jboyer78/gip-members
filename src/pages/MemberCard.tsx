@@ -76,8 +76,8 @@ const MemberCard = () => {
                       className="absolute inset-0 w-full h-full object-contain rounded-xl"
                     />
                     <div className="relative z-10 h-full flex flex-col justify-end">
-                      <div className="flex justify-between items-start mb-8">
-                        <div className="w-32 h-32 bg-gray-100 rounded-lg overflow-hidden">
+                      <div className="flex flex-row-reverse justify-between items-start mb-8">
+                        <div className="w-32 h-32 bg-gray-100 rounded-lg overflow-hidden ml-4">
                           {profile.avatar_url ? (
                             <img 
                               src={profile.avatar_url} 
