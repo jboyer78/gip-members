@@ -1,38 +1,32 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Profile } from "@/integrations/supabase/types/profile";
+import { BankingInfo } from "@/integrations/supabase/types/banking";
 
 export const useProfilesWithBanking = (isLoading: boolean, profiles: Profile[] | null) => {
   return useQuery({
-    queryKey: ['profiles-with-banking'],
+    queryKey: ['profilesWithBanking'],
     queryFn: async () => {
-      console.log("Fetching profiles with banking info...");
-      const { data: profiles, error } = await supabase
-        .from('profiles')
-        .select(`
-          *,
-          banking_info (
-            id,
-            iban,
-            bic,
-            authorize_debit,
-            created_at,
-            updated_at,
-            profile_id
-          )
-        `)
-        .order('updated_at', { ascending: false })
-        .order('last_name', { ascending: true })
-        .order('first_name', { ascending: true });
+      if (!profiles) return [];
+      
+      // Récupérer toutes les informations bancaires en une seule requête
+      const { data: bankingInfos } = await supabase
+        .from('banking_info')
+        .select('*');
 
-      if (error) {
-        console.error("Error fetching profiles with banking info:", error);
-        throw error;
-      }
+      // Créer un map pour un accès rapide
+      const bankingInfoMap = new Map(
+        bankingInfos?.map(info => [info.profile_id, info]) || []
+      );
 
-      console.log("Profiles with banking info:", profiles);
-      return profiles;
+      // Associer les informations bancaires aux profils
+      return profiles.map(profile => ({
+        ...profile,
+        banking_info: bankingInfoMap.get(profile.id) || null
+      }));
     },
-    enabled: !isLoading && !!profiles
+    enabled: !isLoading && !!profiles,
+    staleTime: 1000 * 60 * 5, // Cache pendant 5 minutes
+    cacheTime: 1000 * 60 * 10, // Garde en cache pendant 10 minutes
   });
 };
