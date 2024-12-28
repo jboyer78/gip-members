@@ -67,9 +67,6 @@ export const useAuth = () => {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
-        options: {
-          persistSession: rememberMe // Persist session only if rememberMe is true
-        }
       });
 
       if (error) {
