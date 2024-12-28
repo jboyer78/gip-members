@@ -14,7 +14,6 @@ export const useAuth = () => {
   const signIn = async (email: string, password: string, rememberMe: boolean = false): Promise<boolean> => {
     try {
       setLoading(true);
-      console.log("Starting login process for:", email);
 
       // Validate inputs
       const emailError = validateEmail(email);
@@ -86,18 +85,18 @@ export const useAuth = () => {
       }
 
       if (data?.user) {
-        console.log("Successfully logged in user:", data.user.email);
+        console.log("Utilisateur connecté:", data.user);
         toast({
           title: "Connexion réussie",
           description: "Vous êtes maintenant connecté",
         });
-        navigate("/profile");
+        navigate("/");
         return true;
       }
 
       return false;
     } catch (error) {
-      console.error("Unexpected error during login:", error);
+      console.error("Erreur lors de la connexion:", error);
       toast({
         variant: "destructive",
         title: "Erreur",
@@ -109,24 +108,61 @@ export const useAuth = () => {
     }
   };
 
-  const signOut = async () => {
+  const signUp = async (email: string, password: string) => {
     try {
       setLoading(true);
-      console.log("Starting logout process...");
-      
-      const { error } = await supabase.auth.signOut();
-      
-      if (error) {
-        console.error("Logout error:", error);
+
+      // Validate inputs
+      const emailError = validateEmail(email);
+      const passwordError = validatePassword(password);
+
+      if (emailError || passwordError) {
         toast({
           variant: "destructive",
-          title: "Erreur",
-          description: "Une erreur est survenue lors de la déconnexion",
+          title: "Erreur de validation",
+          description: emailError || passwordError,
         });
         return;
       }
 
-      console.log("Successfully logged out");
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) {
+        handleAuthError(error as AuthError, toast);
+        return;
+      }
+
+      if (data) {
+        toast({
+          title: "Inscription réussie",
+          description: "Veuillez vérifier votre email pour confirmer votre compte",
+        });
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'inscription:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'inscription",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        throw error;
+      }
+
       toast({
         title: "Déconnexion réussie",
         description: "Vous avez été déconnecté avec succès",
@@ -134,7 +170,7 @@ export const useAuth = () => {
       
       navigate("/login");
     } catch (error) {
-      console.error("Unexpected error during logout:", error);
+      console.error("Erreur lors de la déconnexion:", error);
       toast({
         variant: "destructive",
         title: "Erreur",
@@ -147,6 +183,7 @@ export const useAuth = () => {
 
   return {
     signIn,
+    signUp,
     signOut,
     loading,
   };
