@@ -1,12 +1,12 @@
 @media (min-width: 640px) {
   .photo-container {
-    top: 7.75rem !important;
-    right: 6rem !important;
+    top: 8.5rem !important;
+    right: 7rem !important;
   }
 }
 
 @media (min-width: 768px) {
   .photo-container {
-    right: 5.5rem !important;
+    right: 6.5rem !important;
   }
 }
