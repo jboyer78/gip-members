@@ -9,7 +9,7 @@ export const CardBackground = ({ imageUrl, children }: CardBackgroundProps) => {
       <img 
         src={imageUrl} 
         alt="Card background" 
-        className="absolute inset-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)] object-contain rounded-xl"
+        className="absolute inset-2 sm:inset-4 w-[calc(100%-1rem)] sm:w-[calc(100%-2rem)] h-[calc(100%-1rem)] sm:h-[calc(100%-2rem)] object-contain rounded-xl"
       />
       <div className="relative z-10 h-full">
         {children}
