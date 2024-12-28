@@ -5,24 +5,13 @@ import { RememberMeCheckbox } from "./login/RememberMeCheckbox";
 import { ForgotPasswordLink } from "./login/ForgotPasswordLink";
 import { SubmitButton } from "./login/SubmitButton";
 import { useLoginSubmit } from "./login/useLoginSubmit";
-import { useSessionContext } from "@supabase/auth-helpers-react";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const { session } = useSessionContext();
-  const navigate = useNavigate();
   
   const { handleSubmit, loading } = useLoginSubmit();
-
-  useEffect(() => {
-    if (session) {
-      navigate("/profile");
-    }
-  }, [session, navigate]);
 
   return (
     <form onSubmit={(e) => handleSubmit(e, { email, password })} className="mt-8 space-y-6">

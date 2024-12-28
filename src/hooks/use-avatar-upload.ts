@@ -37,14 +37,13 @@ export const useAvatarUpload = ({ onSuccess }: UseAvatarUploadOptions) => {
       });
 
       const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random()}-${Date.now()}.${fileExt}`;
+      const filePath = `${crypto.randomUUID()}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(fileName, resizedImage, {
+        .upload(filePath, resizedImage, {
           contentType: 'image/jpeg',
-          cacheControl: '31536000', // Cache pour 1 an
-          upsert: false
+          upsert: true
         });
 
       if (uploadError) {
@@ -53,7 +52,7 @@ export const useAvatarUpload = ({ onSuccess }: UseAvatarUploadOptions) => {
 
       const { data: { publicUrl } } = supabase.storage
         .from('avatars')
-        .getPublicUrl(fileName);
+        .getPublicUrl(filePath);
 
       onSuccess(publicUrl);
       

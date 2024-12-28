@@ -1,6 +1,6 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 interface LoginFormData {
@@ -10,6 +10,7 @@ interface LoginFormData {
 
 export const useLoginSubmit = () => {
   const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent, formData: LoginFormData) => {
@@ -27,18 +28,29 @@ export const useLoginSubmit = () => {
 
       if (error) {
         console.error('Login error:', error);
-        toast("Email ou mot de passe incorrect");
+        toast({
+          variant: "destructive",
+          title: "Erreur de connexion",
+          description: "Email ou mot de passe incorrect",
+        });
         return;
       }
 
       if (data?.user) {
-        console.log("Successfully logged in user:", data.user.email);
-        toast("Connexion réussie");
+        console.log("Successfully logged in user:", email);
+        toast({
+          title: "Connexion réussie",
+          description: "Vous êtes maintenant connecté",
+        });
         navigate("/profile");
       }
     } catch (error) {
       console.error("Unexpected error during login:", error);
-      toast("Une erreur est survenue lors de la connexion");
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la connexion",
+      });
     } finally {
       setLoading(false);
     }
