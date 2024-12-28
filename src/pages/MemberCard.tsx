@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Menu } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/shared/AppSidebar";
 import { ResizablePanelGroup, ResizablePanel } from "@/components/ui/resizable";
@@ -83,6 +83,8 @@ const MemberCard = () => {
                   <FrontCard profile={profile} />
                 </CardSide>
               </ResizablePanel>
+
+              <div className="h-4 block md:hidden" /> {/* Add spacing only on mobile */}
 
               <ResizablePanel defaultSize={50}>
                 <CardSide>
