@@ -73,11 +73,11 @@ const MemberCard = () => {
                     <img 
                       src="/lovable-uploads/7fabfc2f-74f0-42fe-b42e-d38ff0226691.png" 
                       alt="Card background" 
-                      className="absolute inset-0 w-full h-full object-contain rounded-xl"
+                      className="absolute inset-0 w-full h-full object-cover rounded-xl"
                     />
-                    <div className="relative z-10 h-full flex flex-col justify-end">
-                      <div className="flex flex-row-reverse justify-between items-start mb-8">
-                        <div className="w-32 h-32 bg-gray-100 rounded-lg overflow-hidden ml-4">
+                    <div className="relative z-10 h-full flex flex-col justify-between">
+                      <div className="flex flex-row-reverse justify-between items-start">
+                        <div className="w-[180px] h-[220px] bg-gray-100 rounded-lg overflow-hidden">
                           {profile.avatar_url ? (
                             <img 
                               src={profile.avatar_url} 
