@@ -76,16 +76,13 @@ const MemberCard = () => {
                       className="absolute inset-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)] object-contain rounded-xl"
                     />
                     <div className="relative z-10">
-                      <div className="flex justify-between items-start">
-                        <div className="space-y-4">
-                          <h2 className="text-2xl font-bold"></h2>
-                          <div className="space-y-2">
-                            <p><span className="font-semibold">Nom :</span> {profile.last_name}</p>
-                            <p><span className="font-semibold">Prénom :</span> {profile.first_name}</p>
-                            <p><span className="font-semibold">N°adhérent :</span> {profile.member_number}</p>
-                          </div>
+                      <div className="flex flex-col items-start mt-32">
+                        <div className="space-y-2">
+                          <p><span className="font-semibold">Nom :</span> {profile.last_name}</p>
+                          <p><span className="font-semibold">Prénom :</span> {profile.first_name}</p>
+                          <p><span className="font-semibold">N°adhérent :</span> {profile.member_number}</p>
                         </div>
-                        <div className="w-32 h-32 bg-gray-100 rounded-lg overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-gray-100 rounded-lg overflow-hidden">
                           {profile.avatar_url ? (
                             <img 
                               src={profile.avatar_url} 
