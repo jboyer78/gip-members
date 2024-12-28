@@ -70,30 +70,34 @@ const MemberCard = () => {
               <ResizablePanel defaultSize={50}>
                 <div className="h-full p-6">
                   <div className="relative h-full bg-white rounded-xl shadow-xl p-8">
-                    <img 
-                      src="/lovable-uploads/7fabfc2f-74f0-42fe-b42e-d38ff0226691.png" 
-                      alt="Card background" 
-                      className="absolute inset-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)] object-contain rounded-xl"
-                    />
-                    <div className="relative z-10">
-                      <div className="flex flex-col items-start mt-32">
-                        <div className="space-y-2">
-                          <p><span className="font-semibold">Nom :</span> {profile.last_name}</p>
-                          <p><span className="font-semibold">Prénom :</span> {profile.first_name}</p>
-                          <p><span className="font-semibold">N°adhérent :</span> {profile.member_number}</p>
-                        </div>
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-gray-100 rounded-lg overflow-hidden">
-                          {profile.avatar_url ? (
-                            <img 
-                              src={profile.avatar_url} 
-                              alt="Photo de profil" 
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-400">
-                              PHOTO
+                    <div className="relative h-full">
+                      <img 
+                        src="/lovable-uploads/7fabfc2f-74f0-42fe-b42e-d38ff0226691.png" 
+                        alt="Card background" 
+                        className="absolute inset-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)] object-contain rounded-xl"
+                      />
+                      <div className="relative z-10 h-full">
+                        <div className="flex flex-col h-full">
+                          <div className="flex-1 relative">
+                            <div className="absolute top-[30%] left-8 space-y-2 transform scale-100 origin-top-left">
+                              <p className="text-base md:text-lg"><span className="font-semibold">Nom :</span> {profile.last_name}</p>
+                              <p className="text-base md:text-lg"><span className="font-semibold">Prénom :</span> {profile.first_name}</p>
+                              <p className="text-base md:text-lg"><span className="font-semibold">N°adhérent :</span> {profile.member_number}</p>
                             </div>
-                          )}
+                            <div className="absolute top-8 right-8 w-24 h-24 md:w-32 md:h-32 bg-gray-100 rounded-lg overflow-hidden">
+                              {profile.avatar_url ? (
+                                <img 
+                                  src={profile.avatar_url} 
+                                  alt="Photo de profil" 
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                  PHOTO
+                                </div>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
