@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Toaster } from "@/components/ui/sonner";
 import "./App.css";
 import Login from "@/pages/Login";
-import SignUp from "@/pages/SignUp";
+import SignUp from "./pages/SignUp";
 import Profile from "@/pages/Profile";
 
 const router = createBrowserRouter([
