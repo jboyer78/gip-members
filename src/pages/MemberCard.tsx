@@ -78,7 +78,7 @@ const MemberCard = () => {
                     <div className="relative z-10">
                       <div className="flex justify-between items-start">
                         <div className="space-y-4">
-                          <h2 className="text-2xl font-bold">CARTE D'ADHÉRENT</h2>
+                          <h2 className="text-2xl font-bold"></h2>
                           <div className="space-y-2">
                             <p><span className="font-semibold">Nom :</span> {profile.last_name}</p>
                             <p><span className="font-semibold">Prénom :</span> {profile.first_name}</p>
