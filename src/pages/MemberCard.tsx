@@ -84,7 +84,7 @@ const MemberCard = () => {
                 </CardSide>
               </ResizablePanel>
 
-              <div className="h-4 block md:hidden" /> {/* Add spacing only on mobile */}
+              <div className="h-4 block md:hidden" />
 
               <ResizablePanel defaultSize={50}>
                 <CardSide>
@@ -92,6 +92,10 @@ const MemberCard = () => {
                 </CardSide>
               </ResizablePanel>
             </ResizablePanelGroup>
+            
+            <div className="text-center text-sm text-gray-500 mt-4">
+              URL du QR code : {publicCardUrl}
+            </div>
           </div>
         </main>
       </div>
