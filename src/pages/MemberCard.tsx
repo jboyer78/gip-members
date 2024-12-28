@@ -75,16 +75,8 @@ const MemberCard = () => {
                       alt="Card background" 
                       className="absolute inset-0 w-full h-full object-contain rounded-xl"
                     />
-                    <div className="relative z-10">
-                      <div className="flex justify-between items-start">
-                        <div className="space-y-4">
-                          <h2 className="text-2xl font-bold"></h2>
-                          <div className="space-y-2">
-                            <p><span className="font-semibold">Nom :</span> {profile.last_name}</p>
-                            <p><span className="font-semibold">Prénom :</span> {profile.first_name}</p>
-                            <p><span className="font-semibold">N°adhérent :</span> {profile.member_number}</p>
-                          </div>
-                        </div>
+                    <div className="relative z-10 h-full flex flex-col justify-end">
+                      <div className="flex justify-between items-start mb-4">
                         <div className="w-32 h-32 bg-gray-100 rounded-lg overflow-hidden">
                           {profile.avatar_url ? (
                             <img 
@@ -97,6 +89,14 @@ const MemberCard = () => {
                               PHOTO
                             </div>
                           )}
+                        </div>
+                      </div>
+                      <div className="space-y-4 pl-8">
+                        <h2 className="text-2xl font-bold"></h2>
+                        <div className="space-y-2">
+                          <p><span className="font-semibold">Nom :</span> {profile.last_name}</p>
+                          <p><span className="font-semibold">Prénom :</span> {profile.first_name}</p>
+                          <p><span className="font-semibold">N°adhérent :</span> {profile.member_number}</p>
                         </div>
                       </div>
                     </div>
