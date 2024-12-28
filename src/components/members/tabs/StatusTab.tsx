@@ -170,7 +170,7 @@ export const StatusTab = ({ user }: StatusTabProps) => {
       {currentStatus === "Validée" && (
         <div className="space-y-4 mt-8">
           <h3 className="text-lg font-semibold">Carte de membre</h3>
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-2xl mx-auto">
             <ResizablePanelGroup direction="vertical" className="min-h-[800px] rounded-lg border">
               <ResizablePanel defaultSize={50}>
                 <CardSide>
