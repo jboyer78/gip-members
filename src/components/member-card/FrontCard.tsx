@@ -10,7 +10,7 @@ export const FrontCard = ({ profile }: FrontCardProps) => {
     <CardBackground imageUrl="/lovable-uploads/7fabfc2f-74f0-42fe-b42e-d38ff0226691.png">
       <div className="flex flex-col h-full">
         <div className="flex-1 relative">
-          <div className="absolute top-[55%] sm:top-[65%] left-7 sm:left-20 space-y-0.5 sm:space-y-1 transform scale-[0.55] sm:scale-90 md:scale-100 origin-top-left">
+          <div className="absolute top-[55%] sm:top-[65%] left-2 sm:left-20 space-y-0.5 sm:space-y-1 transform scale-[0.55] sm:scale-90 md:scale-100 origin-top-left">
             <p className="text-xs sm:text-sm md:text-base">
               <span className="font-semibold">Nom :</span> {profile.last_name}
             </p>
@@ -21,7 +21,7 @@ export const FrontCard = ({ profile }: FrontCardProps) => {
               <span className="font-semibold">N°adhérent :</span> {profile.member_number}
             </p>
           </div>
-          <div className="absolute top-[10.5rem] sm:top-[7.75rem] right-6 sm:right-20 md:right-24 w-12 sm:w-24 md:w-36 h-16 sm:h-32 md:h-44 bg-gray-100 overflow-hidden">
+          <div className="absolute top-[10.5rem] sm:top-[7.75rem] right-2 sm:right-20 md:right-24 w-12 sm:w-24 md:w-36 h-16 sm:h-32 md:h-44 bg-gray-100 overflow-hidden">
             {profile.avatar_url ? (
               <img 
                 src={profile.avatar_url} 
