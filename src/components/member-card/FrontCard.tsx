@@ -21,7 +21,7 @@ export const FrontCard = ({ profile }: FrontCardProps) => {
               <span className="font-semibold">N°adhérent :</span> {profile.member_number}
             </p>
           </div>
-          <div className="absolute top-[12.5rem] sm:top-[8.75rem] right-7 sm:right-24 md:right-28 w-20 sm:w-28 md:w-40 h-24 sm:h-36 md:h-48 bg-gray-100 overflow-hidden">
+          <div className="absolute top-[12.5rem] sm:top-[8.75rem] right-7 sm:right-32 md:right-28 w-20 sm:w-28 md:w-40 h-24 sm:h-36 md:h-48 bg-gray-100 overflow-hidden">
             {profile.avatar_url ? (
               <img 
                 src={profile.avatar_url} 
