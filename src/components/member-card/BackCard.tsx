@@ -23,7 +23,7 @@ export const BackCard = ({ profile, publicCardUrl }: BackCardProps) => {
         <div className="flex items-start justify-start mt-8 sm:mt-16 -ml-20">
           <QRCodeSVG 
             value={publicCardUrl}
-            size={156}
+            size={117}
             level="H"
             className="bg-white p-2 rounded"
           />
