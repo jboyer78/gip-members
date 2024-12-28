@@ -76,7 +76,7 @@ const MemberCard = () => {
                       className="absolute inset-0 w-full h-full object-contain rounded-xl"
                     />
                     <div className="relative z-10 h-full flex flex-col justify-end">
-                      <div className="flex justify-between items-start mb-4">
+                      <div className="flex justify-between items-start mb-8">
                         <div className="w-32 h-32 bg-gray-100 rounded-lg overflow-hidden">
                           {profile.avatar_url ? (
                             <img 
@@ -91,7 +91,7 @@ const MemberCard = () => {
                           )}
                         </div>
                       </div>
-                      <div className="space-y-4 pl-8">
+                      <div className="space-y-4 pl-12">
                         <h2 className="text-2xl font-bold"></h2>
                         <div className="space-y-2">
                           <p><span className="font-semibold">Nom :</span> {profile.last_name}</p>
