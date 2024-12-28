@@ -12,10 +12,10 @@ export const FrontCard = ({ profile }: FrontCardProps) => {
         <div className="flex-1 relative">
           <div className="absolute top-[55%] sm:top-[65%] left-9 sm:left-28 space-y-0.5 sm:space-y-1 transform scale-[0.70] sm:scale-90 md:scale-100 origin-top-left">
             <p className="text-sm sm:text-sm md:text-base">
-              <span className="font-semibold">Nom :</span> {profile.last_name}
+              <span className="font-semibold">Nom :</span> {profile.last_name?.toUpperCase()}
             </p>
             <p className="text-sm sm:text-sm md:text-base">
-              <span className="font-semibold">Prénom :</span> {profile.first_name}
+              <span className="font-semibold">Prénom :</span> {profile.first_name?.toUpperCase()}
             </p>
             <p className="text-sm sm:text-sm md:text-base">
               <span className="font-semibold">N°adhérent :</span> {profile.member_number}
