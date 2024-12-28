@@ -16,14 +16,14 @@ export const BackCard = ({ profile, publicCardUrl }: BackCardProps) => {
           <p className="text-sm sm:text-sm md:text-base"><span className="font-semibold">Code postal :</span> {profile.postal_code}</p>
           <p className="text-sm sm:text-sm md:text-base"><span className="font-semibold">Ville :</span> {profile.city}</p>
           <p className="text-sm sm:text-sm md:text-base"><span className="font-semibold">Pays :</span> {profile.country}</p>
-          <div className="h-4" /> {/* Ajout d'un espace vertical */}
+          <div className="h-4" />
           <p className="text-sm sm:text-sm md:text-base"><span className="font-semibold">Email :</span> {profile.email}</p>
           <p className="text-sm sm:text-sm md:text-base"><span className="font-semibold">Téléphone :</span> {profile.phone_mobile || profile.phone_home}</p>
         </div>
-        <div className="flex items-start justify-start mt-12 sm:mt-20 -ml-20">
+        <div className="flex items-start justify-start mt-8 sm:mt-16 -ml-20">
           <QRCodeSVG 
             value={publicCardUrl}
-            size={128}
+            size={156}
             level="H"
             className="bg-white p-2 rounded"
           />
