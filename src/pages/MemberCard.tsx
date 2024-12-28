@@ -73,7 +73,7 @@ const MemberCard = () => {
                     <img 
                       src="/lovable-uploads/7fabfc2f-74f0-42fe-b42e-d38ff0226691.png" 
                       alt="Card background" 
-                      className="absolute inset-8 w-[calc(100%-4rem)] h-[calc(100%-4rem)] object-contain rounded-xl"
+                      className="absolute inset-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)] object-contain rounded-xl"
                     />
                     <div className="relative z-10">
                       <div className="flex justify-between items-start">
@@ -111,7 +111,7 @@ const MemberCard = () => {
                     <img 
                       src="/lovable-uploads/c22c59c8-c1b1-4a6e-90f6-6039957c2112.png" 
                       alt="Card background" 
-                      className="absolute inset-8 w-[calc(100%-4rem)] h-[calc(100%-4rem)] object-contain rounded-xl"
+                      className="absolute inset-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)] object-contain rounded-xl"
                     />
                     <div className="relative z-10 grid grid-cols-2 gap-4">
                       <div className="space-y-2">
