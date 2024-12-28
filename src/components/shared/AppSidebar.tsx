@@ -30,6 +30,12 @@ export function AppSidebar() {
         
         <SidebarGroup>
           <SidebarGroupContent>
+            <SidebarMenuItem
+              to="/profile"
+              icon={User}
+              label="Profil"
+              className="mb-4"
+            />
             {!isLoading && isAdmin && (
               <>
                 <SidebarMenuItem
@@ -66,12 +72,6 @@ export function AppSidebar() {
               to="/member-card"
               icon={CreditCard}
               label="Carte"
-              className="mb-4"
-            />
-            <SidebarMenuItem
-              to="/profile"
-              icon={User}
-              label="Profil"
               className="mb-4"
             />
           </SidebarGroupContent>
