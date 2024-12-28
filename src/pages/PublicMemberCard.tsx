@@ -24,7 +24,7 @@ const PublicMemberCard = () => {
       if (error) throw error;
       return data;
     },
-    enabled: !!id, // Only run query if we have an ID
+    enabled: !!id,
   });
 
   if (isLoading) {
@@ -67,6 +67,10 @@ const PublicMemberCard = () => {
               </CardSide>
             </ResizablePanel>
           </ResizablePanelGroup>
+          
+          <div className="text-center text-sm text-gray-500 mt-4">
+            URL du QR code : {publicCardUrl}
+          </div>
         </div>
       </main>
     </div>
