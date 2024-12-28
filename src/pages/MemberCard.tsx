@@ -79,12 +79,12 @@ const MemberCard = () => {
                       <div className="relative z-10 h-full">
                         <div className="flex flex-col h-full">
                           <div className="flex-1 relative">
-                            <div className="absolute top-[30%] left-8 space-y-2 transform scale-100 origin-top-left">
-                              <p className="text-base md:text-lg"><span className="font-semibold">Nom :</span> {profile.last_name}</p>
-                              <p className="text-base md:text-lg"><span className="font-semibold">Prénom :</span> {profile.first_name}</p>
-                              <p className="text-base md:text-lg"><span className="font-semibold">N°adhérent :</span> {profile.member_number}</p>
+                            <div className="absolute top-[30%] sm:top-[30%] left-4 sm:left-8 space-y-2 transform scale-90 sm:scale-100 origin-top-left">
+                              <p className="text-sm sm:text-base md:text-lg"><span className="font-semibold">Nom :</span> {profile.last_name}</p>
+                              <p className="text-sm sm:text-base md:text-lg"><span className="font-semibold">Prénom :</span> {profile.first_name}</p>
+                              <p className="text-sm sm:text-base md:text-lg"><span className="font-semibold">N°adhérent :</span> {profile.member_number}</p>
                             </div>
-                            <div className="absolute top-8 right-8 w-24 h-24 md:w-32 md:h-32 bg-gray-100 rounded-lg overflow-hidden">
+                            <div className="absolute top-4 sm:top-8 right-4 sm:right-8 w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 bg-gray-100 rounded-lg overflow-hidden">
                               {profile.avatar_url ? (
                                 <img 
                                   src={profile.avatar_url} 
