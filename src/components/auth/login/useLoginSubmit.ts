@@ -22,10 +22,7 @@ export const useLoginSubmit = () => {
 
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password,
-        options: {
-          persistSession: true // Assurez-vous que la session est persistée
-        }
+        password
       });
 
       if (error) {
