@@ -74,7 +74,10 @@ const MemberCard = () => {
               </div>
             </div>
 
-            <ResizablePanelGroup direction="vertical" className="min-h-[1000px] rounded-lg border space-y-4 md:space-y-0">
+            <ResizablePanelGroup 
+              direction="vertical" 
+              className="min-h-[1000px] rounded-lg border space-y-0 md:space-y-4"
+            >
               <ResizablePanel defaultSize={50}>
                 <CardSide>
                   <FrontCard profile={profile} />
