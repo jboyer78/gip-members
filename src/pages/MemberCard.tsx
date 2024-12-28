@@ -84,7 +84,7 @@ const MemberCard = () => {
                               <p className="text-xs sm:text-sm md:text-base"><span className="font-semibold">Prénom :</span> {profile.first_name}</p>
                               <p className="text-xs sm:text-sm md:text-base"><span className="font-semibold">N°adhérent :</span> {profile.member_number}</p>
                             </div>
-                            <div className="absolute top-28 sm:top-28 right-24 sm:right-28 w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 bg-gray-100 overflow-hidden">
+                            <div className="absolute top-32 sm:top-32 right-24 sm:right-28 w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 bg-gray-100 overflow-hidden">
                               {profile.avatar_url ? (
                                 <img 
                                   src={profile.avatar_url} 
