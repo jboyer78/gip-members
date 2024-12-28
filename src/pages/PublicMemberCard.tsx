@@ -1,86 +1,71 @@
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Profile } from "@/integrations/supabase/types/profile";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { QRCodeSVG } from "qrcode.react";
+import { Loader2 } from "lucide-react";
 
 const PublicMemberCard = () => {
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const { memberNumber } = useParams();
+  const { id } = useParams();
 
-  useEffect(() => {
-    const getProfile = async () => {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("member_number", memberNumber)
+  const { data: profile, isLoading, error } = useQuery({
+    queryKey: ['public-profile', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('first_name, last_name, member_number, avatar_url')
+        .eq('id', id)
         .single();
 
-      setProfile(profile);
-    };
+      if (error) throw error;
+      return data;
+    },
+  });
 
-    if (memberNumber) {
-      getProfile();
-    }
-  }, [memberNumber]);
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
-  if (!profile) return <div className="p-8">Carte non trouvée</div>;
-
-  const cardUrl = `${window.location.origin}/card/${profile.member_number}`;
+  if (error || !profile) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-red-500">Carte de membre non trouvée</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="container mx-auto p-8 space-y-8">
-      <h1 className="text-2xl font-bold mb-8">Carte d'adhérent - {profile.member_number}</h1>
-      
-      <div className="grid md:grid-cols-2 gap-8">
-        {/* Recto */}
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-semibold mb-6">Recto</h2>
-          <div className="relative">
-            <img 
-              src="/lovable-uploads/a98bf3ea-1e39-4268-bd9b-6d0f6b19f6fc.png" 
-              alt="Carte d'adhérent recto"
-              className="w-full h-auto"
-            />
-            <div className="absolute top-[65%] left-48 right-8 text-black">
-              <p className="uppercase mb-0">{profile.last_name}</p>
-              <p className="uppercase mt-0">{profile.first_name}</p>
-              <p className="mt-0">{profile.member_number}</p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl p-8 relative overflow-hidden">
+        <img 
+          src="/lovable-uploads/8f64e4d3-cf3b-4b84-8737-cb5ad454a25e.png" 
+          alt="Card background" 
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="relative z-10">
+          <div className="flex justify-between items-start">
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold">CARTE D'ADHÉRENT</h2>
+              <div className="space-y-2">
+                <p><span className="font-semibold">Nom :</span> {profile.last_name}</p>
+                <p><span className="font-semibold">Prénom :</span> {profile.first_name}</p>
+                <p><span className="font-semibold">N°adhérent :</span> {profile.member_number}</p>
+              </div>
             </div>
-            {profile.avatar_url && (
-              <div className="absolute top-[130px] right-[55px] w-[148px] h-[180px] overflow-hidden">
+            <div className="w-32 h-32 bg-gray-100 rounded-lg overflow-hidden">
+              {profile.avatar_url ? (
                 <img 
                   src={profile.avatar_url} 
-                  alt="Photo de profil"
+                  alt="Photo de profil" 
                   className="w-full h-full object-cover"
                 />
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Verso */}
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-semibold mb-6">Verso</h2>
-          <div className="relative">
-            <img 
-              src="/lovable-uploads/11bd045a-89e5-4a4a-8f43-f1047f9c5b9c.png" 
-              alt="Carte d'adhérent verso"
-              className="w-full h-auto"
-            />
-            <div className="absolute top-[35px] left-32 right-8 text-black space-y-0">
-              <p className="mb-0">{profile.street}</p>
-              <p className="mt-0 mb-0">{profile.postal_code} {profile.city}</p>
-              <p className="-mt-2">{profile.country}</p>
-              <p className="mt-4">{profile.email}</p>
-              <p>{profile.phone_mobile || profile.phone_home}</p>
-            </div>
-            <div className="absolute top-[40px] right-8 w-32 h-32">
-              <QRCodeSVG
-                value={cardUrl}
-                size={128}
-                className="w-full h-full"
-              />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                  PHOTO
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -36,14 +36,6 @@ export function AppSidebar() {
               label="Profil"
               className="mb-4"
             />
-            {!isLoading && isValidated && (
-              <SidebarMenuItem
-                to="/card"
-                icon={CreditCard}
-                label="Carte"
-                className="mb-4"
-              />
-            )}
             {!isLoading && isAdmin && (
               <>
                 <SidebarMenuItem
@@ -72,9 +64,16 @@ export function AppSidebar() {
                   to="/accommodations"
                   icon={ListPlus}
                   label="Hébergements"
+                  className="mb-4"
                 />
               </>
             )}
+            <SidebarMenuItem
+              to="/member-card"
+              icon={CreditCard}
+              label="Carte"
+              className="mb-4"
+            />
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

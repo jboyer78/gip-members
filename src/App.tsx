@@ -36,8 +36,8 @@ const App = () => (
           <Route path="/publications" element={<Publications />} />
           <Route path="/accommodations" element={<Accommodations />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
-          <Route path="/card" element={<MemberCard />} />
-          <Route path="/card/:memberNumber" element={<PublicMemberCard />} />
+          <Route path="/member-card" element={<MemberCard />} />
+          <Route path="/public-card/:id" element={<PublicMemberCard />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
