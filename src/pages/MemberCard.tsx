@@ -89,7 +89,7 @@ const MemberCard = () => {
                                 <img 
                                   src={profile.avatar_url} 
                                   alt="Photo de profil" 
-                                  className="w-full h-full object-cover border-2 border-black"
+                                  className="w-full h-full object-cover border-2 border-black rounded"
                                 />
                               ) : (
                                 <div className="w-full h-full flex items-center justify-center text-gray-400">
