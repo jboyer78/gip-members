@@ -40,7 +40,7 @@ const PublicMemberCard = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl p-8 relative overflow-hidden">
         <img 
-          src="/lovable-uploads/8f64e4d3-cf3b-4b84-8737-cb5ad454a25e.png" 
+          src="/lovable-uploads/7fabfc2f-74f0-42fe-b42e-d38ff0226691.png" 
           alt="Card background" 
           className="absolute inset-0 w-full h-full object-cover"
         />
