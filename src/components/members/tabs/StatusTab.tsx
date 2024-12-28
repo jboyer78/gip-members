@@ -7,6 +7,10 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { StatusUpdateForm } from "./status/StatusUpdateForm";
+import { ResizablePanelGroup, ResizablePanel } from "@/components/ui/resizable";
+import { CardSide } from "@/components/member-card/CardSide";
+import { FrontCard } from "@/components/member-card/FrontCard";
+import { BackCard } from "@/components/member-card/BackCard";
 
 interface StatusTabProps {
   user: Profile;
@@ -72,6 +76,8 @@ export const StatusTab = ({ user }: StatusTabProps) => {
     setCurrentStatus(newStatus);
     refetch();
   };
+
+  const publicCardUrl = `https://gip-members.lovable.app/public-card/${user.id}`;
 
   return (
     <div className="space-y-6">
@@ -160,6 +166,29 @@ export const StatusTab = ({ user }: StatusTabProps) => {
           <p className="text-muted-foreground">Aucun historique disponible</p>
         )}
       </div>
+
+      {currentStatus === "Validée" && (
+        <div className="space-y-4 mt-8">
+          <h3 className="text-lg font-semibold">Carte de membre</h3>
+          <div className="max-w-3xl mx-auto">
+            <ResizablePanelGroup direction="vertical" className="min-h-[800px] rounded-lg border">
+              <ResizablePanel defaultSize={50}>
+                <CardSide>
+                  <FrontCard profile={user} />
+                </CardSide>
+              </ResizablePanel>
+              <ResizablePanel defaultSize={50}>
+                <CardSide>
+                  <BackCard profile={user} publicCardUrl={publicCardUrl} />
+                </CardSide>
+              </ResizablePanel>
+            </ResizablePanelGroup>
+            <div className="text-center text-sm text-gray-500 mt-4">
+              URL du QR code : {publicCardUrl}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
