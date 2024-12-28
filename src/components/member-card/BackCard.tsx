@@ -20,12 +20,12 @@ export const BackCard = ({ profile, publicCardUrl }: BackCardProps) => {
           <p className="text-sm sm:text-sm md:text-base"><span className="font-semibold">Email :</span> {profile.email}</p>
           <p className="text-sm sm:text-sm md:text-base"><span className="font-semibold">Téléphone :</span> {profile.phone_mobile || profile.phone_home}</p>
         </div>
-        <div className="absolute top-[35%] sm:top-[15%] right-12 sm:right-20">
+        <div className="absolute top-[30%] sm:top-[15%] right-6 sm:right-20">
           <QRCodeSVG 
             value={publicCardUrl}
             size={117}
             level="H"
-            className="bg-white p-2 rounded transform scale-75 sm:scale-90 md:scale-100"
+            className="bg-white p-2 rounded transform scale-[0.65] sm:scale-90 md:scale-100"
           />
         </div>
       </div>
