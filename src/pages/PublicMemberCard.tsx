@@ -15,7 +15,7 @@ const PublicMemberCard = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('first_name, last_name, member_number, avatar_url, street, postal_code, city, country, phone_home, phone_mobile, email')
+        .select('*')  // Select all fields to match the Profile type
         .eq('id', id)
         .single();
 
