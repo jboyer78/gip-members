@@ -5,7 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Profile } from "@/integrations/supabase/types/profile";
 import { MemberTableHeader } from "./MemberTableHeader";
 import { UserDetailsModal } from "./UserDetailsModal";
-import { useState, useMemo, useCallback } from "react";
+import { useState } from "react";
 import { MembersFilters } from "./filters/MembersFilters";
 import { MembersPagination } from "./pagination/MembersPagination";
 import { filterProfiles } from "./utils/filterProfiles";
@@ -32,51 +32,46 @@ export const MembersTable = ({ profiles, isLoading }: MembersTableProps) => {
 
   const { data: profilesWithBankingInfo, refetch } = useProfilesWithBanking(isLoading, profiles);
 
-  const handleSort = useCallback((column: string) => {
+  const handleSort = (column: string) => {
     if (sortColumn === column) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
       setSortColumn(column);
       setSortDirection('asc');
     }
-  }, [sortColumn, sortDirection]);
+  };
 
-  const filteredProfiles = useMemo(() => filterProfiles(
+  if (isLoading) {
+    return <p className="text-gray-600 dark:text-gray-400">Chargement des membres...</p>;
+  }
+
+  const filteredProfiles = filterProfiles(
     profilesWithBankingInfo || [],
     searchQuery,
     gradeFilter,
     serviceFilter,
     directionFilter
-  ), [profilesWithBankingInfo, searchQuery, gradeFilter, serviceFilter, directionFilter]);
+  );
 
-  const sortedProfiles = useMemo(() => sortProfiles(
-    filteredProfiles,
-    sortColumn,
-    sortDirection
-  ), [filteredProfiles, sortColumn, sortDirection]);
+  const sortedProfiles = sortProfiles(filteredProfiles, sortColumn, sortDirection);
 
   const totalPages = Math.ceil(sortedProfiles.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const displayedProfiles = useMemo(() => 
-    sortedProfiles.slice(startIndex, startIndex + itemsPerPage),
-    [sortedProfiles, startIndex, itemsPerPage]
-  );
+  const displayedProfiles = sortedProfiles.slice(startIndex, startIndex + itemsPerPage);
 
-  const handleRowClick = useCallback((profile: Profile) => {
+  const handleRowClick = (profile: Profile) => {
+    console.log("Row clicked, profile:", profile);
     setSelectedUser(profile);
     setModalOpen(true);
-  }, []);
+  };
 
-  const handleModalOpenChange = useCallback(async (open: boolean) => {
+  const handleModalOpenChange = async (open: boolean) => {
     setModalOpen(open);
     if (!open) {
+      console.log("Modal closed, refreshing data...");
       await refetch();
     }
-  }, [refetch]);
-
-  if (isLoading) {
-    return <p className="text-gray-600 dark:text-gray-400">Chargement des membres...</p>;
-  }
+  };
 
   return (
     <div className="space-y-4">
