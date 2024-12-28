@@ -69,13 +69,13 @@ const MemberCard = () => {
               {/* Front of the card */}
               <ResizablePanel defaultSize={50}>
                 <div className="h-full p-6">
-                  <div className="relative h-full bg-white rounded-xl shadow-xl p-8">
+                  <div className="relative h-full bg-white rounded-xl shadow-xl overflow-hidden">
                     <img 
                       src="/lovable-uploads/7fabfc2f-74f0-42fe-b42e-d38ff0226691.png" 
                       alt="Card background" 
                       className="absolute inset-0 w-full h-full object-cover rounded-xl"
                     />
-                    <div className="relative z-10 h-full flex flex-col justify-center">
+                    <div className="relative z-10 h-full flex flex-col justify-between py-8">
                       <div className="flex justify-end items-start mt-39">
                         <div className="w-[180px] h-[220px] bg-gray-100 rounded-lg overflow-hidden ml-auto mr-5">
                           {profile.avatar_url ? (
