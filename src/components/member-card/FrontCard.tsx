@@ -1,5 +1,6 @@
 import { Profile } from "@/integrations/supabase/types/profile";
 import { CardBackground } from "./CardBackground";
+import "./FrontCard.css";
 
 interface FrontCardProps {
   profile: Profile;
@@ -21,7 +22,7 @@ export const FrontCard = ({ profile }: FrontCardProps) => {
               <span className="font-semibold">N°adhérent :</span> {profile.member_number}
             </p>
           </div>
-          <div className="absolute top-[12.5rem] sm:top-[8.75rem] right-7 sm:right-32 md:right-28 w-20 sm:w-28 md:w-40 h-24 sm:h-36 md:h-48 bg-gray-100 overflow-hidden">
+          <div className="photo-container absolute top-[12.5rem] right-7 w-20 h-24 sm:h-36 md:h-48 bg-gray-100 overflow-hidden sm:w-28 md:w-40">
             {profile.avatar_url ? (
               <img 
                 src={profile.avatar_url} 
