@@ -15,7 +15,7 @@ export const BackCard = ({ profile, publicCardUrl }: BackCardProps) => {
           <p className="text-sm sm:text-sm md:text-base"><span className="font-semibold">Adresse :</span> {profile.street}</p>
           <p className="text-sm sm:text-sm md:text-base"><span className="font-semibold">Code postal :</span> {profile.postal_code}</p>
           <p className="text-sm sm:text-sm md:text-base"><span className="font-semibold">Ville :</span> {profile.city}</p>
-          <p className="text-sm sm:text-sm md:text-base"><span className="font-semibold">Pays :</span> {profile.country}</p>
+          <p className="text-sm sm:text-sm md:text-base mb-4"><span className="font-semibold">Pays :</span> {profile.country}</p>
           <p className="text-sm sm:text-sm md:text-base"><span className="font-semibold">Email :</span> {profile.email}</p>
           <p className="text-sm sm:text-sm md:text-base"><span className="font-semibold">Téléphone :</span> {profile.phone_mobile || profile.phone_home}</p>
         </div>
