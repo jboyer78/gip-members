@@ -20,7 +20,7 @@ export const BackCard = ({ profile, publicCardUrl }: BackCardProps) => {
           <p className="text-sm sm:text-sm md:text-base"><span className="font-semibold">Email :</span> {profile.email}</p>
           <p className="text-sm sm:text-sm md:text-base"><span className="font-semibold">Téléphone :</span> {profile.phone_mobile || profile.phone_home}</p>
         </div>
-        <div className="flex items-start justify-start mt-8 sm:mt-16 -ml-8">
+        <div className="flex items-start justify-start mt-8 sm:mt-16 -ml-9">
           <QRCodeSVG 
             value={publicCardUrl}
             size={117}
