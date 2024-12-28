@@ -79,7 +79,7 @@ const MemberCard = () => {
                       <div className="relative z-10 h-full">
                         <div className="flex flex-col h-full">
                           <div className="flex-1 relative">
-                            <div className="absolute top-[60%] sm:top-[60%] left-32 sm:left-32 space-y-2 transform scale-90 sm:scale-100 origin-top-left">
+                            <div className="absolute top-[60%] sm:top-[60%] left-32 sm:left-32 space-y-1 transform scale-90 sm:scale-100 origin-top-left">
                               <p className="text-xs sm:text-sm md:text-base"><span className="font-semibold">Nom :</span> {profile.last_name}</p>
                               <p className="text-xs sm:text-sm md:text-base"><span className="font-semibold">Prénom :</span> {profile.first_name}</p>
                               <p className="text-xs sm:text-sm md:text-base"><span className="font-semibold">N°adhérent :</span> {profile.member_number}</p>
