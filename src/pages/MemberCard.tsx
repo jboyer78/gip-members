@@ -65,20 +65,20 @@ const MemberCard = () => {
           <div className="max-w-3xl mx-auto space-y-8">
             <h1 className="text-2xl md:text-3xl font-bold mb-8">Ma carte de membre</h1>
 
-            <ResizablePanelGroup direction="vertical" className="min-h-[800px] rounded-lg border">
+            <ResizablePanelGroup direction="vertical" className="min-h-[1000px] rounded-lg border">
               {/* Front of the card */}
               <ResizablePanel defaultSize={50}>
-                <div className="h-full p-4">
+                <div className="h-full p-6">
                   <div className="relative h-full bg-white rounded-xl shadow-xl p-8">
                     <img 
                       src="/lovable-uploads/7fabfc2f-74f0-42fe-b42e-d38ff0226691.png" 
                       alt="Card background" 
-                      className="absolute inset-0 w-full h-full object-cover rounded-xl"
+                      className="absolute inset-0 w-full h-full object-contain rounded-xl"
                     />
                     <div className="relative z-10">
                       <div className="flex justify-between items-start">
                         <div className="space-y-4">
-                          <h2 className="text-2xl font-bold">CARTE D'ADHÉRENT</h2>
+                          <h2 className="text-2xl font-bold"></h2>
                           <div className="space-y-2">
                             <p><span className="font-semibold">Nom :</span> {profile.last_name}</p>
                             <p><span className="font-semibold">Prénom :</span> {profile.first_name}</p>
@@ -106,12 +106,12 @@ const MemberCard = () => {
 
               {/* Back of the card */}
               <ResizablePanel defaultSize={50}>
-                <div className="h-full p-4">
+                <div className="h-full p-6">
                   <div className="relative h-full bg-white rounded-xl shadow-xl p-8">
                     <img 
                       src="/lovable-uploads/c22c59c8-c1b1-4a6e-90f6-6039957c2112.png" 
                       alt="Card background" 
-                      className="absolute inset-0 w-full h-full object-cover rounded-xl"
+                      className="absolute inset-0 w-full h-full object-contain rounded-xl"
                     />
                     <div className="relative z-10 grid grid-cols-2 gap-4">
                       <div className="space-y-2">
