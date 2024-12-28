@@ -33,11 +33,11 @@
   }
   
   html {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Atlanta', 'Roboto', sans-serif;
   }
   
   body {
     @apply bg-background text-foreground;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Atlanta', 'Roboto', sans-serif;
   }
 }
