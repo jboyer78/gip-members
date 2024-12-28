@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2 } from "lucide-react";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { Loader2, Menu } from "lucide-react";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/shared/AppSidebar";
 import { ResizablePanelGroup, ResizablePanel } from "@/components/ui/resizable";
 import { CardSide } from "@/components/member-card/CardSide";
@@ -65,7 +65,12 @@ const MemberCard = () => {
         
         <main className="flex-1 p-4 md:p-8">
           <div className="max-w-3xl mx-auto space-y-8">
-            <h1 className="text-2xl md:text-3xl font-bold mb-8">Ma carte de membre</h1>
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl md:text-3xl font-bold">Ma carte de membre</h1>
+              <SidebarTrigger className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all">
+                <Menu className="h-6 w-6" />
+              </SidebarTrigger>
+            </div>
 
             <ResizablePanelGroup direction="vertical" className="min-h-[1000px] rounded-lg border space-y-4 md:space-y-0">
               <ResizablePanel defaultSize={50}>
