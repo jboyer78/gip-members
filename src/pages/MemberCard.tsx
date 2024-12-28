@@ -62,10 +62,10 @@ const MemberCard = () => {
         <AppSidebar />
         
         <main className="flex-1 p-4 md:p-8">
-          <div className="max-w-7xl mx-auto space-y-8">
+          <div className="max-w-3xl mx-auto space-y-8">
             <h1 className="text-2xl md:text-3xl font-bold mb-8">Ma carte de membre</h1>
 
-            <ResizablePanelGroup direction="horizontal" className="min-h-[400px] rounded-lg border">
+            <ResizablePanelGroup direction="vertical" className="min-h-[800px] rounded-lg border">
               {/* Front of the card */}
               <ResizablePanel defaultSize={50}>
                 <div className="h-full p-4">
