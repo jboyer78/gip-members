@@ -6,7 +6,7 @@ interface CardSideProps {
 
 export const CardSide = ({ children }: CardSideProps) => {
   return (
-    <div className="relative h-full bg-white rounded-xl shadow-xl p-2 sm:p-8">
+    <div className="relative h-full bg-white rounded-xl shadow-xl p-1 sm:p-4">
       {children}
     </div>
   );
