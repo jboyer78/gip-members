@@ -28,6 +28,9 @@ export const FrontCard = ({ profile }: FrontCardProps) => {
                 src={profile.avatar_url} 
                 alt="Photo de profil" 
                 className="w-full h-full object-cover rounded-sm"
+                loading="lazy"
+                decoding="async"
+                fetchPriority="high"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-gray-400">
