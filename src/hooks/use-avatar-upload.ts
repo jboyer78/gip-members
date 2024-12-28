@@ -1,67 +1,73 @@
-import { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import sharp from 'sharp';
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useImageResize } from "./use-image-resize";
 
-export const ACCEPTED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/png',
-  'image/webp'
-];
+export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+export const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+export const MAX_AVATAR_SIZE = 128; // pixels
 
-interface UseAvatarUploadProps {
-  onSuccess?: (url: string) => void;
+interface UseAvatarUploadOptions {
+  onSuccess: (url: string) => void;
 }
 
-export const useAvatarUpload = ({ onSuccess }: UseAvatarUploadProps) => {
+export const useAvatarUpload = ({ onSuccess }: UseAvatarUploadOptions) => {
   const [uploading, setUploading] = useState(false);
+  const { toast } = useToast();
+  const { resizeImage } = useImageResize();
+
+  const validateFile = (file: File) => {
+    if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+      throw new Error('Le type de fichier doit être JPEG, PNG ou WEBP.');
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      throw new Error('La taille du fichier ne doit pas dépasser 1MB.');
+    }
+  };
 
   const uploadAvatar = async (file: File) => {
     try {
       setUploading(true);
+      validateFile(file);
 
-      // Convertir le File en Buffer pour sharp
-      const arrayBuffer = await file.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-
-      // Optimiser l'image avec sharp
-      const optimizedImageBuffer = await sharp(buffer)
-        .resize(800, 800, { // Taille maximale
-          fit: 'inside',
-          withoutEnlargement: true
-        })
-        .webp({ quality: 80 }) // Convertir en WebP avec une qualité de 80%
-        .toBuffer();
-
-      // Créer un nouveau Blob à partir du buffer optimisé
-      const optimizedBlob = new Blob([optimizedImageBuffer], { type: 'image/webp' });
-      const optimizedFile = new File([optimizedBlob], file.name.replace(/\.[^/.]+$/, '.webp'), {
-        type: 'image/webp'
+      const resizedImage = await resizeImage(file, {
+        maxSize: MAX_AVATAR_SIZE,
+        quality: 0.9
       });
 
-      const fileExt = '.webp';
-      const fileName = `${Math.random()}-${Date.now()}${fileExt}`;
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}-${Date.now()}.${fileExt}`;
 
-      const { data, error } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(fileName, optimizedFile, {
+        .upload(fileName, resizedImage, {
+          contentType: 'image/jpeg',
           cacheControl: '31536000', // Cache pour 1 an
           upsert: false
         });
 
-      if (error) throw error;
+      if (uploadError) {
+        throw uploadError;
+      }
 
       const { data: { publicUrl } } = supabase.storage
         .from('avatars')
-        .getPublicUrl(data.path);
+        .getPublicUrl(fileName);
 
-      if (onSuccess) {
-        onSuccess(publicUrl);
-      }
-
-      return publicUrl;
+      onSuccess(publicUrl);
+      
+      toast({
+        title: "Photo de profil mise à jour",
+        description: "Votre photo a été uploadée avec succès",
+      });
     } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: error instanceof Error ? error.message : "Une erreur est survenue lors de l'upload de la photo",
+      });
       console.error('Error uploading avatar:', error);
-      throw error;
     } finally {
       setUploading(false);
     }
@@ -69,6 +75,7 @@ export const useAvatarUpload = ({ onSuccess }: UseAvatarUploadProps) => {
 
   return {
     uploading,
-    uploadAvatar
+    uploadAvatar,
+    ACCEPTED_IMAGE_TYPES,
   };
 };
