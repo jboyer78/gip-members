@@ -9,7 +9,7 @@ interface BackCardProps {
 
 export const BackCard = ({ profile, publicCardUrl }: BackCardProps) => {
   return (
-    <CardBackground imageUrl="/lovable-uploads/c22c59c8-c1b1-4a6e-90f6-6039957c2112.png">
+    <CardBackground imageUrl="https://gip-members.lovable.app/lovable-uploads/c22c59c8-c1b1-4a6e-90f6-6039957c2112.png">
       <div className="relative h-full">
         <div className="absolute top-[35%] sm:top-[15%] left-6 sm:left-20 space-y-0.5 sm:space-y-1 transform scale-[0.70] sm:scale-90 md:scale-100 origin-top-left">
           <p className="text-sm sm:text-sm md:text-base"><span className="font-semibold">Adresse :</span> {profile.street}</p>
