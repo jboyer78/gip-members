@@ -17,6 +17,15 @@ export const CardBackground = ({ imageUrl, children }: CardBackgroundProps) => {
       width: target.width,
       height: target.height
     });
+
+    requestAnimationFrame(() => {
+      console.log('First RAF - setting opacity to 0.99');
+      target.style.opacity = '0.99';
+      requestAnimationFrame(() => {
+        console.log('Second RAF - setting opacity to 1');
+        target.style.opacity = '1';
+      });
+    });
   };
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -28,37 +37,23 @@ export const CardBackground = ({ imageUrl, children }: CardBackgroundProps) => {
 
   return (
     <div className="relative h-full">
-      <div className="absolute inset-1 sm:inset-2 overflow-hidden rounded-lg">
-        <div 
-          className="absolute inset-0 w-full h-full"
-          style={{
-            backgroundImage: `url(${imageUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            transform: 'translate3d(0,0,0)',
-            WebkitTransform: 'translate3d(0,0,0)',
-            backfaceVisibility: 'hidden',
-            WebkitBackfaceVisibility: 'hidden',
-            perspective: '1000px',
-            WebkitPerspective: '1000px',
-            WebkitOverflowScrolling: 'touch',
-          }}
-        />
+      <div className="absolute inset-1 sm:inset-2 overflow-hidden">
         <img 
           src={imageUrl} 
           alt="Card background" 
-          className="opacity-0 absolute inset-0 w-full h-full"
+          className="absolute inset-0 w-full h-full object-contain"
           style={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            pointerEvents: 'none',
+            transform: 'translate3d(0,0,0)',
+            backfaceVisibility: 'hidden',
+            perspective: '1000px',
+            WebkitTransform: 'translate3d(0,0,0)',
+            WebkitBackfaceVisibility: 'hidden',
+            WebkitPerspective: '1000px',
+            WebkitTransformStyle: 'preserve-3d',
+            WebkitOverflowScrolling: 'touch',
           }}
           loading="eager"
           decoding="sync"
-          fetchPriority="high"
           onLoad={handleImageLoad}
           onError={handleImageError}
         />
