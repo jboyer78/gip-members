@@ -4,6 +4,37 @@ interface CardBackgroundProps {
 }
 
 export const CardBackground = ({ imageUrl, children }: CardBackgroundProps) => {
+  console.log('CardBackground rendering with imageUrl:', imageUrl);
+
+  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    console.log('Image load event triggered');
+    const target = e.target as HTMLImageElement;
+    console.log('Image natural dimensions:', {
+      width: target.naturalWidth,
+      height: target.naturalHeight
+    });
+    console.log('Image display dimensions:', {
+      width: target.width,
+      height: target.height
+    });
+
+    requestAnimationFrame(() => {
+      console.log('First RAF - setting opacity to 0.99');
+      target.style.opacity = '0.99';
+      requestAnimationFrame(() => {
+        console.log('Second RAF - setting opacity to 1');
+        target.style.opacity = '1';
+      });
+    });
+  };
+
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    console.error('Image failed to load:', {
+      src: e.currentTarget.src,
+      error: e
+    });
+  };
+
   return (
     <div className="relative h-full">
       <div className="absolute inset-1 sm:inset-2 overflow-hidden">
@@ -23,15 +54,8 @@ export const CardBackground = ({ imageUrl, children }: CardBackgroundProps) => {
           }}
           loading="eager"
           decoding="sync"
-          onLoad={(e) => {
-            const target = e.target as HTMLImageElement;
-            requestAnimationFrame(() => {
-              target.style.opacity = '0.99';
-              requestAnimationFrame(() => {
-                target.style.opacity = '1';
-              });
-            });
-          }}
+          onLoad={handleImageLoad}
+          onError={handleImageError}
         />
       </div>
       <div className="relative z-10 h-full">
