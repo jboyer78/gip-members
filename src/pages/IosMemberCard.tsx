@@ -10,20 +10,8 @@ import { CardSide } from "@/components/member-card/CardSide";
 import { FrontCard } from "@/components/member-card/FrontCard";
 import { BackCard } from "@/components/member-card/BackCard";
 
-const isIOS = () => {
-  const userAgent = window.navigator.userAgent.toLowerCase();
-  return /iphone|ipad|ipod/.test(userAgent);
-};
-
-const MemberCard = () => {
+const IosMemberCard = () => {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isIOS()) {
-      navigate("/ios-member-card");
-      return;
-    }
-  }, [navigate]);
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ['profile'],
@@ -92,7 +80,20 @@ const MemberCard = () => {
             >
               <ResizablePanel defaultSize={50}>
                 <CardSide>
-                  <FrontCard profile={profile} />
+                  <div className="relative w-full h-full">
+                    <div 
+                      className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                      style={{ 
+                        backgroundImage: `url('/lovable-uploads/76c591b5-d36e-4ac5-a4a3-9f2ba64321b4.png')`,
+                        WebkitBackfaceVisibility: 'hidden',
+                        WebkitTransform: 'translate3d(0, 0, 0)',
+                        WebkitPerspective: '1000',
+                      }}
+                    />
+                    <div className="relative z-10">
+                      <FrontCard profile={profile} />
+                    </div>
+                  </div>
                 </CardSide>
               </ResizablePanel>
 
@@ -100,7 +101,20 @@ const MemberCard = () => {
 
               <ResizablePanel defaultSize={50}>
                 <CardSide>
-                  <BackCard profile={profile} publicCardUrl={publicCardUrl} />
+                  <div className="relative w-full h-full">
+                    <div 
+                      className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                      style={{ 
+                        backgroundImage: `url('/lovable-uploads/7fabfc2f-74f0-42fe-b42e-d38ff0226691.png')`,
+                        WebkitBackfaceVisibility: 'hidden',
+                        WebkitTransform: 'translate3d(0, 0, 0)',
+                        WebkitPerspective: '1000',
+                      }}
+                    />
+                    <div className="relative z-10">
+                      <BackCard profile={profile} publicCardUrl={publicCardUrl} />
+                    </div>
+                  </div>
                 </CardSide>
               </ResizablePanel>
             </ResizablePanelGroup>
@@ -123,4 +137,4 @@ const MemberCard = () => {
   );
 };
 
-export default MemberCard;
+export default IosMemberCard;
