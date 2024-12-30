@@ -15,29 +15,42 @@ export const IosCardSide = ({ type, profile, publicCardUrl, backgroundImage }: I
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   useEffect(() => {
-    // Précharger l'image
+    // Précharger l'image avec un cache buster pour iOS
     const img = new Image();
+    const cacheBustedUrl = `${backgroundImage}?cache=${Date.now()}`;
+    
     img.onload = () => {
-      console.log(`Background image loaded successfully: ${backgroundImage}`);
+      console.log(`Background image loaded successfully: ${cacheBustedUrl}`, {
+        naturalWidth: img.naturalWidth,
+        naturalHeight: img.naturalHeight
+      });
       setIsImageLoaded(true);
     };
+    
     img.onerror = (e) => {
-      console.error(`Error loading background image: ${backgroundImage}`, e);
+      console.error(`Error loading background image: ${cacheBustedUrl}`, e);
     };
-    img.src = backgroundImage;
+    
+    img.src = cacheBustedUrl;
   }, [backgroundImage]);
 
   return (
     <CardSide>
-      <div className="relative w-full h-full">
+      <div className="relative w-full h-full overflow-hidden">
         {isImageLoaded && (
           <div 
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            className="absolute inset-0"
             style={{ 
-              backgroundImage: `url('${backgroundImage}')`,
-              WebkitBackfaceVisibility: 'hidden',
+              backgroundImage: `url('${backgroundImage}?cache=${Date.now()}')`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              transform: 'translate3d(0, 0, 0)',
               WebkitTransform: 'translate3d(0, 0, 0)',
+              WebkitBackfaceVisibility: 'hidden',
               WebkitPerspective: '1000',
+              WebkitTransformStyle: 'preserve-3d',
+              WebkitOverflowScrolling: 'touch',
               opacity: isImageLoaded ? 1 : 0,
               transition: 'opacity 0.3s ease-in-out'
             }}
