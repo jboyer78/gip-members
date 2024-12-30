@@ -52,7 +52,8 @@ export const IosCardSide = ({ type, profile, publicCardUrl, backgroundImage }: I
               WebkitTransformStyle: 'preserve-3d',
               WebkitOverflowScrolling: 'touch',
               opacity: isImageLoaded ? 1 : 0,
-              transition: 'opacity 0.3s ease-in-out'
+              transition: 'opacity 0.3s ease-in-out',
+              // Removed background-attachment: fixed as it causes issues on iOS
             }}
           />
         )}
