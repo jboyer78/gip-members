@@ -15,33 +15,42 @@ export const IosCardSide = ({ type, profile, publicCardUrl, backgroundImage }: I
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   useEffect(() => {
-    // Précharger l'image avec un cache buster pour iOS
     const img = new Image();
-    const cacheBustedUrl = `${backgroundImage}?cache=${Date.now()}`;
+    const timestamp = Date.now();
+    const cacheBustedUrl = `${backgroundImage}?t=${timestamp}`;
     
     img.onload = () => {
-      console.log(`Background image loaded successfully: ${cacheBustedUrl}`, {
+      console.log('iOS background image loaded successfully:', {
+        url: cacheBustedUrl,
         naturalWidth: img.naturalWidth,
         naturalHeight: img.naturalHeight
       });
       setIsImageLoaded(true);
     };
     
-    img.onerror = (e) => {
-      console.error(`Error loading background image: ${cacheBustedUrl}`, e);
+    img.onerror = (error) => {
+      console.error('iOS background image failed to load:', {
+        url: cacheBustedUrl,
+        error
+      });
     };
     
     img.src = cacheBustedUrl;
+
+    return () => {
+      img.onload = null;
+      img.onerror = null;
+    };
   }, [backgroundImage]);
 
   return (
     <CardSide>
-      <div className="relative w-full h-full overflow-hidden">
+      <div className="relative w-full h-full overflow-hidden rounded-xl">
         {isImageLoaded && (
           <div 
             className="absolute inset-0"
-            style={{ 
-              backgroundImage: `url('${backgroundImage}?cache=${Date.now()}')`,
+            style={{
+              backgroundImage: `url('${backgroundImage}?t=${Date.now()}')`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
@@ -50,10 +59,8 @@ export const IosCardSide = ({ type, profile, publicCardUrl, backgroundImage }: I
               WebkitBackfaceVisibility: 'hidden',
               WebkitPerspective: '1000',
               WebkitTransformStyle: 'preserve-3d',
-              WebkitOverflowScrolling: 'touch',
-              opacity: isImageLoaded ? 1 : 0,
-              transition: 'opacity 0.3s ease-in-out',
-              // Removed background-attachment: fixed as it causes issues on iOS
+              opacity: 1,
+              transition: 'opacity 0.3s ease-in-out'
             }}
           />
         )}
