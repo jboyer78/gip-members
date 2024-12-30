@@ -69,7 +69,15 @@ const PublicMemberCard = () => {
           </ResizablePanelGroup>
           
           <div className="text-center text-sm text-gray-500 mt-4">
-            URL publique du QR code : {publicCardUrl}
+            URL publique du QR code : {' '}
+            <a 
+              href={publicCardUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              {publicCardUrl}
+            </a>
           </div>
         </div>
       </main>
