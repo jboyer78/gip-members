@@ -47,20 +47,17 @@ export const IosCardSide = ({ type, profile, publicCardUrl, backgroundImage }: I
     <CardSide>
       <div className="relative w-full h-full overflow-hidden rounded-xl">
         {isImageLoaded && (
-          <div 
-            className="absolute inset-0"
+          <img 
+            src={`${backgroundImage}?t=${Date.now()}`}
+            alt="Card background"
+            className="absolute inset-0 w-full h-full object-cover"
             style={{
-              backgroundImage: `url('${backgroundImage}?t=${Date.now()}')`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              transform: 'translate3d(0, 0, 0)',
-              WebkitTransform: 'translate3d(0, 0, 0)',
+              transform: 'translate3d(0,0,0)',
+              WebkitTransform: 'translate3d(0,0,0)',
               WebkitBackfaceVisibility: 'hidden',
-              WebkitPerspective: '1000',
+              WebkitPerspective: '1000px',
               WebkitTransformStyle: 'preserve-3d',
               opacity: 1,
-              transition: 'opacity 0.3s ease-in-out'
             }}
           />
         )}
