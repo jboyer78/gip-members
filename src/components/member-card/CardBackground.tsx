@@ -9,27 +9,45 @@ export const CardBackground = ({ imageUrl, children }: CardBackgroundProps) => {
       <div 
         className="absolute inset-1 sm:inset-2"
         style={{
-          transform: 'translateZ(0)', // Force GPU acceleration
-          backfaceVisibility: 'hidden', // Prevent flickering
-          perspective: 1000, // Enhance 3D rendering
-          willChange: 'transform' // Hint to browser about animation
+          backgroundImage: `url(${imageUrl})`,
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'contain',
+          transform: 'translate3d(0,0,0)', // Force GPU acceleration
+          backfaceVisibility: 'hidden',
+          perspective: '1000px',
+          willChange: 'transform',
+          WebkitTransform: 'translate3d(0,0,0)',
+          WebkitBackfaceVisibility: 'hidden',
+          WebkitPerspective: '1000px',
+          WebkitTransformStyle: 'preserve-3d',
+          WebkitOverflowScrolling: 'touch',
+          WebkitCompositingReasons: 'transform',
         }}
       >
+        {/* Hidden img tag for preloading and fallback */}
         <img 
           src={imageUrl} 
           alt="Card background" 
-          className="w-full h-full object-contain"
+          className="hidden"
           style={{
             position: 'absolute',
             top: '0',
             left: '0',
             width: '100%',
             height: '100%',
-            WebkitTransform: 'translateZ(0)', // iOS specific GPU acceleration
-            WebkitBackfaceVisibility: 'hidden', // iOS specific anti-flickering
-            WebkitPerspective: 1000, // iOS specific 3D context
           }}
-          loading="eager" // Prioritize loading
+          loading="eager"
+          decoding="sync"
+          fetchPriority="high"
+          onLoad={(e) => {
+            // Force repaint on image load
+            const target = e.target as HTMLImageElement;
+            target.style.opacity = '0.99';
+            setTimeout(() => {
+              target.style.opacity = '1';
+            }, 0);
+          }}
         />
       </div>
       <div className="relative z-10 h-full">
