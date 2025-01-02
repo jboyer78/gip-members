@@ -8,8 +8,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-interface ResetRequest {
-  username: string;
+interface EmailRequest {
   email: string;
 }
 
@@ -23,8 +22,9 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("RESEND_API_KEY is not configured");
     }
 
-    const { username, email }: ResetRequest = await req.json();
-    
+    const { email } = await req.json() as EmailRequest;
+    console.log("Processing password reset notification for:", email);
+
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -33,15 +33,13 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         from: "G.I.P. <website@support.gip-france.org>",
-        to: ["boyer.jeanf@gmail.com"],
+        to: ["admin@gip-france.org"],
         subject: "Demande de réinitialisation de mot de passe",
         html: `
           <h2>Demande de réinitialisation de mot de passe</h2>
           <p>Un utilisateur a demandé la réinitialisation de son mot de passe :</p>
-          <ul>
-            <li><strong>Identifiant :</strong> ${username}</li>
-            <li><strong>Email :</strong> ${email}</li>
-          </ul>
+          <p>Email : ${email}</p>
+          <p>Pour réinitialiser le mot de passe, veuillez vous rendre sur <a href="https://gip-members.lovable.app">https://gip-members.lovable.app</a></p>
         `,
       }),
     });
@@ -50,22 +48,23 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Resend API response:", res.status, resText);
 
     if (!res.ok) {
-      console.error("Error from Resend API:", resText);
       throw new Error(`Resend API error: ${resText}`);
     }
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (error: any) {
-    console.error("Error sending notification:", error);
+
+  } catch (error) {
+    console.error("Error in send-reset-notification:", error);
     return new Response(
       JSON.stringify({ 
-        error: error.message,
-        details: error.toString()
-      }), {
-        status: 500,
+        error: error instanceof Error ? error.message : "An error occurred",
+        details: error instanceof Error ? error.toString() : "Unknown error"
+      }),
+      { 
         headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
       }
     );
   }
