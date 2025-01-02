@@ -34,15 +34,34 @@ serve(async (req) => {
       .maybeSingle();
 
     if (tokenError || !tokenData) {
-      throw new Error("Token invalide");
+      console.error("Token error:", tokenError);
+      return new Response(
+        JSON.stringify({ error: "Token invalide" }), 
+        { 
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 400,
+        }
+      );
     }
 
     if (tokenData.used_at) {
-      throw new Error("Ce lien a déjà été utilisé");
+      return new Response(
+        JSON.stringify({ error: "Token déjà utilisé" }), 
+        { 
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 400,
+        }
+      );
     }
 
     if (new Date(tokenData.expires_at) < new Date()) {
-      throw new Error("Ce lien a expiré");
+      return new Response(
+        JSON.stringify({ error: "Token expiré" }), 
+        { 
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 400,
+        }
+      );
     }
 
     // Update the user's password
@@ -52,7 +71,16 @@ serve(async (req) => {
     );
 
     if (updateError) {
-      throw updateError;
+      console.error("Password update error:", updateError);
+      return new Response(
+        JSON.stringify({ 
+          error: "Erreur lors de la mise à jour du mot de passe. Veuillez réessayer." 
+        }), 
+        { 
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 400,
+        }
+      );
     }
 
     // Mark token as used
@@ -66,7 +94,7 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ message: "Password updated successfully" }), 
+      JSON.stringify({ message: "Mot de passe mis à jour avec succès" }), 
       { 
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -74,14 +102,14 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Server error:", error);
     return new Response(
       JSON.stringify({ 
-        error: error instanceof Error ? error.message : "An error occurred" 
-      }),
+        error: "Une erreur inattendue est survenue. Veuillez réessayer plus tard." 
+      }), 
       { 
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 400,
+        status: 500,
       }
     );
   }
