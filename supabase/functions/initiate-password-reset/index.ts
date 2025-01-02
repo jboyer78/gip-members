@@ -33,9 +33,9 @@ serve(async (req) => {
       .eq("email", email)
       .maybeSingle();
 
-    if (checkError && checkError.code !== "PGRST116") {
+    if (checkError) {
       console.error("Error checking reset attempts:", checkError);
-      throw new Error("Error checking reset attempts");
+      throw new Error(`Error checking reset attempts: ${checkError.message}`);
     }
 
     if (existingAttempt?.last_attempt) {
@@ -61,6 +61,25 @@ serve(async (req) => {
       throw new Error("No account found with this email address");
     }
 
+    // Record reset attempt first
+    console.log("Recording reset attempt...");
+    const { error: upsertError } = await supabaseAdmin
+      .from("password_reset_attempts")
+      .upsert(
+        { 
+          email, 
+          last_attempt: new Date().toISOString() 
+        },
+        { 
+          onConflict: "email"
+        }
+      );
+
+    if (upsertError) {
+      console.error("Error recording reset attempt:", upsertError);
+      throw new Error(`Error recording reset attempt: ${upsertError.message}`);
+    }
+
     // Generate secure token
     const token = crypto.randomUUID();
     const expiresAt = new Date();
@@ -78,27 +97,7 @@ serve(async (req) => {
 
     if (tokenError) {
       console.error("Token storage error:", tokenError);
-      throw new Error("Error creating reset token");
-    }
-
-    // Update or create attempt record
-    console.log("Recording reset attempt...");
-    const { error: upsertError } = await supabaseAdmin
-      .from("password_reset_attempts")
-      .upsert(
-        { 
-          email, 
-          last_attempt: new Date().toISOString() 
-        },
-        { 
-          onConflict: "email",
-          ignoreDuplicates: false
-        }
-      );
-
-    if (upsertError) {
-      console.error("Upsert error:", upsertError);
-      throw new Error("Error recording reset attempt");
+      throw new Error(`Error creating reset token: ${tokenError.message}`);
     }
 
     // Send email with token
