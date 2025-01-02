@@ -13,6 +13,8 @@ serve(async (req) => {
   }
 
   try {
+    console.log("Début du traitement de la requête de mise à jour du mot de passe");
+    
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
@@ -25,6 +27,7 @@ serve(async (req) => {
     );
 
     const { token, password } = await req.json();
+    console.log("Token reçu, vérification en cours...");
 
     // Verify the token exists and is not expired or used
     const { data: tokenData, error: tokenError } = await supabaseClient
@@ -33,10 +36,21 @@ serve(async (req) => {
       .eq("token", token)
       .maybeSingle();
 
-    if (tokenError || !tokenData) {
-      console.error("Token error:", tokenError);
+    if (tokenError) {
+      console.error("Erreur lors de la vérification du token:", tokenError);
       return new Response(
-        JSON.stringify({ error: "Token invalide" }), 
+        JSON.stringify({ error: "Erreur lors de la vérification du token" }), 
+        { 
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 400,
+        }
+      );
+    }
+
+    if (!tokenData) {
+      console.error("Token non trouvé dans la base de données");
+      return new Response(
+        JSON.stringify({ error: "Token invalide ou expiré" }), 
         { 
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 400,
@@ -45,8 +59,9 @@ serve(async (req) => {
     }
 
     if (tokenData.used_at) {
+      console.error("Token déjà utilisé le:", tokenData.used_at);
       return new Response(
-        JSON.stringify({ error: "Token déjà utilisé" }), 
+        JSON.stringify({ error: "Ce lien de réinitialisation a déjà été utilisé" }), 
         { 
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 400,
@@ -55,14 +70,17 @@ serve(async (req) => {
     }
 
     if (new Date(tokenData.expires_at) < new Date()) {
+      console.error("Token expiré le:", tokenData.expires_at);
       return new Response(
-        JSON.stringify({ error: "Token expiré" }), 
+        JSON.stringify({ error: "Le lien de réinitialisation a expiré" }), 
         { 
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 400,
         }
       );
     }
+
+    console.log("Token valide, mise à jour du mot de passe...");
 
     // Update the user's password
     const { error: updateError } = await supabaseClient.auth.admin.updateUserById(
@@ -71,7 +89,7 @@ serve(async (req) => {
     );
 
     if (updateError) {
-      console.error("Password update error:", updateError);
+      console.error("Erreur lors de la mise à jour du mot de passe:", updateError);
       return new Response(
         JSON.stringify({ 
           error: "Erreur lors de la mise à jour du mot de passe. Veuillez réessayer." 
@@ -83,6 +101,8 @@ serve(async (req) => {
       );
     }
 
+    console.log("Mot de passe mis à jour avec succès, marquage du token comme utilisé...");
+
     // Mark token as used
     const { error: markUsedError } = await supabaseClient
       .from("password_reset_tokens")
@@ -90,8 +110,10 @@ serve(async (req) => {
       .eq("token", token);
 
     if (markUsedError) {
-      console.error("Error marking token as used:", markUsedError);
+      console.error("Erreur lors du marquage du token comme utilisé:", markUsedError);
     }
+
+    console.log("Processus terminé avec succès");
 
     return new Response(
       JSON.stringify({ message: "Mot de passe mis à jour avec succès" }), 
@@ -102,10 +124,11 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error("Server error:", error);
+    console.error("Erreur serveur:", error);
     return new Response(
       JSON.stringify({ 
-        error: "Une erreur inattendue est survenue. Veuillez réessayer plus tard." 
+        error: "Une erreur inattendue est survenue. Veuillez réessayer plus tard.",
+        details: error.message 
       }), 
       { 
         headers: { ...corsHeaders, "Content-Type": "application/json" },

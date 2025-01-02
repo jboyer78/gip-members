@@ -15,6 +15,7 @@ const ChangePassword = () => {
   useEffect(() => {
     const token = searchParams.get('token');
     if (!token) {
+      console.error("Token manquant dans l'URL");
       toast({
         variant: "destructive",
         title: "Erreur",
@@ -30,10 +31,12 @@ const ChangePassword = () => {
 
     try {
       setIsLoading(true);
+      console.log("Début de la modification du mot de passe");
 
       // Validate password
       const passwordValidation = validatePassword(password);
       if (!passwordValidation.isValid) {
+        console.log("Échec de la validation du mot de passe:", passwordValidation.message);
         toast({
           variant: "destructive",
           title: "Erreur de validation",
@@ -44,6 +47,7 @@ const ChangePassword = () => {
 
       // Check if passwords match
       if (password !== confirmPassword) {
+        console.log("Les mots de passe ne correspondent pas");
         toast({
           variant: "destructive",
           title: "Erreur de validation",
@@ -52,6 +56,7 @@ const ChangePassword = () => {
         return;
       }
 
+      console.log("Envoi de la requête à l'API");
       const response = await fetch(
         "https://fzxkiwrungrwptlueoqt.supabase.co/functions/v1/update-password",
         {
@@ -64,9 +69,12 @@ const ChangePassword = () => {
         }
       );
 
+      console.log("Réponse reçue:", response.status);
       const data = await response.json();
+      console.log("Données reçues:", data);
 
       if (!response.ok) {
+        console.error("Erreur lors de la mise à jour:", response.status, data);
         toast({
           variant: "destructive",
           title: "Erreur",
@@ -75,6 +83,7 @@ const ChangePassword = () => {
         return;
       }
 
+      console.log("Mot de passe modifié avec succès");
       toast({
         title: "Succès",
         description: "Votre mot de passe a été modifié avec succès",
@@ -82,7 +91,7 @@ const ChangePassword = () => {
 
       navigate("/login");
     } catch (error) {
-      console.error("Error changing password:", error);
+      console.error("Erreur détaillée:", error);
       toast({
         variant: "destructive",
         title: "Erreur",
