@@ -18,7 +18,7 @@ const ChangePassword = () => {
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Lien invalide. Veuillez demander un nouveau lien de réinitialisation.",
+        description: "Le lien de réinitialisation est invalide. Veuillez demander un nouveau lien de réinitialisation.",
       });
       navigate("/login");
     }
@@ -36,7 +36,7 @@ const ChangePassword = () => {
       if (!passwordValidation.isValid) {
         toast({
           variant: "destructive",
-          title: "Erreur",
+          title: "Erreur de validation",
           description: passwordValidation.message,
         });
         return;
@@ -46,7 +46,7 @@ const ChangePassword = () => {
       if (password !== confirmPassword) {
         toast({
           variant: "destructive",
-          title: "Erreur",
+          title: "Erreur de validation",
           description: "Les mots de passe ne correspondent pas",
         });
         return;
@@ -67,7 +67,18 @@ const ChangePassword = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Une erreur est survenue");
+        let errorMessage = "Une erreur est survenue lors de la modification du mot de passe";
+        
+        // Messages d'erreur plus spécifiques basés sur la réponse
+        if (data.error === "Token invalide") {
+          errorMessage = "Le lien de réinitialisation n'est plus valide. Veuillez demander un nouveau lien.";
+        } else if (data.error === "Token expiré") {
+          errorMessage = "Le lien de réinitialisation a expiré. Veuillez demander un nouveau lien.";
+        } else if (data.error === "Token déjà utilisé") {
+          errorMessage = "Ce lien de réinitialisation a déjà été utilisé. Veuillez demander un nouveau lien si nécessaire.";
+        }
+
+        throw new Error(errorMessage);
       }
 
       toast({
