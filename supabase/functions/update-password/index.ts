@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -7,27 +7,27 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-interface PasswordUpdateRequest {
-  token: string;
-  password: string;
-}
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { token, password }: PasswordUpdateRequest = await req.json();
-
-    // Initialize Supabase client with service role key
-    const supabaseAdmin = createClient(
+    const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
     );
 
-    // Verify token and get associated user
-    const { data: tokenData, error: tokenError } = await supabaseAdmin
+    const { token, password } = await req.json();
+
+    // Verify the token exists and is not expired or used
+    const { data: tokenData, error: tokenError } = await supabaseClient
       .from("password_reset_tokens")
       .select("user_id, used_at, expires_at")
       .eq("token", token)
@@ -45,8 +45,8 @@ serve(async (req) => {
       throw new Error("Ce lien a expiré");
     }
 
-    // Update password using admin API
-    const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
+    // Update the user's password
+    const { error: updateError } = await supabaseClient.auth.admin.updateUserById(
       tokenData.user_id,
       { password }
     );
@@ -56,7 +56,7 @@ serve(async (req) => {
     }
 
     // Mark token as used
-    const { error: markUsedError } = await supabaseAdmin
+    const { error: markUsedError } = await supabaseClient
       .from("password_reset_tokens")
       .update({ used_at: new Date().toISOString() })
       .eq("token", token);

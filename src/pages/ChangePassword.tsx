@@ -2,14 +2,15 @@ import { usePasswordChange } from "@/hooks/usePasswordChange";
 import PasswordChangeHeader from "@/components/auth/change-password/PasswordChangeHeader";
 import PasswordChangeForm from "@/components/auth/change-password/PasswordChangeForm";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { validatePassword } from "@/utils/validation";
 
 const ChangePassword = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const { isLoading, handlePasswordChange } = usePasswordChange();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const token = searchParams.get('token');
@@ -22,6 +23,70 @@ const ChangePassword = () => {
       navigate("/login");
     }
   }, [searchParams, navigate, toast]);
+
+  const handlePasswordChange = async (password: string, confirmPassword: string) => {
+    const token = searchParams.get('token');
+    if (!token) return;
+
+    try {
+      setIsLoading(true);
+
+      // Validate password
+      const passwordValidation = validatePassword(password);
+      if (!passwordValidation.isValid) {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: passwordValidation.message,
+        });
+        return;
+      }
+
+      // Check if passwords match
+      if (password !== confirmPassword) {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Les mots de passe ne correspondent pas",
+        });
+        return;
+      }
+
+      const response = await fetch(
+        "https://fzxkiwrungrwptlueoqt.supabase.co/functions/v1/update-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({ token, password }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Une erreur est survenue");
+      }
+
+      toast({
+        title: "Succès",
+        description: "Votre mot de passe a été modifié avec succès",
+      });
+
+      navigate("/login");
+    } catch (error) {
+      console.error("Error changing password:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: error instanceof Error ? error.message : "Une erreur est survenue lors de la modification du mot de passe",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
