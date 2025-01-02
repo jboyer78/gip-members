@@ -28,24 +28,51 @@ export const usePasswordReset = () => {
         return;
       }
 
-      // Send notification to admin
-      const { error: notificationError } = await supabase.functions.invoke('send-reset-notification', {
-        body: { email }
+      // Generate secure token
+      const token = crypto.randomUUID();
+      const expiresAt = new Date();
+      expiresAt.setHours(expiresAt.getHours() + 24);
+
+      // Get user ID from profiles
+      const { data: userData, error: userError } = await supabase.auth.admin.listUsers();
+      if (userError) {
+        throw userError;
+      }
+
+      const user = userData.users.find(u => u.email === email);
+      if (!user) {
+        throw new Error("Utilisateur non trouvé");
+      }
+
+      // Store token
+      const { error: tokenError } = await supabase
+        .from("password_reset_tokens")
+        .insert({
+          user_id: user.id,
+          token,
+          expires_at: expiresAt.toISOString(),
+        });
+
+      if (tokenError) {
+        throw tokenError;
+      }
+
+      // Send email with reset link
+      const resetLink = `https://gip-members.lovable.app/change-password?token=${encodeURIComponent(token)}`;
+      const { error: emailError } = await supabase.functions.invoke("send-reset-password", {
+        body: {
+          to: [email],
+          resetLink,
+        },
       });
 
-      if (notificationError) {
-        console.error("Error sending notification:", notificationError);
-        toast({
-          variant: "destructive",
-          title: "Erreur",
-          description: "Une erreur est survenue lors de l'envoi de la notification",
-        });
-        return;
+      if (emailError) {
+        throw emailError;
       }
 
       toast({
-        title: "Demande envoyée",
-        description: "Votre demande a été transmise à l'administrateur",
+        title: "Email envoyé",
+        description: "Un email de réinitialisation a été envoyé à votre adresse",
       });
       
       setTimeout(() => {
@@ -57,7 +84,7 @@ export const usePasswordReset = () => {
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: error.message || "Une erreur est survenue lors de l'envoi de la demande",
+        description: error.message || "Une erreur est survenue lors de l'envoi de l'email",
       });
     } finally {
       setIsLoading(false);
