@@ -3,21 +3,19 @@ import { useNavigate } from "react-router-dom";
 import ResetPasswordHeader from "@/components/auth/reset-password/ResetPasswordHeader";
 import ResetPasswordActions from "@/components/auth/reset-password/ResetPasswordActions";
 import EmailInput from "@/components/auth/reset-password/EmailInput";
-import UsernameInput from "@/components/auth/reset-password/UsernameInput";
 import CountdownTimer from "@/components/auth/reset-password/CountdownTimer";
 import { usePasswordReset } from "@/hooks/usePasswordReset";
 import { useResetAttempts } from "@/hooks/useResetAttempts";
 
 const ResetPassword = () => {
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
   const navigate = useNavigate();
   const { isLoading, handleResetRequest } = usePasswordReset();
   const countdown = useResetAttempts(email);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await handleResetRequest(email, username);
+    await handleResetRequest(email);
   };
 
   return (
@@ -26,11 +24,6 @@ const ResetPassword = () => {
         <ResetPasswordHeader />
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-          <UsernameInput 
-            username={username}
-            onChange={setUsername}
-          />
-          
           <EmailInput 
             email={email}
             onChange={setEmail}

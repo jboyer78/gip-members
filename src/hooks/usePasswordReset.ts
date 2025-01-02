@@ -8,29 +8,29 @@ export const usePasswordReset = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleResetRequest = async (email: string, username: string) => {
+  const handleResetRequest = async (email: string) => {
     try {
       setIsLoading(true);
 
-      // First check if the username exists in the profiles table
+      // Check if the email exists in the profiles table
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('email')
-        .eq('username', username)
+        .eq('email', email)
         .single();
 
       if (profileError || !profileData) {
         toast({
           variant: "destructive",
           title: "Erreur",
-          description: "Identifiant non trouvé",
+          description: "Adresse email non trouvée",
         });
         return;
       }
 
       // Send notification to admin
       const { error: notificationError } = await supabase.functions.invoke('send-reset-notification', {
-        body: { username, email }
+        body: { email }
       });
 
       if (notificationError) {

@@ -4,7 +4,7 @@ const ResetPasswordHeader = () => (
       Réinitialisation du mot de passe
     </h2>
     <p className="mt-2 text-sm text-gray-600">
-      Entrez votre email pour recevoir un lien de réinitialisation
+      Entrez votre adresse email pour recevoir un lien de réinitialisation
     </p>
   </div>
 );
