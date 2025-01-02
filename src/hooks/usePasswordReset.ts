@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { User } from "@supabase/supabase-js";
 
 export const usePasswordReset = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -34,12 +35,12 @@ export const usePasswordReset = () => {
       expiresAt.setHours(expiresAt.getHours() + 24);
 
       // Get user ID from profiles
-      const { data: userData, error: userError } = await supabase.auth.admin.listUsers();
+      const { data: { users }, error: userError } = await supabase.auth.admin.listUsers();
       if (userError) {
         throw userError;
       }
 
-      const user = userData.users.find(u => u.email === email);
+      const user = (users as User[]).find(u => u.email === email);
       if (!user) {
         throw new Error("Utilisateur non trouvé");
       }
