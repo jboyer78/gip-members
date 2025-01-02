@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { User } from "@supabase/supabase-js";
 
 export const usePasswordReset = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -29,46 +28,13 @@ export const usePasswordReset = () => {
         return;
       }
 
-      // Generate secure token
-      const token = crypto.randomUUID();
-      const expiresAt = new Date();
-      expiresAt.setHours(expiresAt.getHours() + 24);
-
-      // Get user ID from profiles
-      const { data: { users }, error: userError } = await supabase.auth.admin.listUsers();
-      if (userError) {
-        throw userError;
-      }
-
-      const user = (users as User[]).find(u => u.email === email);
-      if (!user) {
-        throw new Error("Utilisateur non trouvé");
-      }
-
-      // Store token
-      const { error: tokenError } = await supabase
-        .from("password_reset_tokens")
-        .insert({
-          user_id: user.id,
-          token,
-          expires_at: expiresAt.toISOString(),
-        });
-
-      if (tokenError) {
-        throw tokenError;
-      }
-
-      // Send email with reset link
-      const resetLink = `https://gip-members.lovable.app/change-password?token=${encodeURIComponent(token)}`;
-      const { error: emailError } = await supabase.functions.invoke("send-reset-password", {
-        body: {
-          to: [email],
-          resetLink,
-        },
+      // Call the Edge Function to handle the reset process
+      const { error: functionError } = await supabase.functions.invoke("initiate-password-reset", {
+        body: { email },
       });
 
-      if (emailError) {
-        throw emailError;
+      if (functionError) {
+        throw functionError;
       }
 
       toast({
