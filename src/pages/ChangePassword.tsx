@@ -67,18 +67,12 @@ const ChangePassword = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        let errorMessage = "Une erreur est survenue lors de la modification du mot de passe";
-        
-        // Messages d'erreur plus spécifiques basés sur la réponse
-        if (data.error === "Token invalide") {
-          errorMessage = "Le lien de réinitialisation n'est plus valide. Veuillez demander un nouveau lien.";
-        } else if (data.error === "Token expiré") {
-          errorMessage = "Le lien de réinitialisation a expiré. Veuillez demander un nouveau lien.";
-        } else if (data.error === "Token déjà utilisé") {
-          errorMessage = "Ce lien de réinitialisation a déjà été utilisé. Veuillez demander un nouveau lien si nécessaire.";
-        }
-
-        throw new Error(errorMessage);
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: data.error || "Une erreur est survenue lors de la modification du mot de passe",
+        });
+        return;
       }
 
       toast({
@@ -92,7 +86,7 @@ const ChangePassword = () => {
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: error instanceof Error ? error.message : "Une erreur est survenue lors de la modification du mot de passe",
+        description: "Une erreur de connexion est survenue. Veuillez vérifier votre connexion internet et réessayer.",
       });
     } finally {
       setIsLoading(false);
