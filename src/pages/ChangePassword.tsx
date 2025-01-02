@@ -5,6 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { validatePassword } from "@/utils/validation";
+import { supabase } from "@/integrations/supabase/client";
 
 const ChangePassword = () => {
   const navigate = useNavigate();
@@ -57,28 +58,16 @@ const ChangePassword = () => {
       }
 
       console.log("Envoi de la requête à l'API");
-      const response = await fetch(
-        "https://fzxkiwrungrwptlueoqt.supabase.co/functions/v1/update-password",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${process.env.SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({ token, password }),
-        }
-      );
+      const { data, error } = await supabase.functions.invoke("update-password", {
+        body: { token, password },
+      });
 
-      console.log("Réponse reçue:", response.status);
-      const data = await response.json();
-      console.log("Données reçues:", data);
-
-      if (!response.ok) {
-        console.error("Erreur lors de la mise à jour:", response.status, data);
+      if (error) {
+        console.error("Erreur lors de la mise à jour:", error);
         toast({
           variant: "destructive",
           title: "Erreur",
-          description: data.error || "Une erreur est survenue lors de la modification du mot de passe",
+          description: error.message || "Une erreur est survenue lors de la modification du mot de passe",
         });
         return;
       }
