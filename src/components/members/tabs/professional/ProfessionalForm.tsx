@@ -73,12 +73,25 @@ export const ProfessionalForm = ({ user, onCancel, onSuccess }: ProfessionalForm
         .eq("id", user.id)
         .single();
 
-      if (fetchError) throw fetchError;
+      if (fetchError) {
+        console.error("Error fetching current profile:", fetchError);
+        throw fetchError;
+      }
+
+      if (!currentProfile) {
+        throw new Error("Profile not found");
+      }
 
       // Préparer les données de mise à jour en préservant les données existantes
       const updateData = {
-        ...currentProfile,
-        ...formData,
+        ...currentProfile, // Garder toutes les données existantes
+        professional_status: formData.professional_status,
+        administration: formData.administration,
+        administration_entry_date: formData.administration_entry_date,
+        training_site: formData.training_site,
+        grade: formData.grade,
+        assignment_direction: formData.assignment_direction,
+        assignment_service: formData.assignment_service,
         updated_at: new Date().toISOString(),
       };
 
@@ -89,7 +102,14 @@ export const ProfessionalForm = ({ user, onCancel, onSuccess }: ProfessionalForm
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error updating profile:", error);
+        throw error;
+      }
+
+      if (!data) {
+        throw new Error("No data returned after update");
+      }
 
       toast({
         title: "Succès",
@@ -98,7 +118,7 @@ export const ProfessionalForm = ({ user, onCancel, onSuccess }: ProfessionalForm
       
       onSuccess(data);
     } catch (error) {
-      console.error("Error updating profile:", error);
+      console.error("Error in handleSubmit:", error);
       toast({
         variant: "destructive",
         title: "Erreur",
