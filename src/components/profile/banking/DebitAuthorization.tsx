@@ -1,10 +1,10 @@
 import { FormField, FormItem, FormControl, FormLabel } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { UseFormReturn } from "react-hook-form";
-import { BankingInfoFormValues } from "./types";
+import { BankingFormValues } from "./types";
 
 interface DebitAuthorizationProps {
-  form: UseFormReturn<BankingInfoFormValues>;
+  form: UseFormReturn<BankingFormValues>;
 }
 
 export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {

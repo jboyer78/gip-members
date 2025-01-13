@@ -1,10 +1,10 @@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
-import { BankingInfoFormValues } from "./types";
+import { BankingFormValues } from "./types";
 
 interface BankingFormFieldsProps {
-  form: UseFormReturn<BankingInfoFormValues>;
+  form: UseFormReturn<BankingFormValues>;
 }
 
 export const BankingFormFields = ({ form }: BankingFormFieldsProps) => {

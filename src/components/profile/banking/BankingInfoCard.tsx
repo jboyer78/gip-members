@@ -4,16 +4,16 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { BankingInfoFormValues } from "./types";
+import { BankingFormValues } from "./types";
 import { BankingFormFields } from "./BankingFormFields";
 import { DebitAuthorization } from "./DebitAuthorization";
 
 export const BankingInfoCard = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const form = useForm<BankingInfoFormValues>();
+  const form = useForm<BankingFormValues>();
 
-  const onSubmit = async (values: BankingInfoFormValues) => {
+  const onSubmit = async (values: BankingFormValues) => {
     try {
       setIsLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
