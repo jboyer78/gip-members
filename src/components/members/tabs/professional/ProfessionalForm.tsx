@@ -3,37 +3,15 @@ import { Profile } from "@/integrations/supabase/types/profile";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
+import { ProfessionalStatusSelect } from "./form/ProfessionalStatusSelect";
+import { AdministrationSelect } from "./form/AdministrationSelect";
+import { FormActions } from "./form/FormActions";
 
 interface ProfessionalFormProps {
   user: Profile;
   onCancel: () => void;
   onSuccess: (updatedProfile: Profile) => void;
 }
-
-const professionalStatuses = [
-  "Actif",
-  "Retraité",
-  "Membre fondateur",
-  "Membre honoraire",
-  "Membre bienfaiteur"
-];
-
-const administrations = [
-  "Agent du Ministère de la Justice",
-  "Armée",
-  "Disney",
-  "Douane",
-  "Gendarmerie Nationale",
-  "Police de l'environnement",
-  "Police des transports",
-  "Police Municipale",
-  "Police Nationale",
-  "Sureté",
-  "autres"
-];
 
 export const ProfessionalForm = ({ user, onCancel, onSuccess }: ProfessionalFormProps) => {
   const { toast } = useToast();
@@ -66,41 +44,20 @@ export const ProfessionalForm = ({ user, onCancel, onSuccess }: ProfessionalForm
     setIsSaving(true);
     
     try {
-      // Validate administration value
-      if (formData.administration && !administrations.includes(formData.administration)) {
-        throw new Error("Administration invalide");
-      }
-
-      // Récupérer d'abord le profil actuel
       const { data: currentProfile, error: fetchError } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", user.id)
-        .single();
+        .maybeSingle();
 
-      if (fetchError) {
-        console.error("Error fetching current profile:", fetchError);
-        throw fetchError;
-      }
+      if (fetchError) throw fetchError;
+      if (!currentProfile) throw new Error("Profile not found");
 
-      if (!currentProfile) {
-        throw new Error("Profile not found");
-      }
-
-      // Préparer les données de mise à jour en préservant les données existantes
       const updateData = {
-        ...currentProfile, // Garder toutes les données existantes
-        professional_status: formData.professional_status,
-        administration: formData.administration,
-        administration_entry_date: formData.administration_entry_date,
-        training_site: formData.training_site,
-        grade: formData.grade,
-        assignment_direction: formData.assignment_direction,
-        assignment_service: formData.assignment_service,
+        ...currentProfile,
+        ...formData,
         updated_at: new Date().toISOString(),
       };
-
-      console.log("Updating profile with data:", updateData);
 
       const { data, error } = await supabase
         .from("profiles")
@@ -109,14 +66,8 @@ export const ProfessionalForm = ({ user, onCancel, onSuccess }: ProfessionalForm
         .select()
         .single();
 
-      if (error) {
-        console.error("Error updating profile:", error);
-        throw error;
-      }
-
-      if (!data) {
-        throw new Error("No data returned after update");
-      }
+      if (error) throw error;
+      if (!data) throw new Error("No data returned after update");
 
       toast({
         title: "Succès",
@@ -141,42 +92,20 @@ export const ProfessionalForm = ({ user, onCancel, onSuccess }: ProfessionalForm
       <div className="space-y-4">
         <div className="space-y-2">
           <label className="text-sm font-medium">Situation professionnelle</label>
-          <Select 
-            value={formData.professional_status[0] || ""} 
-            onValueChange={(value) => handleSelectChange("professional_status", value)}
+          <ProfessionalStatusSelect
+            value={formData.professional_status[0] || ""}
+            onChange={(value) => handleSelectChange("professional_status", value)}
             disabled={isSaving}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Sélectionnez votre situation" />
-            </SelectTrigger>
-            <SelectContent>
-              {professionalStatuses.map((status) => (
-                <SelectItem key={status} value={status}>
-                  {status}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          />
         </div>
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Administration</label>
-          <Select 
-            value={formData.administration} 
-            onValueChange={(value) => handleSelectChange("administration", value)}
+          <AdministrationSelect
+            value={formData.administration}
+            onChange={(value) => handleSelectChange("administration", value)}
             disabled={isSaving}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Sélectionnez votre administration" />
-            </SelectTrigger>
-            <SelectContent>
-              {administrations.map((admin) => (
-                <SelectItem key={admin} value={admin}>
-                  {admin}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          />
         </div>
 
         <div className="space-y-2">
@@ -231,21 +160,7 @@ export const ProfessionalForm = ({ user, onCancel, onSuccess }: ProfessionalForm
         </div>
       </div>
 
-      <div className="flex justify-end gap-4">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={isSaving}>
-          Annuler
-        </Button>
-        <Button type="submit" disabled={isSaving}>
-          {isSaving ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Enregistrement...
-            </>
-          ) : (
-            'Enregistrer'
-          )}
-        </Button>
-      </div>
+      <FormActions onCancel={onCancel} isSaving={isSaving} />
     </form>
   );
 };
