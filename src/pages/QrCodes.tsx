@@ -1,6 +1,6 @@
 import { QRCodeCanvas } from "qrcode.react";
-import TopNavigation from "@/components/shared/TopNavigation";
-import AppSidebar from "@/components/shared/AppSidebar";
+import { TopNavigation } from "@/components/shared/TopNavigation";
+import { AppSidebar } from "@/components/shared/AppSidebar";
 
 const QrCodes = () => {
   const websites = [
