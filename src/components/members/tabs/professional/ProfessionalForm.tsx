@@ -66,6 +66,11 @@ export const ProfessionalForm = ({ user, onCancel, onSuccess }: ProfessionalForm
     setIsSaving(true);
     
     try {
+      // Validate administration value
+      if (formData.administration && !administrations.includes(formData.administration)) {
+        throw new Error("Administration invalide");
+      }
+
       // Récupérer d'abord le profil actuel
       const { data: currentProfile, error: fetchError } = await supabase
         .from("profiles")
@@ -95,6 +100,8 @@ export const ProfessionalForm = ({ user, onCancel, onSuccess }: ProfessionalForm
         updated_at: new Date().toISOString(),
       };
 
+      console.log("Updating profile with data:", updateData);
+
       const { data, error } = await supabase
         .from("profiles")
         .update(updateData)
@@ -122,7 +129,7 @@ export const ProfessionalForm = ({ user, onCancel, onSuccess }: ProfessionalForm
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue lors de la mise à jour des informations professionnelles",
+        description: error instanceof Error ? error.message : "Une erreur est survenue lors de la mise à jour des informations professionnelles",
       });
     } finally {
       setIsSaving(false);
