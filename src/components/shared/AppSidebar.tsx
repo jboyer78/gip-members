@@ -1,4 +1,4 @@
-import { Newspaper, User, ListPlus, Users, BookOpen, CreditCard } from "lucide-react";
+import { Newspaper, User, ListPlus, Users, BookOpen, CreditCard, QrCode } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -54,6 +54,12 @@ export function AppSidebar() {
                   to="/publications"
                   icon={BookOpen}
                   label="Publications"
+                  className="mb-4"
+                />
+                <SidebarMenuItem
+                  to="/qr-codes"
+                  icon={QrCode}
+                  label="QR Codes"
                   className="mb-4"
                 />
               </>

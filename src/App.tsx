@@ -16,6 +16,7 @@ import AuthCallback from "./pages/AuthCallback";
 import MemberCard from "./pages/MemberCard";
 import IosMemberCard from "./pages/IosMemberCard";
 import PublicMemberCard from "./pages/PublicMemberCard";
+import QrCodes from "./pages/QrCodes";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ const App = () => (
           <Route path="/member-card" element={<MemberCard />} />
           <Route path="/ios-member-card" element={<IosMemberCard />} />
           <Route path="/public-card/:id" element={<PublicMemberCard />} />
+          <Route path="/qr-codes" element={<QrCodes />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
