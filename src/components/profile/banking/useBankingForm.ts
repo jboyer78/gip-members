@@ -1,13 +1,19 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { BankingInfoFormValues } from "./types";
+import { useToast } from "@/hooks/use-toast";
+import { BankingFormValues } from "./types";
+import { 
+  fetchUserBankingInfo, 
+  checkExistingBankingInfo, 
+  updateBankingInfo, 
+  insertBankingInfo 
+} from "./api/bankingApi";
 
 export const useBankingForm = () => {
   const { toast } = useToast();
+  const form = useForm<BankingFormValues>();
   const [isLoading, setIsLoading] = useState(false);
-  const form = useForm<BankingInfoFormValues>();
 
   useEffect(() => {
     const fetchBankingInfo = async () => {
@@ -19,41 +25,28 @@ export const useBankingForm = () => {
         }
 
         console.log("Fetching banking info for user:", user.id);
-        const { data, error } = await supabase
-          .from("banking_info")
-          .select("iban, bic, authorize_debit")
-          .eq("profile_id", user.id)
-          .maybeSingle();
-
-        if (error) {
-          console.error("Error fetching banking info:", error);
-          return;
-        }
+        const data = await fetchUserBankingInfo(user.id);
         
         console.log("Fetched banking info:", data);
-        if (data) {
-          form.reset({ 
-            iban: data.iban || "",
-            bic: data.bic || "",
-            authorize_debit: data.authorize_debit || false
-          });
-        } else {
-          console.log("No banking info found for user");
-          form.reset({
-            iban: "",
-            bic: "",
-            authorize_debit: false
-          });
-        }
+        form.reset({ 
+          iban: data?.iban || "",
+          bic: data?.bic || "",
+          authorize_debit: data?.authorize_debit || false
+        });
       } catch (error) {
         console.error("Error in fetchBankingInfo:", error);
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Impossible de récupérer vos informations bancaires"
+        });
       }
     };
 
     fetchBankingInfo();
-  }, [form]);
+  }, [form, toast]);
 
-  const onSubmit = async (values: BankingInfoFormValues) => {
+  const onSubmit = async (values: BankingFormValues) => {
     try {
       setIsLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
@@ -64,70 +57,37 @@ export const useBankingForm = () => {
       }
 
       console.log("Checking existing banking info for user:", user.id);
-      const { data: existingRecord, error: fetchError } = await supabase
-        .from("banking_info")
-        .select("id")
-        .eq("profile_id", user.id)
-        .maybeSingle();
-
-      if (fetchError) {
-        console.error("Error checking existing banking info:", fetchError);
-        throw fetchError;
-      }
+      const existingRecord = await checkExistingBankingInfo(user.id);
 
       console.log("Existing record:", existingRecord);
-      let error;
       
       if (existingRecord) {
         console.log("Updating existing banking info");
-        const { error: updateError } = await supabase
-          .from("banking_info")
-          .update({ 
-            iban: values.iban,
-            bic: values.bic,
-            authorize_debit: values.authorize_debit,
-            updated_at: new Date().toISOString()
-          })
-          .eq("profile_id", user.id);
-          
-        error = updateError;
+        await updateBankingInfo(user.id, values);
       } else {
         console.log("Inserting new banking info");
-        const { error: insertError } = await supabase
-          .from("banking_info")
-          .insert({ 
-            profile_id: user.id,
-            iban: values.iban,
-            bic: values.bic,
-            authorize_debit: values.authorize_debit,
-            updated_at: new Date().toISOString()
-          });
-          
-        error = insertError;
-      }
-
-      if (error) {
-        console.error("Error updating/inserting banking info:", error);
-        throw error;
+        await insertBankingInfo(user.id, values);
       }
 
       toast({
         title: "Informations bancaires mises à jour",
         description: "Vos informations bancaires ont été enregistrées avec succès",
-        duration: 3000,
       });
     } catch (error) {
-      console.error("Error updating banking info:", error);
+      console.error("Error in onSubmit:", error);
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue lors de la mise à jour des informations bancaires",
-        duration: 3000,
+        description: "Une erreur est survenue lors de la mise à jour de vos informations bancaires",
       });
     } finally {
       setIsLoading(false);
     }
   };
 
-  return { form, onSubmit, isLoading };
+  return {
+    form,
+    isLoading,
+    onSubmit,
+  };
 };
