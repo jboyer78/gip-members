@@ -13,8 +13,12 @@ export const useBankingForm = () => {
     const fetchBankingInfo = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        if (!user) {
+          console.log("No user found");
+          return;
+        }
 
+        console.log("Fetching banking info for user:", user.id);
         const { data, error } = await supabase
           .from("banking_info")
           .select("iban, bic, authorize_debit")
@@ -26,15 +30,23 @@ export const useBankingForm = () => {
           return;
         }
         
+        console.log("Fetched banking info:", data);
         if (data) {
           form.reset({ 
-            iban: data.iban,
-            bic: data.bic,
+            iban: data.iban || "",
+            bic: data.bic || "",
             authorize_debit: data.authorize_debit || false
+          });
+        } else {
+          console.log("No banking info found for user");
+          form.reset({
+            iban: "",
+            bic: "",
+            authorize_debit: false
           });
         }
       } catch (error) {
-        console.error("Error fetching banking info:", error);
+        console.error("Error in fetchBankingInfo:", error);
       }
     };
 
@@ -46,17 +58,28 @@ export const useBankingForm = () => {
       setIsLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (!user) return;
+      if (!user) {
+        console.log("No user found during submit");
+        return;
+      }
 
-      const { data: existingRecord } = await supabase
+      console.log("Checking existing banking info for user:", user.id);
+      const { data: existingRecord, error: fetchError } = await supabase
         .from("banking_info")
         .select("id")
         .eq("profile_id", user.id)
-        .single();
+        .maybeSingle();
 
+      if (fetchError) {
+        console.error("Error checking existing banking info:", fetchError);
+        throw fetchError;
+      }
+
+      console.log("Existing record:", existingRecord);
       let error;
       
       if (existingRecord) {
+        console.log("Updating existing banking info");
         const { error: updateError } = await supabase
           .from("banking_info")
           .update({ 
@@ -69,6 +92,7 @@ export const useBankingForm = () => {
           
         error = updateError;
       } else {
+        console.log("Inserting new banking info");
         const { error: insertError } = await supabase
           .from("banking_info")
           .insert({ 
@@ -82,7 +106,10 @@ export const useBankingForm = () => {
         error = insertError;
       }
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error updating/inserting banking info:", error);
+        throw error;
+      }
 
       toast({
         title: "Informations bancaires mises à jour",
