@@ -26,7 +26,7 @@ export const MemberTableRow = ({ profile, onRowClick }: MemberTableRowProps) => 
 
   return (
     <TableRow 
-      className="cursor-pointer hover:bg-muted/50 transition-colors"
+      className="cursor-pointer hover:bg-muted/50 transition-colors whitespace-nowrap"
       onClick={() => onRowClick(profile)}
     >
       <TableCell>
