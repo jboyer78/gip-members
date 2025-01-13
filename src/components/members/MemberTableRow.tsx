@@ -54,8 +54,8 @@ export const MemberTableRow = ({ profile, onRowClick }: MemberTableRowProps) => 
       </TableCell>
       <TableCell>{calculateAge(profile.birth_date)}</TableCell>
       <TableCell>{profile.grade || '-'}</TableCell>
-      <TableCell>{profile.assignment_service || '-'}</TableCell>
-      <TableCell>{profile.assignment_direction || '-'}</TableCell>
+      <TableCell className="hidden xl:table-cell">{profile.assignment_service || '-'}</TableCell>
+      <TableCell className="hidden xl:table-cell">{profile.assignment_direction || '-'}</TableCell>
       <TableCell className="w-32">
         <MemberProgressBar value={calculateCompletionPercentage(profile)} />
       </TableCell>
@@ -65,9 +65,9 @@ export const MemberTableRow = ({ profile, onRowClick }: MemberTableRowProps) => 
       <TableCell className="w-32">
         <MemberProgressBar value={calculateBankingCompletionPercentage(profile)} />
       </TableCell>
-      <TableCell>{formatDate(profile.created_at)}</TableCell>
-      <TableCell>{formatDate(profile.updated_at)}</TableCell>
-      <TableCell>
+      <TableCell className="hidden 2xl:table-cell">{formatDate(profile.created_at)}</TableCell>
+      <TableCell className="hidden 2xl:table-cell">{formatDate(profile.updated_at)}</TableCell>
+      <TableCell className="hidden 2xl:table-cell">
         {profile.banned_at ? (
           <span className="text-red-500">{formatDate(profile.banned_at)}</span>
         ) : (
