@@ -6,11 +6,11 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 const QrCodes = () => {
   const websites = [
     {
-      name: "Site principal",
+      name: "Site web des membres du GIP",
       url: "https://gip-members.lovable.app",
     },
     {
-      name: "Site de test",
+      name: "Site web du GIP",
       url: "https://gip-members-dev.lovable.app",
     },
   ];
@@ -38,7 +38,7 @@ const QrCodes = () => {
                 key={site.url}
                 className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg p-6 rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg"
               >
-                <h2 className="text-xl font-semibold mb-4">{site.name}</h2>
+                <h2 className="text-xl font-semibold mb-4 text-center">{site.name}</h2>
                 <div className="flex flex-col items-center gap-4">
                   <QRCodeCanvas
                     value={site.url}
@@ -48,7 +48,7 @@ const QrCodes = () => {
                     level={"L"}
                     includeMargin={false}
                   />
-                  <p className="text-sm text-gray-600 dark:text-gray-400 break-all">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 break-all text-center">
                     {site.url}
                   </p>
                 </div>
