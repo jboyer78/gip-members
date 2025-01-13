@@ -13,10 +13,10 @@ export const MemberTableHeader = ({ onSort, sortColumn, sortDirection }: MemberT
     <Button
       variant="ghost"
       onClick={() => onSort(column)}
-      className="hover:bg-transparent"
+      className="hover:bg-transparent whitespace-normal text-left h-auto py-2"
     >
       {label}
-      <ArrowUpDown className="ml-2 h-4 w-4" />
+      <ArrowUpDown className="ml-2 h-4 w-4 flex-shrink-0" />
     </Button>
   );
 
@@ -29,15 +29,15 @@ export const MemberTableHeader = ({ onSort, sortColumn, sortDirection }: MemberT
         <TableHead className="w-28">{renderSortButton("Nom", "last_name")}</TableHead>
         <TableHead className="w-48">{renderSortButton("Email", "email")}</TableHead>
         <TableHead className="w-16">{renderSortButton("Âge", "birth_date")}</TableHead>
-        <TableHead className="w-24">{renderSortButton("Grade", "grade")}</TableHead>
-        <TableHead className="hidden xl:table-cell w-32">{renderSortButton("Service", "assignment_service")}</TableHead>
-        <TableHead className="hidden xl:table-cell w-32">{renderSortButton("Direction", "assignment_direction")}</TableHead>
+        <TableHead className="w-24 max-w-[120px]">{renderSortButton("Grade", "grade")}</TableHead>
+        <TableHead className="hidden xl:table-cell w-32 max-w-[150px]">{renderSortButton("Service d'affectation", "assignment_service")}</TableHead>
+        <TableHead className="hidden xl:table-cell w-32 max-w-[150px]">{renderSortButton("Direction d'affectation", "assignment_direction")}</TableHead>
         <TableHead className="w-32">Infos perso.</TableHead>
         <TableHead className="w-32">Infos pro.</TableHead>
         <TableHead className="w-32">Infos bancaires</TableHead>
-        <TableHead className="hidden 2xl:table-cell w-40">{renderSortButton("Création", "created_at")}</TableHead>
-        <TableHead className="hidden 2xl:table-cell w-40">{renderSortButton("Modification", "updated_at")}</TableHead>
-        <TableHead className="hidden 2xl:table-cell w-40">{renderSortButton("Bannissement", "banned_at")}</TableHead>
+        <TableHead className="hidden 2xl:table-cell w-40 max-w-[120px]">{renderSortButton("Date de création", "created_at")}</TableHead>
+        <TableHead className="hidden 2xl:table-cell w-40 max-w-[120px]">{renderSortButton("Date de modification", "updated_at")}</TableHead>
+        <TableHead className="hidden 2xl:table-cell w-40">{renderSortButton("Date de bannissement", "banned_at")}</TableHead>
         <TableHead className="w-24">Actions</TableHead>
       </TableRow>
     </TableHeader>

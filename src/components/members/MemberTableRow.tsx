@@ -26,7 +26,7 @@ export const MemberTableRow = ({ profile, onRowClick }: MemberTableRowProps) => 
 
   return (
     <TableRow 
-      className="cursor-pointer hover:bg-muted/50 transition-colors whitespace-nowrap"
+      className="cursor-pointer hover:bg-muted/50 transition-colors"
       onClick={() => onRowClick(profile)}
     >
       <TableCell>
@@ -53,9 +53,9 @@ export const MemberTableRow = ({ profile, onRowClick }: MemberTableRowProps) => 
         )}
       </TableCell>
       <TableCell>{calculateAge(profile.birth_date)}</TableCell>
-      <TableCell>{profile.grade || '-'}</TableCell>
-      <TableCell className="hidden xl:table-cell">{profile.assignment_service || '-'}</TableCell>
-      <TableCell className="hidden xl:table-cell">{profile.assignment_direction || '-'}</TableCell>
+      <TableCell className="max-w-[120px] whitespace-normal">{profile.grade || '-'}</TableCell>
+      <TableCell className="hidden xl:table-cell max-w-[150px] whitespace-normal">{profile.assignment_service || '-'}</TableCell>
+      <TableCell className="hidden xl:table-cell max-w-[150px] whitespace-normal">{profile.assignment_direction || '-'}</TableCell>
       <TableCell className="w-32">
         <MemberProgressBar value={calculateCompletionPercentage(profile)} />
       </TableCell>
@@ -65,8 +65,8 @@ export const MemberTableRow = ({ profile, onRowClick }: MemberTableRowProps) => 
       <TableCell className="w-32">
         <MemberProgressBar value={calculateBankingCompletionPercentage(profile)} />
       </TableCell>
-      <TableCell className="hidden 2xl:table-cell">{formatDate(profile.created_at)}</TableCell>
-      <TableCell className="hidden 2xl:table-cell">{formatDate(profile.updated_at)}</TableCell>
+      <TableCell className="hidden 2xl:table-cell max-w-[120px] whitespace-normal">{formatDate(profile.created_at)}</TableCell>
+      <TableCell className="hidden 2xl:table-cell max-w-[120px] whitespace-normal">{formatDate(profile.updated_at)}</TableCell>
       <TableCell className="hidden 2xl:table-cell">
         {profile.banned_at ? (
           <span className="text-red-500">{formatDate(profile.banned_at)}</span>
