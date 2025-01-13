@@ -6,12 +6,12 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 const QrCodes = () => {
   const websites = [
     {
-      name: "Site web des membres du GIP",
+      name: "Site web GIP membres",
       url: "https://gip-members.lovable.app",
     },
     {
-      name: "Site web du GIP",
-      url: "https://gip-members-dev.lovable.app",
+      name: "Site web GIP",
+      url: "https://www.gip-france.org",
     },
   ];
 
