@@ -23,7 +23,7 @@ const QrCodes = () => {
           <TopNavigation />
           <main className="flex-1 overflow-y-auto">
             <div className="container mx-auto p-8">
-              <h1 className="text-2xl font-bold mb-8">QR Codes des sites web</h1>
+              <h1 className="text-3xl font-semibold tracking-tight mb-4">QR Codes des sites web</h1>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {websites.map((site) => (
                   <div
