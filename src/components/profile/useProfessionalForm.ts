@@ -22,7 +22,16 @@ export const useProfessionalForm = () => {
 
         const { data: profiles, error } = await supabase
           .from("profiles")
-          .select("*")
+          .select(`
+            administration,
+            administration_entry_date,
+            training_site,
+            grade,
+            assignment_direction,
+            assignment_service,
+            professional_status,
+            professional_document_url
+          `)
           .eq("id", user.id);
 
         if (error) {
@@ -54,15 +63,21 @@ export const useProfessionalForm = () => {
         return;
       }
 
-      const formattedValues = {
-        ...values,
+      const professionalFields = {
+        administration: values.administration,
         administration_entry_date: values.administration_entry_date?.toISOString().split('T')[0],
+        training_site: values.training_site,
+        grade: values.grade,
+        assignment_direction: values.assignment_direction,
+        assignment_service: values.assignment_service,
+        professional_status: values.professional_status,
+        professional_document_url: values.professional_document_url,
         updated_at: new Date().toISOString(),
       };
 
       const { error } = await supabase
         .from("profiles")
-        .update(formattedValues)
+        .update(professionalFields)
         .eq("id", user.id);
 
       if (error) {

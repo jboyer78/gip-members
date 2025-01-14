@@ -22,7 +22,24 @@ export const useProfileForm = () => {
 
         const { data: profiles, error } = await supabase
           .from("profiles")
-          .select("*")
+          .select(`
+            first_name,
+            last_name,
+            email,
+            birth_date,
+            birth_city,
+            birth_department,
+            blood_type,
+            marital_status,
+            children_count,
+            street,
+            postal_code,
+            city,
+            country,
+            phone_home,
+            phone_mobile,
+            avatar_url
+          `)
           .eq("id", user.id);
 
         if (error) {
@@ -57,22 +74,36 @@ export const useProfileForm = () => {
         return;
       }
 
-      const formattedValues = {
-        ...values,
+      const personalFields = {
+        first_name: values.first_name,
+        last_name: values.last_name,
+        email: values.email,
         birth_date: values.birth_date?.toISOString().split('T')[0],
+        birth_city: values.birth_city,
+        birth_department: values.birth_department,
+        blood_type: values.blood_type,
+        marital_status: values.marital_status,
+        children_count: values.children_count,
+        street: values.street,
+        postal_code: values.postal_code,
+        city: values.city,
+        country: values.country,
+        phone_home: values.phone_home,
+        phone_mobile: values.phone_mobile,
+        avatar_url: values.avatar_url,
         updated_at: new Date().toISOString(),
       };
 
       const { error } = await supabase
         .from("profiles")
-        .update(formattedValues)
+        .update(personalFields)
         .eq("id", user.id);
 
       if (error) throw error;
 
       toast({
         title: "Profil mis à jour",
-        description: "Vos informations ont été enregistrées avec succès",
+        description: "Vos informations personnelles ont été enregistrées avec succès",
         duration: 3000,
       });
     } catch (error) {

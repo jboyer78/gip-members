@@ -27,12 +27,14 @@ export const useBankingForm = () => {
         console.log("Fetching banking info for user:", user.id);
         const data = await fetchUserBankingInfo(user.id);
         
-        console.log("Fetched banking info:", data);
-        form.reset({ 
-          iban: data?.iban || "",
-          bic: data?.bic || "",
-          authorize_debit: data?.authorize_debit || false
-        });
+        if (data) {
+          console.log("Fetched banking info:", data);
+          form.reset({ 
+            iban: data.iban || "",
+            bic: data.bic || "",
+            authorize_debit: data.authorize_debit || false
+          });
+        }
       } catch (error) {
         console.error("Error in fetchBankingInfo:", error);
         toast({
