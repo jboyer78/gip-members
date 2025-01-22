@@ -131,7 +131,7 @@
     "lastName": "Last name",
     "uploadDocument": "Upload document",
     "uploadInProgress": "Upload in progress...",
-    "changeDocument": "Change document",
+    "changePhoto": "Modify picture",
     "noDocument": "No document uploaded",
     "acceptedFormats": "Accepted formats: JPEG, PNG, WEBP. Max size: 1MB",
     "acceptedDocuments": {
