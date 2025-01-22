@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button";
 import { BankingFormFields } from "./BankingFormFields";
 import { DebitAuthorization } from "./DebitAuthorization";
 import { useBankingForm } from "./useBankingForm";
+import { useTranslation } from "react-i18next";
 
 export const BankingForm = () => {
   const { form, onSubmit, isLoading } = useBankingForm();
+  const { t } = useTranslation();
 
   return (
     <Form {...form}>
@@ -17,7 +19,7 @@ export const BankingForm = () => {
           className="w-full bg-primary hover:bg-primary/90 text-white"
           disabled={isLoading}
         >
-          {isLoading ? "Enregistrement..." : "Enregistrer les modifications"}
+          {isLoading ? t('profile.saving') : t('profile.saveChanges')}
         </Button>
       </form>
     </Form>

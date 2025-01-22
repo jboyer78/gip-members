@@ -74,13 +74,30 @@
     "editProfessionalInfo": "Edit professional information",
     "editBankingInfo": "Edit banking information",
     "saveChanges": "Save changes",
+    "saving": "Saving...",
     "cancel": "Cancel",
     "success": {
       "update": "Your information has been successfully updated"
     },
     "error": {
       "update": "An error occurred while updating your information"
-    }
+    },
+    "iban": "IBAN",
+    "bic": "BIC",
+    "automaticDebit": "Automatic debit",
+    "authorized": "Authorized",
+    "notAuthorized": "Not authorized",
+    "noBankingInfo": "No banking information available",
+    "debitAuthorizationText": "I authorize GROUPE INTERNATIONAL POLICE to debit my bank account for the annual membership fee",
+    "professionalStatus": "Professional status",
+    "administration": "Administration",
+    "administrationEntryDate": "Administration entry date",
+    "trainingSite": "Training site",
+    "grade": "Grade",
+    "direction": "Direction",
+    "service": "Service",
+    "professionalDocument": "Professional document",
+    "downloadDocument": "Download document"
   },
   "members": {
     "title": "Members",

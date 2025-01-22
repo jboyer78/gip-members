@@ -72,13 +72,30 @@
     "editProfessionalInfo": "Modifier les informations professionnelles",
     "editBankingInfo": "Modifier les informations bancaires",
     "saveChanges": "Enregistrer les modifications",
+    "saving": "Enregistrement...",
     "cancel": "Annuler",
     "success": {
       "update": "Vos informations ont été mises à jour avec succès"
     },
     "error": {
       "update": "Une erreur est survenue lors de la mise à jour de vos informations"
-    }
+    },
+    "iban": "IBAN",
+    "bic": "BIC",
+    "automaticDebit": "Prélèvement automatique",
+    "authorized": "Autorisé",
+    "notAuthorized": "Non autorisé",
+    "noBankingInfo": "Aucune information bancaire disponible",
+    "debitAuthorizationText": "J'autorise GROUPE INTERNATIONAL POLICE à prélever sur mon compte bancaire le montant de la cotisation annuelle",
+    "professionalStatus": "Situation professionnelle",
+    "administration": "Administration",
+    "administrationEntryDate": "Date d'entrée dans l'administration",
+    "trainingSite": "Site de formation",
+    "grade": "Grade",
+    "direction": "Direction",
+    "service": "Service",
+    "professionalDocument": "Document professionnel",
+    "downloadDocument": "Télécharger le document"
   },
   "members": {
     "title": "Membres",
