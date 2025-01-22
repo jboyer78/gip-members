@@ -57,6 +57,7 @@
   },
   "profile": {
     "email": "Email",
+    "emailChangeInstructions": "Si vous souhaitez modifier votre email veuillez contacter le support au 06 37 73 68 98",
     "birthDate": "Date de naissance",
     "birthCity": "Ville de naissance",
     "birthDepartment": "Département de naissance",

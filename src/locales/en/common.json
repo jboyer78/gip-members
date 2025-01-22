@@ -60,6 +60,7 @@
   },
   "profile": {
     "email": "Email",
+    "emailChangeInstructions": "If you want to change your email, please contact the support at +33 6 37 73 68 98",
     "birthDate": "Birth date",
     "birthCity": "Birth city",
     "birthDepartment": "Birth department",

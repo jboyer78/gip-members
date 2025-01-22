@@ -24,7 +24,7 @@ export const EmailCard = ({ form }: EmailCardProps) => {
             {form.getValues("email")}
           </p>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Si vous souhaitez modifier votre email veuillez contacter le support au 06 37 73 68 98
+            {t('profile.emailChangeInstructions')}
           </p>
           <Button 
             onClick={() => setIsChangePasswordOpen(true)}
