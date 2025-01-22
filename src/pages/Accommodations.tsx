@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/shared/AppSidebar";
@@ -13,6 +13,7 @@ const Accommodations = () => {
   const { toast } = useToast();
   const { isAdmin, isValidated, isLoading: isLoadingAdmin } = useIsAdmin();
   const { t } = useTranslation();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -42,6 +43,8 @@ const Accommodations = () => {
       } catch (error) {
         console.error('Error checking auth:', error);
         navigate("/profile");
+      } finally {
+        setIsLoading(false);
       }
     };
 
