@@ -27,10 +27,22 @@
     "rememberMe": "Se souvenir de moi",
     "loginButton": "Se connecter",
     "signupButton": "S'inscrire",
-    "resetPassword": "Réinitialiser le mot de passe",
-    "registrationRequest": "Demande d'inscription",
-    "alreadyRegistered": "Déjà inscrit ? Se connecter",
-    "notRegistered": "Pas encore inscrit ? Faire une demande d'inscription",
+    "resetPassword": {
+      "title": "Réinitialisation du mot de passe",
+      "subtitle": "Entrez votre adresse email pour recevoir un lien de réinitialisation",
+      "emailLabel": "Adresse email",
+      "emailPlaceholder": "exemple@email.com",
+      "sendLink": "Envoyer le lien",
+      "backToLogin": "Retour à la connexion",
+      "sending": "Envoi en cours...",
+      "countdown": "Temps restant avant de pouvoir réessayer : ",
+      "success": "Email envoyé",
+      "successMessage": "Un email de réinitialisation a été envoyé à votre adresse",
+      "errors": {
+        "emailNotFound": "Adresse email non trouvée",
+        "generic": "Une erreur est survenue lors de l'envoi de l'email"
+      }
+    },
     "errors": {
       "invalidCredentials": "Email ou mot de passe incorrect",
       "emailNotVerified": "Veuillez vérifier votre email avant de vous connecter",
