@@ -7,6 +7,7 @@ import { useProfessionalDocUpload, ACCEPTED_DOC_TYPES } from "@/hooks/use-profes
 import { Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 interface DocumentUploadProps {
   form: UseFormReturn<ProfessionalFormValues>;
@@ -14,6 +15,7 @@ interface DocumentUploadProps {
 
 export const DocumentUpload = ({ form }: DocumentUploadProps) => {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { uploading, uploadDocument } = useProfessionalDocUpload({
     onSuccess: (url) => form.setValue('professional_document_url', url)
   });
@@ -47,15 +49,15 @@ export const DocumentUpload = ({ form }: DocumentUploadProps) => {
       form.setValue('professional_document_url', '');
       
       toast({
-        title: "Document supprimé",
-        description: "Le justificatif professionnel a été supprimé avec succès",
+        title: t('success.title'),
+        description: t('success.documentDeleted'),
       });
     } catch (error) {
       console.error('Error deleting document:', error);
       toast({
         variant: "destructive",
-        title: "Erreur",
-        description: "Une erreur est survenue lors de la suppression du document",
+        title: t('error.title'),
+        description: t('error.documentDelete'),
       });
     }
   };
@@ -71,7 +73,7 @@ export const DocumentUpload = ({ form }: DocumentUploadProps) => {
       name="professional_document_url"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Justificatif professionnel</FormLabel>
+          <FormLabel>{t('profile.professionalDocument')}</FormLabel>
           <div className="space-y-4">
             <Input
               type="file"
@@ -90,7 +92,7 @@ export const DocumentUpload = ({ form }: DocumentUploadProps) => {
                   rel="noopener noreferrer"
                   className="text-blue-600 hover:underline flex-grow"
                 >
-                  Voir le document actuel
+                  {t('profile.downloadDocument')}
                 </a>
                 <Button
                   type="button"
@@ -103,7 +105,7 @@ export const DocumentUpload = ({ form }: DocumentUploadProps) => {
               </div>
             ) : (
               <p className="text-sm text-muted-foreground">
-                Aucun document n'a été uploadé
+                {t('profile.noDocument')}
               </p>
             )}
 
@@ -114,21 +116,19 @@ export const DocumentUpload = ({ form }: DocumentUploadProps) => {
               disabled={uploading}
               className="w-full"
             >
-              {uploading ? 'Upload en cours...' : documentUrl ? 'Changer le document' : 'Joindre un justificatif'}
+              {uploading ? t('profile.uploadInProgress') : documentUrl ? t('profile.changeDocument') : t('profile.uploadDocument')}
             </Button>
 
             <p className="text-sm text-gray-500">
-              Formats acceptés : JPEG, PNG, WEBP, PDF. Taille max : 1MB
+              {t('profile.acceptedFormats')}
             </p>
             
             <p className="text-sm text-gray-500">
-              Justificatifs acceptés : {isActiveOrFounder 
-                ? "la carte professionnelle ou un arrêté" 
-                : "CNI ou passeport"}
+              {t(isActiveOrFounder ? 'profile.acceptedDocuments.active' : 'profile.acceptedDocuments.other')}
             </p>
 
             <p className="text-sm text-gray-500 italic">
-              Les données sont conservées pendant la durée de la validation de l'inscription, vous pourrez supprimer le document par la suite.
+              {t('profile.dataRetention')}
             </p>
           </div>
           <FormMessage />

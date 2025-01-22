@@ -76,6 +76,7 @@
     "editPersonalInfo": "Edit personal information",
     "editProfessionalInfo": "Edit professional information",
     "editBankingInfo": "Edit banking information",
+    "addBankingInfo": "Add banking information",
     "saveChanges": "Save changes",
     "saving": "Saving...",
     "cancel": "Cancel",
@@ -83,7 +84,9 @@
       "update": "Your information has been successfully updated"
     },
     "error": {
-      "update": "An error occurred while updating your information"
+      "update": "An error occurred while updating your information",
+      "title": "Error",
+      "generic": "An error occurred"
     },
     "iban": "IBAN",
     "bic": "BIC",
@@ -108,10 +111,6 @@
     "phoneHome": "Home phone",
     "phoneMobile": "Mobile phone",
     "loading": "Loading...",
-    "error": {
-      "title": "Error",
-      "generic": "An error occurred"
-    },
     "modifyCoordinates": "Modify coordinates",
     "memberNumber": "Member number",
     "undefined": "Undefined",
@@ -125,6 +124,20 @@
     "pending": "Pending validation",
     "validated": "Validated",
     "refused": "Refused",
-    "suspended": "Suspended"
+    "suspended": "Suspended",
+    "changePassword": "Change password",
+    "passwordChangeTitle": "Password Change",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "uploadDocument": "Upload document",
+    "uploadInProgress": "Upload in progress...",
+    "changeDocument": "Change document",
+    "noDocument": "No document uploaded",
+    "acceptedFormats": "Accepted formats: JPEG, PNG, WEBP, PDF. Max size: 1MB",
+    "acceptedDocuments": {
+      "active": "Accepted documents: professional card or decree",
+      "other": "Accepted documents: ID card or passport"
+    },
+    "dataRetention": "Data is kept during the registration validation period, you can delete the document afterwards."
   }
 }

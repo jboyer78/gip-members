@@ -73,6 +73,7 @@
     "editPersonalInfo": "Modifier les informations personnelles",
     "editProfessionalInfo": "Modifier les informations professionnelles",
     "editBankingInfo": "Modifier les informations bancaires",
+    "addBankingInfo": "Ajouter les informations bancaires",
     "saveChanges": "Enregistrer les modifications",
     "saving": "Enregistrement...",
     "cancel": "Annuler",
@@ -120,7 +121,21 @@
     "pending": "En attente de validation",
     "validated": "Validée",
     "refused": "Refusée",
-    "suspended": "Suspendue"
+    "suspended": "Suspendue",
+    "changePassword": "Modifier le mot de passe",
+    "passwordChangeTitle": "Modification du mot de passe",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "uploadDocument": "Joindre un justificatif",
+    "uploadInProgress": "Upload en cours...",
+    "changeDocument": "Changer le document",
+    "noDocument": "Aucun document n'a été uploadé",
+    "acceptedFormats": "Formats acceptés : JPEG, PNG, WEBP, PDF. Taille max : 1MB",
+    "acceptedDocuments": {
+      "active": "Justificatifs acceptés : la carte professionnelle ou un arrêté",
+      "other": "Justificatifs acceptés : CNI ou passeport"
+    },
+    "dataRetention": "Les données sont conservées pendant la durée de la validation de l'inscription, vous pourrez supprimer le document par la suite."
   },
   "members": {
     "title": "Membres",

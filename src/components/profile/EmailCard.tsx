@@ -31,7 +31,7 @@ export const EmailCard = ({ form }: EmailCardProps) => {
             variant="outline"
             className="w-full"
           >
-            Modifier le mot de passe
+            {t('profile.changePassword')}
           </Button>
         </div>
       </CardContent>
@@ -39,7 +39,7 @@ export const EmailCard = ({ form }: EmailCardProps) => {
       <Dialog open={isChangePasswordOpen} onOpenChange={setIsChangePasswordOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Modification du mot de passe</DialogTitle>
+            <DialogTitle>{t('profile.passwordChangeTitle')}</DialogTitle>
           </DialogHeader>
           <ChangePasswordForm onSuccess={() => setIsChangePasswordOpen(false)} />
         </DialogContent>
