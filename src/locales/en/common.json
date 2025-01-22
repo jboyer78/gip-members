@@ -13,7 +13,62 @@
     "delete": "Delete"
   },
   "language": {
-    "fr": "Français",
+    "fr": "French",
     "en": "English"
+  },
+  "auth": {
+    "login": "Login",
+    "signup": "Sign up",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "forgotPassword": "Forgot password?",
+    "rememberMe": "Remember me",
+    "loginButton": "Login",
+    "signupButton": "Sign up",
+    "resetPassword": "Reset password",
+    "registrationRequest": "Registration request",
+    "alreadyRegistered": "Already registered? Login",
+    "notRegistered": "Not registered yet? Request registration"
+  },
+  "profile": {
+    "personalInfo": "Personal Information",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "birthDate": "Birth date",
+    "address": "Address",
+    "phone": "Phone",
+    "status": "Status",
+    "memberCard": "Member card",
+    "bankingInfo": "Banking information",
+    "professionalInfo": "Professional information"
+  },
+  "members": {
+    "title": "Members",
+    "add": "Add member",
+    "search": "Search member",
+    "filters": "Filters",
+    "status": "Status",
+    "actions": "Actions",
+    "noResults": "No results found"
+  },
+  "publications": {
+    "title": "Publications",
+    "add": "Add publication",
+    "edit": "Edit publication",
+    "delete": "Delete publication",
+    "confirmDelete": "Are you sure you want to delete this publication?",
+    "noPublications": "No publications"
+  },
+  "accommodations": {
+    "title": "Accommodations",
+    "manage": "Manage accommodations",
+    "development": "This page content is under development."
+  },
+  "dashboard": {
+    "title": "News",
+    "welcome": "Welcome to your news feed",
+    "noImage": "No image"
   }
 }

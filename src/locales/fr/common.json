@@ -14,6 +14,61 @@
   },
   "language": {
     "fr": "Français",
-    "en": "English"
+    "en": "Anglais"
+  },
+  "auth": {
+    "login": "Connexion",
+    "signup": "Inscription",
+    "logout": "Déconnexion",
+    "email": "Email",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "rememberMe": "Se souvenir de moi",
+    "loginButton": "Se connecter",
+    "signupButton": "S'inscrire",
+    "resetPassword": "Réinitialiser le mot de passe",
+    "registrationRequest": "Demande d'inscription",
+    "alreadyRegistered": "Déjà inscrit ? Se connecter",
+    "notRegistered": "Pas encore inscrit ? Faire une demande d'inscription"
+  },
+  "profile": {
+    "personalInfo": "Informations personnelles",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "birthDate": "Date de naissance",
+    "address": "Adresse",
+    "phone": "Téléphone",
+    "status": "Statut",
+    "memberCard": "Carte de membre",
+    "bankingInfo": "Informations bancaires",
+    "professionalInfo": "Informations professionnelles"
+  },
+  "members": {
+    "title": "Membres",
+    "add": "Ajouter un membre",
+    "search": "Rechercher un membre",
+    "filters": "Filtres",
+    "status": "Statut",
+    "actions": "Actions",
+    "noResults": "Aucun résultat trouvé"
+  },
+  "publications": {
+    "title": "Publications",
+    "add": "Ajouter une publication",
+    "edit": "Modifier la publication",
+    "delete": "Supprimer la publication",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer cette publication ?",
+    "noPublications": "Aucune publication"
+  },
+  "accommodations": {
+    "title": "Hébergements",
+    "manage": "Gérer les hébergements",
+    "development": "Le contenu de cette page est en cours de développement."
+  },
+  "dashboard": {
+    "title": "Actualités",
+    "welcome": "Bienvenue sur votre fil d'actualités",
+    "noImage": "Pas d'image"
   }
 }

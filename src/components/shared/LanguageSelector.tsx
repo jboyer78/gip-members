@@ -1,12 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Globe } from 'lucide-react';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 export const LanguageSelector = () => {
   const { i18n, t } = useTranslation();
@@ -16,17 +15,20 @@ export const LanguageSelector = () => {
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <Globe className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-      <Select value={i18n.language} onValueChange={changeLanguage}>
-        <SelectTrigger className="w-[100px]">
-          <SelectValue placeholder="Language" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="fr">{t('language.fr')}</SelectItem>
-          <SelectItem value="en">{t('language.en')}</SelectItem>
-        </SelectContent>
-      </Select>
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" className="w-8 h-8 p-0">
+          {i18n.language === 'fr' ? '🇫🇷' : '🇬🇧'}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => changeLanguage('fr')}>
+          <span className="mr-2">🇫🇷</span> {t('language.fr')}
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => changeLanguage('en')}>
+          <span className="mr-2">🇬🇧</span> {t('language.en')}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
