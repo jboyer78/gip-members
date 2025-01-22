@@ -66,7 +66,16 @@
     "filters": "Filters",
     "status": "Status",
     "actions": "Actions",
-    "noResults": "No results found"
+    "noResults": "No results found",
+    "photo": "Photo",
+    "memberNumber": "Member #",
+    "age": "Age",
+    "personalInfo": "Personal info",
+    "professionalInfo": "Professional info",
+    "bankingInfo": "Banking info",
+    "createdAt": "Created at",
+    "updatedAt": "Updated at",
+    "bannedAt": "Banned at"
   },
   "publications": {
     "title": "Publications",
@@ -85,5 +94,9 @@
     "title": "News",
     "welcome": "Welcome to your news feed",
     "noImage": "No image"
+  },
+  "welcome": {
+    "title": "Welcome to your application",
+    "subtitle": "Start building your project here!"
   }
 }
