@@ -12,7 +12,6 @@ import { StatusSection } from "@/components/profile/sections/StatusSection";
 import { BankingSection } from "@/components/profile/sections/BankingSection";
 import { Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { LanguageSelector } from "@/components/shared/LanguageSelector";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -103,7 +102,6 @@ const Profile = () => {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <LanguageSelector />
               <TopNavigation />
             </div>
           </div>
