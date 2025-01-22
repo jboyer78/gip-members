@@ -176,5 +176,14 @@
   "welcome": {
     "title": "Bienvenue sur votre application",
     "subtitle": "Commencez à construire votre projet ici !"
+  },
+  "status": {
+    "title": "Statut de votre inscription",
+    "pending": "En cours de traitement",
+    "validated": "Validée",
+    "refused": "Refusée",
+    "memberNumber": "Numéro d'adhérent",
+    "lastComment": "Dernier commentaire",
+    "on": "à"
   }
 }

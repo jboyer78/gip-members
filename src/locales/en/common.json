@@ -138,6 +138,15 @@
       "active": "Accepted documents: professional card or decree",
       "other": "Accepted documents: ID card or passport"
     },
-    "dataRetention": "Data is kept during the registration validation period, you can delete the document afterwards."
+    "dataRetention": "Data is kept during the registration validation period, you can delete the document afterwards.",
+    "status": {
+      "title": "Registration Status",
+      "pending": "Processing",
+      "validated": "Validated",
+      "refused": "Refused",
+      "memberNumber": "Member number",
+      "lastComment": "Last comment",
+      "on": "on"
+    }
   }
 }
