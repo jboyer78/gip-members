@@ -11,9 +11,12 @@ import { ProfessionalSection } from "@/components/profile/sections/ProfessionalS
 import { StatusSection } from "@/components/profile/sections/StatusSection";
 import { BankingSection } from "@/components/profile/sections/BankingSection";
 import { Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { LanguageSelector } from "@/components/shared/LanguageSelector";
 
 const Profile = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { form: personalForm, onSubmit: onPersonalSubmit } = useProfileForm();
   const { form: professionalForm, onSubmit: onProfessionalSubmit } = useProfessionalForm();
   const [isLoading, setIsLoading] = useState(true);
@@ -32,7 +35,6 @@ const Profile = () => {
           return;
         }
 
-        // Wait for profile data to be loaded
         const { error: profileError } = await supabase
           .from('profiles')
           .select('*')
@@ -44,20 +46,20 @@ const Profile = () => {
         setIsLoading(false);
       } catch (err) {
         console.error('Error loading profile:', err);
-        setError(err instanceof Error ? err.message : 'An error occurred while loading your profile');
+        setError(err instanceof Error ? err.message : t('profile.error.update'));
         setIsLoading(false);
       }
     };
 
     checkAuth();
-  }, [navigate]);
+  }, [navigate, t]);
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-muted-foreground">Chargement de votre profil...</p>
+          <p className="text-muted-foreground">{t('profile.loading')}</p>
         </div>
       </div>
     );
@@ -68,14 +70,14 @@ const Profile = () => {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
           <h2 className="text-xl font-semibold text-red-600 dark:text-red-400 mb-4">
-            Une erreur est survenue
+            {t('profile.error.title')}
           </h2>
           <p className="text-gray-600 dark:text-gray-300 mb-4">{error}</p>
           <button
             onClick={() => window.location.reload()}
             className="w-full bg-primary text-white py-2 px-4 rounded hover:bg-primary/90 transition-colors"
           >
-            Réessayer
+            {t('actions.retry')}
           </button>
         </div>
       </div>
@@ -93,14 +95,17 @@ const Profile = () => {
               <SidebarTrigger className="p-2 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-300" />
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400">
-                  Mes Informations personnelles
+                  {t('profile.manageProfile')}
                 </h1>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Gérez vos informations personnelles
+                  {t('profile.personalInfo')}
                 </p>
               </div>
             </div>
-            <TopNavigation />
+            <div className="flex items-center gap-4">
+              <LanguageSelector />
+              <TopNavigation />
+            </div>
           </div>
 
           <div className="space-y-6">

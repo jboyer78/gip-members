@@ -57,31 +57,30 @@
     }
   },
   "profile": {
-    "personalInfo": "Personal Information",
-    "firstName": "First name",
-    "lastName": "Last name",
+    "email": "Email",
     "birthDate": "Birth date",
     "birthCity": "Birth city",
     "birthDepartment": "Birth department",
     "bloodType": "Blood type",
     "maritalStatus": "Marital status",
     "childrenCount": "Number of children",
-    "address": "Address",
-    "phone": "Phone",
-    "email": "Email",
-    "status": "Status",
-    "memberCard": "Member card",
-    "bankingInfo": "Banking information",
-    "professionalInfo": "Professional information",
-    "professionalStatus": "Professional status",
-    "administration": "Administration",
-    "administrationEntryDate": "Entry date",
-    "trainingSite": "Training site",
-    "grade": "Grade",
-    "direction": "Direction",
-    "service": "Service",
-    "professionalDocument": "Professional document",
-    "downloadDocument": "Download document"
+    "personalInfo": "Personal Information",
+    "professionalInfo": "Professional Information",
+    "bankingInfo": "Banking Information",
+    "accountStatus": "Account Status",
+    "currentStatus": "Current Status",
+    "manageProfile": "Manage your profile",
+    "editPersonalInfo": "Edit personal information",
+    "editProfessionalInfo": "Edit professional information",
+    "editBankingInfo": "Edit banking information",
+    "saveChanges": "Save changes",
+    "cancel": "Cancel",
+    "success": {
+      "update": "Your information has been successfully updated"
+    },
+    "error": {
+      "update": "An error occurred while updating your information"
+    }
   },
   "members": {
     "title": "Members",

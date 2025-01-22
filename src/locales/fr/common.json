@@ -10,7 +10,8 @@
     "save": "Enregistrer",
     "cancel": "Annuler",
     "edit": "Modifier",
-    "delete": "Supprimer"
+    "delete": "Supprimer",
+    "retry": "Réessayer"
   },
   "language": {
     "fr": "Français",
@@ -54,31 +55,30 @@
     }
   },
   "profile": {
-    "personalInfo": "Informations personnelles",
-    "firstName": "Prénom",
-    "lastName": "Nom",
+    "email": "Email",
     "birthDate": "Date de naissance",
     "birthCity": "Ville de naissance",
     "birthDepartment": "Département de naissance",
     "bloodType": "Groupe sanguin",
     "maritalStatus": "Situation familiale",
     "childrenCount": "Nombre d'enfants",
-    "address": "Adresse",
-    "phone": "Téléphone",
-    "email": "Email",
-    "status": "Statut",
-    "memberCard": "Carte de membre",
-    "bankingInfo": "Informations bancaires",
+    "personalInfo": "Informations personnelles",
     "professionalInfo": "Informations professionnelles",
-    "professionalStatus": "Situation professionnelle",
-    "administration": "Administration",
-    "administrationEntryDate": "Date d'entrée",
-    "trainingSite": "Site de formation",
-    "grade": "Grade",
-    "direction": "Direction",
-    "service": "Service",
-    "professionalDocument": "Justificatif professionnel",
-    "downloadDocument": "Télécharger le justificatif"
+    "bankingInfo": "Informations bancaires",
+    "accountStatus": "Statut du compte",
+    "currentStatus": "Statut actuel",
+    "manageProfile": "Gérer votre profil",
+    "editPersonalInfo": "Modifier les informations personnelles",
+    "editProfessionalInfo": "Modifier les informations professionnelles",
+    "editBankingInfo": "Modifier les informations bancaires",
+    "saveChanges": "Enregistrer les modifications",
+    "cancel": "Annuler",
+    "success": {
+      "update": "Vos informations ont été mises à jour avec succès"
+    },
+    "error": {
+      "update": "Une erreur est survenue lors de la mise à jour de vos informations"
+    }
   },
   "members": {
     "title": "Membres",

@@ -3,6 +3,7 @@ import { Profile } from "@/integrations/supabase/types/profile";
 import { Button } from "@/components/ui/button";
 import { BankingDisplay } from "./banking/BankingDisplay";
 import { BankingForm } from "./banking/BankingForm";
+import { useTranslation } from "react-i18next";
 
 interface BankingTabProps {
   user: Profile;
@@ -10,6 +11,7 @@ interface BankingTabProps {
 
 export const BankingTab = ({ user }: BankingTabProps) => {
   const [isEditing, setIsEditing] = useState(false);
+  const { t } = useTranslation();
 
   const handleSuccess = async () => {
     setIsEditing(false);
@@ -20,7 +22,7 @@ export const BankingTab = ({ user }: BankingTabProps) => {
       <div className="space-y-4">
         <BankingDisplay bankingInfo={user.banking_info} />
         <Button onClick={() => setIsEditing(true)} className="w-full">
-          {user.banking_info ? "Modifier les informations bancaires" : "Ajouter des informations bancaires"}
+          {user.banking_info ? t('profile.editBankingInfo') : t('profile.addBankingInfo')}
         </Button>
       </div>
     );

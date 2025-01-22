@@ -8,11 +8,13 @@ interface PersonalDisplayProps {
 }
 
 export const PersonalDisplay = ({ user }: PersonalDisplayProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   
   const formatDate = (date: string | null) => {
     if (!date) return "-";
-    return format(new Date(date), "dd MMMM yyyy", { locale: fr });
+    return format(new Date(date), "dd MMMM yyyy", { 
+      locale: i18n.language === 'fr' ? fr : undefined 
+    });
   };
 
   return (
