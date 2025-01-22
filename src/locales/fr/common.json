@@ -57,7 +57,7 @@
   },
   "profile": {
     "email": "Email",
-    "emailChangeInstructions": "Si vous souhaitez modifier votre email veuillez contacter le support au 06 37 73 68 98",
+    "emailChangeInstructions": "Si vous souhaitez modifier votre email, veuillez contacter le support au 06 37 73 68 98",
     "birthDate": "Date de naissance",
     "birthCity": "Ville de naissance",
     "birthDepartment": "Département de naissance",
@@ -75,7 +75,7 @@
     "editBankingInfo": "Modifier les informations bancaires",
     "addBankingInfo": "Ajouter les informations bancaires",
     "saveChanges": "Enregistrer les modifications",
-    "saving": "Enregistrement...",
+    "saving": "Enregistrement en cours...",
     "cancel": "Annuler",
     "success": {
       "update": "Vos informations ont été mises à jour avec succès"
@@ -126,16 +126,16 @@
     "passwordChangeTitle": "Modification du mot de passe",
     "firstName": "Prénom",
     "lastName": "Nom",
-    "uploadDocument": "Joindre un justificatif",
-    "uploadInProgress": "Upload en cours...",
-    "changeDocument": "Changer le document",
-    "noDocument": "Aucun document n'a été uploadé",
-    "acceptedFormats": "Formats acceptés : JPEG, PNG, WEBP, PDF. Taille max : 1MB",
+    "uploadDocument": "Joindre un document",
+    "uploadInProgress": "Téléchargement en cours...",
+    "changePhoto": "Modifier la photo",
+    "noDocument": "Aucun document n'a été téléchargé",
+    "acceptedFormats": "Formats acceptés : JPEG, PNG, WEBP. Taille maximale : 1 Mo",
     "acceptedDocuments": {
-      "active": "Justificatifs acceptés : la carte professionnelle ou un arrêté",
-      "other": "Justificatifs acceptés : CNI ou passeport"
+      "active": "Documents acceptés : carte professionnelle ou arrêté",
+      "other": "Documents acceptés : carte d'identité ou passeport"
     },
-    "dataRetention": "Les données sont conservées pendant la durée de la validation de l'inscription, vous pourrez supprimer le document par la suite."
+    "dataRetention": "Les données sont conservées pendant la durée de validation de l'inscription. Vous pourrez supprimer le document par la suite."
   },
   "members": {
     "title": "Membres",
@@ -148,12 +148,12 @@
     "photo": "Photo",
     "memberNumber": "N° Adhérent",
     "age": "Âge",
-    "personalInfo": "Infos perso.",
-    "professionalInfo": "Infos pro.",
-    "bankingInfo": "Infos banc.",
+    "personalInfo": "Infos personnelles",
+    "professionalInfo": "Infos professionnelles",
+    "bankingInfo": "Infos bancaires",
     "createdAt": "Date de création",
     "updatedAt": "Date de modification",
-    "bannedAt": "Date de ban."
+    "bannedAt": "Date de bannissement"
   },
   "publications": {
     "title": "Publications",
@@ -184,9 +184,6 @@
     "refused": "Refusée",
     "memberNumber": "Numéro d'adhérent",
     "lastComment": "Dernier commentaire",
-    "on": "à"
-  },
-  "uploadInProgress": "Upload en cours...",
-  "changePhoto": "Changer la photo",
-  "acceptedFormats": "Formats acceptés : JPEG, PNG, WEBP. Taille max : 1MB"
+    "on": "le"
+  }
 }
