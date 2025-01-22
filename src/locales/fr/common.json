@@ -185,5 +185,8 @@
     "memberNumber": "Numéro d'adhérent",
     "lastComment": "Dernier commentaire",
     "on": "à"
-  }
+  },
+  "uploadInProgress": "Upload en cours...",
+  "changePhoto": "Changer la photo",
+  "acceptedFormats": "Formats acceptés : JPEG, PNG, WEBP. Taille max : 1MB"
 }

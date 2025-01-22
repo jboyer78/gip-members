@@ -133,7 +133,7 @@
     "uploadInProgress": "Upload in progress...",
     "changeDocument": "Change document",
     "noDocument": "No document uploaded",
-    "acceptedFormats": "Accepted formats: JPEG, PNG, WEBP, PDF. Max size: 1MB",
+    "acceptedFormats": "Accepted formats: JPEG, PNG, WEBP. Max size: 1MB",
     "acceptedDocuments": {
       "active": "Accepted documents: professional card or decree",
       "other": "Accepted documents: ID card or passport"

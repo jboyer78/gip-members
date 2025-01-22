@@ -4,12 +4,14 @@ import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
 import { ProfileFormValues } from "./types";
 import { useAvatarUpload, ACCEPTED_IMAGE_TYPES } from "@/hooks/use-avatar-upload";
+import { useTranslation } from "react-i18next";
 
 interface AvatarUploadProps {
   form: UseFormReturn<ProfileFormValues>;
 }
 
 export const AvatarUpload = ({ form }: AvatarUploadProps) => {
+  const { t } = useTranslation();
   const { uploading, uploadAvatar } = useAvatarUpload({
     onSuccess: (url) => form.setValue('avatar_url', url)
   });
@@ -48,10 +50,10 @@ export const AvatarUpload = ({ form }: AvatarUploadProps) => {
           onClick={() => document.getElementById('avatar-upload')?.click()}
           disabled={uploading}
         >
-          {uploading ? 'Upload en cours...' : 'Changer la photo'}
+          {uploading ? t('profile.uploadInProgress') : t('profile.changePhoto')}
         </Button>
         <p className="text-sm text-gray-500">
-          Formats acceptés : JPEG, PNG, WEBP. Taille max : 1MB
+          {t('profile.acceptedFormats')}
         </p>
       </div>
     </div>
