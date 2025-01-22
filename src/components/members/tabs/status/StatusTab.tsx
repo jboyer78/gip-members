@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 interface StatusTabProps {
   user: Profile;
@@ -15,6 +16,7 @@ export const StatusTab = ({ user }: StatusTabProps) => {
   const [isEditingMemberNumber, setIsEditingMemberNumber] = useState(false);
   const [memberNumber, setMemberNumber] = useState(user.member_number || '');
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const { data: statusComments, isLoading } = useQuery({
     queryKey: ['statusComments', user.id],
@@ -33,8 +35,8 @@ export const StatusTab = ({ user }: StatusTabProps) => {
   const handleMemberNumberUpdate = async () => {
     if (!memberNumber.trim()) {
       toast({
-        title: "Erreur",
-        description: "Le numéro d'adhérent ne peut pas être vide",
+        title: t('profile.error.title'),
+        description: t('profile.memberNumber.required'),
         variant: "destructive",
       });
       return;
@@ -52,15 +54,15 @@ export const StatusTab = ({ user }: StatusTabProps) => {
       if (error) throw error;
 
       toast({
-        title: "Succès",
-        description: "Le numéro d'adhérent a été mis à jour",
+        title: t('actions.save'),
+        description: t('profile.success.update'),
       });
       setIsEditingMemberNumber(false);
     } catch (error) {
       console.error('Error updating member number:', error);
       toast({
-        title: "Erreur",
-        description: "Une erreur est survenue lors de la mise à jour du numéro d'adhérent",
+        title: t('profile.error.title'),
+        description: t('profile.error.generic'),
         variant: "destructive",
       });
     }
@@ -70,24 +72,24 @@ export const StatusTab = ({ user }: StatusTabProps) => {
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2 w-[300px]">
-          <Label>Statut actuel</Label>
+          <Label>{t('profile.currentStatus')}</Label>
           <p className="text-lg font-semibold">
             {!user.status?.[0] || user.status[0] === "Sympathisant" 
-              ? "En attente de validation" 
+              ? t('profile.pending')
               : user.status[0]}
           </p>
         </div>
         
         <div className="space-y-2 w-[300px]">
-          <Label>Numéro d'adhérent</Label>
+          <Label>{t('profile.memberNumber')}</Label>
           {isEditingMemberNumber ? (
             <div className="flex gap-2">
               <Input
                 value={memberNumber}
                 onChange={(e) => setMemberNumber(e.target.value)}
-                placeholder="Numéro d'adhérent"
+                placeholder={t('profile.memberNumber')}
               />
-              <Button onClick={handleMemberNumberUpdate}>Enregistrer</Button>
+              <Button onClick={handleMemberNumberUpdate}>{t('actions.save')}</Button>
               <Button 
                 variant="outline" 
                 onClick={() => {
@@ -95,18 +97,18 @@ export const StatusTab = ({ user }: StatusTabProps) => {
                   setMemberNumber(user.member_number || '');
                 }}
               >
-                Annuler
+                {t('actions.cancel')}
               </Button>
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <span className="text-lg">{user.member_number || 'Non défini'}</span>
+              <span className="text-lg">{user.member_number || t('profile.undefined')}</span>
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={() => setIsEditingMemberNumber(true)}
               >
-                Modifier
+                {t('actions.modify')}
               </Button>
             </div>
           )}
@@ -114,9 +116,9 @@ export const StatusTab = ({ user }: StatusTabProps) => {
       </div>
       
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Historique des statuts</h3>
+        <h3 className="text-lg font-semibold">{t('profile.statusHistory')}</h3>
         {isLoading ? (
-          <p className="text-muted-foreground">Chargement de l'historique...</p>
+          <p className="text-muted-foreground">{t('profile.loadingHistory')}</p>
         ) : statusComments?.length ? (
           <div className="space-y-4">
             {statusComments.map((comment) => (
@@ -137,7 +139,7 @@ export const StatusTab = ({ user }: StatusTabProps) => {
             ))}
           </div>
         ) : (
-          <p className="text-muted-foreground">Aucun historique disponible</p>
+          <p className="text-muted-foreground">{t('profile.noHistory')}</p>
         )}
       </div>
     </div>

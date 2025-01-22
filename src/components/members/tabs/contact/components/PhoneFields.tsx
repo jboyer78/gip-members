@@ -1,5 +1,6 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useTranslation } from "react-i18next";
 
 interface PhoneFieldsProps {
   formData: {
@@ -10,10 +11,12 @@ interface PhoneFieldsProps {
 }
 
 export const PhoneFields = ({ formData, handleChange }: PhoneFieldsProps) => {
+  const { t } = useTranslation();
+
   return (
     <>
       <div className="space-y-2">
-        <Label htmlFor="phone_home">Téléphone fixe</Label>
+        <Label htmlFor="phone_home">{t('profile.phoneHome')}</Label>
         <Input
           id="phone_home"
           name="phone_home"
@@ -24,7 +27,7 @@ export const PhoneFields = ({ formData, handleChange }: PhoneFieldsProps) => {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="phone_mobile">Téléphone mobile</Label>
+        <Label htmlFor="phone_mobile">{t('profile.phoneMobile')}</Label>
         <Input
           id="phone_mobile"
           name="phone_mobile"
