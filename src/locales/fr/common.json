@@ -128,7 +128,7 @@
     "lastName": "Nom",
     "uploadDocument": "Joindre un document",
     "uploadInProgress": "Téléchargement en cours...",
-    "changePhoto": "Modifier la photo",
+    "changePhoto": "Modifier l'image",
     "noDocument": "Aucun document n'a été téléchargé",
     "acceptedFormats": "Formats acceptés : JPEG, PNG, WEBP. Taille maximale : 1 Mo",
     "acceptedDocuments": {
