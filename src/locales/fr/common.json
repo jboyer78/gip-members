@@ -30,7 +30,16 @@
     "resetPassword": "Réinitialiser le mot de passe",
     "registrationRequest": "Demande d'inscription",
     "alreadyRegistered": "Déjà inscrit ? Se connecter",
-    "notRegistered": "Pas encore inscrit ? Faire une demande d'inscription"
+    "notRegistered": "Pas encore inscrit ? Faire une demande d'inscription",
+    "errors": {
+      "invalidCredentials": "Email ou mot de passe incorrect",
+      "emailNotVerified": "Veuillez vérifier votre email avant de vous connecter",
+      "generalError": "Une erreur est survenue lors de la connexion"
+    },
+    "success": {
+      "login": "Connexion réussie",
+      "welcome": "Bienvenue sur votre espace"
+    }
   },
   "profile": {
     "personalInfo": "Informations personnelles",

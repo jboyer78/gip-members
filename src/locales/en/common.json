@@ -30,7 +30,16 @@
     "resetPassword": "Reset password",
     "registrationRequest": "Registration request",
     "alreadyRegistered": "Already registered? Login",
-    "notRegistered": "Not registered yet? Request registration"
+    "notRegistered": "Not registered yet? Request registration",
+    "errors": {
+      "invalidCredentials": "Invalid email or password",
+      "emailNotVerified": "Please verify your email before logging in",
+      "generalError": "An error occurred during login"
+    },
+    "success": {
+      "login": "Login successful",
+      "welcome": "Welcome to your space"
+    }
   },
   "profile": {
     "personalInfo": "Personal Information",
