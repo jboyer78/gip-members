@@ -1,0 +1,19 @@
+{
+  "navigation": {
+    "profile": "Profil",
+    "members": "Membres",
+    "publications": "Publications",
+    "accommodations": "Hébergements",
+    "dashboard": "Tableau de bord"
+  },
+  "actions": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer"
+  },
+  "language": {
+    "fr": "Français",
+    "en": "English"
+  }
+}

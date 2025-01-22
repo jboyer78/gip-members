@@ -1,0 +1,19 @@
+{
+  "navigation": {
+    "profile": "Profile",
+    "members": "Members",
+    "publications": "Publications",
+    "accommodations": "Accommodations",
+    "dashboard": "Dashboard"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "language": {
+    "fr": "Français",
+    "en": "English"
+  }
+}
