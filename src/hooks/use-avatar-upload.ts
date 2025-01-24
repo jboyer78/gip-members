@@ -4,8 +4,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useImageResize } from "./use-image-resize";
 
 export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
-export const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
-export const MAX_AVATAR_SIZE = 128; // pixels
+export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+export const MAX_AVATAR_SIZE = 1024; // pixels
+export const MIN_AVATAR_SIZE = 128; // pixels
 
 interface UseAvatarUploadOptions {
   onSuccess: (url: string) => void;
@@ -22,7 +23,7 @@ export const useAvatarUpload = ({ onSuccess }: UseAvatarUploadOptions) => {
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      throw new Error('La taille du fichier ne doit pas dépasser 1MB.');
+      throw new Error('La taille du fichier ne doit pas dépasser 5MB.');
     }
   };
 
@@ -33,7 +34,8 @@ export const useAvatarUpload = ({ onSuccess }: UseAvatarUploadOptions) => {
 
       const resizedImage = await resizeImage(file, {
         maxSize: MAX_AVATAR_SIZE,
-        quality: 0.9
+        minSize: MIN_AVATAR_SIZE,
+        quality: 0.95
       });
 
       const fileExt = file.name.split('.').pop();
