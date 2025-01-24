@@ -2,7 +2,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { bloodTypeOptions, maritalStatusOptions, bloodTypeMapping } from "../constants";
-import { useTranslation } from "react-i18next";
 
 interface FormFieldsProps {
   formData: {
@@ -18,12 +17,10 @@ interface FormFieldsProps {
 }
 
 export const FormFields = ({ formData, handleChange, handleSelectChange }: FormFieldsProps) => {
-  const { t } = useTranslation();
-
   return (
     <div className="grid gap-4">
       <div className="space-y-2">
-        <Label htmlFor="birth_date">{t('profile.birthDate')}</Label>
+        <Label htmlFor="birth_date">Date de naissance</Label>
         <Input
           id="birth_date"
           name="birth_date"
@@ -34,7 +31,7 @@ export const FormFields = ({ formData, handleChange, handleSelectChange }: FormF
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="birth_city">{t('profile.birthCity')}</Label>
+        <Label htmlFor="birth_city">Ville de naissance</Label>
         <Input
           id="birth_city"
           name="birth_city"
@@ -44,7 +41,7 @@ export const FormFields = ({ formData, handleChange, handleSelectChange }: FormF
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="birth_department">{t('profile.birthDepartment')}</Label>
+        <Label htmlFor="birth_department">Département de naissance</Label>
         <Input
           id="birth_department"
           name="birth_department"
@@ -54,13 +51,13 @@ export const FormFields = ({ formData, handleChange, handleSelectChange }: FormF
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="blood_type">{t('profile.bloodType')}</Label>
+        <Label htmlFor="blood_type">Groupe sanguin</Label>
         <Select 
           value={formData.blood_type} 
           onValueChange={(value) => handleSelectChange("blood_type", bloodTypeMapping[value] || value)}
         >
           <SelectTrigger>
-            <SelectValue placeholder={t('profile.selectBloodType')} />
+            <SelectValue placeholder="Sélectionnez votre groupe sanguin" />
           </SelectTrigger>
           <SelectContent>
             {bloodTypeOptions.map((type) => (
@@ -73,13 +70,13 @@ export const FormFields = ({ formData, handleChange, handleSelectChange }: FormF
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="marital_status">{t('profile.maritalStatus')}</Label>
+        <Label htmlFor="marital_status">Situation matrimoniale</Label>
         <Select 
           value={formData.marital_status} 
           onValueChange={(value) => handleSelectChange("marital_status", value)}
         >
           <SelectTrigger>
-            <SelectValue placeholder={t('profile.selectMaritalStatus')} />
+            <SelectValue placeholder="Sélectionnez votre situation" />
           </SelectTrigger>
           <SelectContent>
             {maritalStatusOptions.map((status) => (
@@ -92,7 +89,7 @@ export const FormFields = ({ formData, handleChange, handleSelectChange }: FormF
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="children_count">{t('profile.childrenCount')}</Label>
+        <Label htmlFor="children_count">Nombre d'enfants</Label>
         <Input
           id="children_count"
           name="children_count"

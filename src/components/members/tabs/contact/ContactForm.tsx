@@ -5,7 +5,6 @@ import { useToast } from "@/hooks/use-toast";
 import { AddressFields } from "./components/AddressFields";
 import { PhoneFields } from "./components/PhoneFields";
 import { FormActions } from "./components/FormActions";
-import { useTranslation } from "react-i18next";
 
 interface ContactFormProps {
   user: Profile;
@@ -14,7 +13,6 @@ interface ContactFormProps {
 }
 
 export const ContactForm = ({ user, onCancel, onSuccess }: ContactFormProps) => {
-  const { t } = useTranslation();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     street: user.street || "",
@@ -61,8 +59,8 @@ export const ContactForm = ({ user, onCancel, onSuccess }: ContactFormProps) => 
         console.error("Supabase update error:", error);
         toast({
           variant: "destructive",
-          title: t('profile.error.title'),
-          description: t('profile.error.update'),
+          title: "Erreur",
+          description: "Une erreur est survenue lors de la mise à jour des coordonnées",
         });
         return;
       }
@@ -70,8 +68,8 @@ export const ContactForm = ({ user, onCancel, onSuccess }: ContactFormProps) => 
       console.log("Supabase update successful. Response data:", data);
 
       toast({
-        title: t('actions.save'),
-        description: t('profile.success.update'),
+        title: "Succès",
+        description: "Les coordonnées ont été mises à jour avec succès",
       });
       
       onSuccess(data);
@@ -79,8 +77,8 @@ export const ContactForm = ({ user, onCancel, onSuccess }: ContactFormProps) => 
       console.error("Unexpected error during update:", error);
       toast({
         variant: "destructive",
-        title: t('profile.error.title'),
-        description: t('profile.error.generic'),
+        title: "Erreur",
+        description: "Une erreur inattendue est survenue lors de la mise à jour des coordonnées",
       });
     }
   };

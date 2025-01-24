@@ -1,41 +1,89 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/useAuth";
-import { useTranslation } from "react-i18next";
+import { supabase } from "@/integrations/supabase/client";
 
-interface LoginCredentials {
+interface LoginFormData {
   email: string;
   password: string;
 }
 
 export const useLoginSubmit = () => {
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const { toast } = useToast();
-  const { signIn } = useAuth();
-  const { t } = useTranslation();
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent, credentials: LoginCredentials) => {
+  const handleSubmit = async (e: React.FormEvent, formData: LoginFormData) => {
     e.preventDefault();
-    setLoading(true);
+    const { email, password } = formData;
 
     try {
-      const success = await signIn(credentials.email, credentials.password);
-      
-      if (success) {
+      setLoading(true);
+      console.log("Starting login process for email:", email);
+
+      // First check if there's an existing session and clear it
+      const { error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) {
+        console.log("Clearing existing session due to error:", sessionError);
+        await supabase.auth.signOut();
+      }
+
+      // Attempt to sign in
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        console.error('Login error:', error);
+        
+        if (error.message.includes("session_not_found")) {
+          toast({
+            variant: "destructive",
+            title: "Erreur de session",
+            description: "Veuillez vous reconnecter",
+          });
+          // Force a sign out to clear any invalid session data
+          await supabase.auth.signOut();
+          return;
+        }
+
         toast({
-          title: t('auth.success.login'),
-          description: t('auth.success.welcome'),
+          variant: "destructive",
+          title: "Erreur de connexion",
+          description: "Email ou mot de passe incorrect",
         });
-        navigate("/");
+        return;
+      }
+
+      if (data?.user) {
+        console.log("Successfully logged in user:", email);
+        
+        // Verify the session was created
+        const { data: sessionData, error: sessionCheckError } = await supabase.auth.getSession();
+        
+        if (sessionCheckError || !sessionData.session) {
+          console.error("Session verification failed:", sessionCheckError);
+          toast({
+            variant: "destructive",
+            title: "Erreur de session",
+            description: "Impossible de créer une session. Veuillez réessayer.",
+          });
+          return;
+        }
+
+        toast({
+          title: "Connexion réussie",
+          description: "Vous êtes maintenant connecté",
+        });
+        navigate("/profile");
       }
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Unexpected error during login:", error);
       toast({
         variant: "destructive",
-        title: t('auth.errors.generalError'),
-        description: error instanceof Error ? error.message : t('auth.errors.invalidCredentials'),
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la connexion",
       });
     } finally {
       setLoading(false);

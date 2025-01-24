@@ -3,7 +3,6 @@ import { Profile } from "@/integrations/supabase/types/profile";
 import { Button } from "@/components/ui/button";
 import { PersonalForm } from "./personal/PersonalForm";
 import { PersonalDisplay } from "./personal/PersonalDisplay";
-import { useTranslation } from "react-i18next";
 
 interface PersonalTabProps {
   user: Profile;
@@ -12,7 +11,6 @@ interface PersonalTabProps {
 
 export const PersonalTab = ({ user, onUpdate }: PersonalTabProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const { t } = useTranslation();
 
   const handleSuccess = (updatedProfile: Profile) => {
     setIsEditing(false);
@@ -26,7 +24,7 @@ export const PersonalTab = ({ user, onUpdate }: PersonalTabProps) => {
       <div className="space-y-4">
         <PersonalDisplay user={user} />
         <Button onClick={() => setIsEditing(true)} className="w-full">
-          {t('profile.editPersonalInfo')}
+          Modifier les informations personnelles
         </Button>
       </div>
     );

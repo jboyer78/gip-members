@@ -4,11 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { useTranslation } from "react-i18next";
 
 export const StatusCard = () => {
-  const { t } = useTranslation();
-  
   const { data: userStatus } = useQuery({
     queryKey: ['userStatus'],
     queryFn: async () => {
@@ -53,12 +50,12 @@ export const StatusCard = () => {
   const getStatusText = (status: string) => {
     switch (status) {
       case 'Validée':
-        return t('profile.status.validated');
+        return 'Validée';
       case 'Refusée':
-        return t('profile.status.refused');
+        return 'Refusée';
       case 'En attente':
       default:
-        return t('profile.status.pending');
+        return 'En cours de traitement';
     }
   };
 
@@ -67,7 +64,7 @@ export const StatusCard = () => {
   return (
     <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-gray-200/50 dark:border-gray-700/50 shadow-lg">
       <CardContent className="p-6">
-        <h2 className="text-xl font-semibold mb-4">{t('profile.status.title')}</h2>
+        <h2 className="text-xl font-semibold mb-4">Statut de votre inscription</h2>
         <div className="flex justify-between items-start gap-6">
           <div className="flex-1 flex flex-col items-center space-y-4">
             {getStatusIcon(userStatus.status)}
@@ -85,7 +82,7 @@ export const StatusCard = () => {
                 </p>
                 {userStatus.commentDate && (
                   <p className="text-xs text-gray-500 dark:text-gray-500">
-                    {format(new Date(userStatus.commentDate), `d MMMM yyyy '${t('profile.status.on')}' HH:mm`, { locale: fr })}
+                    {format(new Date(userStatus.commentDate), "d MMMM yyyy 'à' HH:mm", { locale: fr })}
                   </p>
                 )}
               </div>
@@ -100,7 +97,7 @@ export const StatusCard = () => {
               className="flex-shrink-0 text-center p-3 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700/50 dark:hover:bg-gray-600/50 rounded-lg transition-colors cursor-pointer"
             >
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                {t('profile.status.memberNumber')}
+                Numéro d'adhérent
               </p>
               <p className="text-lg font-semibold text-primary">
                 {userStatus.memberNumber}

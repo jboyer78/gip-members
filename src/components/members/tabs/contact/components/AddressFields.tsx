@@ -2,7 +2,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { COUNTRIES } from "../constants/countries";
-import { useTranslation } from "react-i18next";
 
 interface AddressFieldsProps {
   formData: {
@@ -16,12 +15,10 @@ interface AddressFieldsProps {
 }
 
 export const AddressFields = ({ formData, handleChange, handleCountryChange }: AddressFieldsProps) => {
-  const { t } = useTranslation();
-
   return (
     <>
       <div className="space-y-2">
-        <Label htmlFor="street">{t('profile.address')}</Label>
+        <Label htmlFor="street">Adresse</Label>
         <Input
           id="street"
           name="street"
@@ -31,7 +28,7 @@ export const AddressFields = ({ formData, handleChange, handleCountryChange }: A
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="postal_code">{t('profile.postalCode')}</Label>
+        <Label htmlFor="postal_code">Code postal</Label>
         <Input
           id="postal_code"
           name="postal_code"
@@ -41,7 +38,7 @@ export const AddressFields = ({ formData, handleChange, handleCountryChange }: A
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="city">{t('profile.city')}</Label>
+        <Label htmlFor="city">Ville</Label>
         <Input
           id="city"
           name="city"
@@ -51,10 +48,10 @@ export const AddressFields = ({ formData, handleChange, handleCountryChange }: A
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="country">{t('profile.country')}</Label>
+        <Label htmlFor="country">Pays</Label>
         <Select value={formData.country} onValueChange={handleCountryChange}>
           <SelectTrigger>
-            <SelectValue placeholder={t('profile.selectStatus')} />
+            <SelectValue placeholder="Sélectionnez un pays" />
           </SelectTrigger>
           <SelectContent>
             {COUNTRIES.map((country) => (

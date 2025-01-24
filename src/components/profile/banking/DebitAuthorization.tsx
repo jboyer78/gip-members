@@ -2,15 +2,12 @@ import { FormField, FormItem, FormControl, FormLabel } from "@/components/ui/for
 import { Checkbox } from "@/components/ui/checkbox";
 import { UseFormReturn } from "react-hook-form";
 import { BankingFormValues } from "./types";
-import { useTranslation } from "react-i18next";
 
 interface DebitAuthorizationProps {
   form: UseFormReturn<BankingFormValues>;
 }
 
 export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
-  const { t } = useTranslation();
-
   return (
     <FormField
       control={form.control}
@@ -25,7 +22,7 @@ export const DebitAuthorization = ({ form }: DebitAuthorizationProps) => {
           </FormControl>
           <div className="space-y-1 leading-none">
             <FormLabel className="text-sm">
-              {t('profile.debitAuthorizationText')}
+              J'autorise GROUPE INTERNATIONAL POLICE à prélever sur mon compte bancaire le montant de la cotisation annuelle
             </FormLabel>
           </div>
         </FormItem>
